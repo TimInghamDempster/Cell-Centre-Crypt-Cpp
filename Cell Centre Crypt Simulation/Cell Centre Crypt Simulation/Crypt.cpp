@@ -13,6 +13,9 @@ struct  Crypt
 
 		int numCellsToReserve = numRows * numColumns * 10;
 
+		cellData.upperBound = numCellsToReserve - 1;
+		cellData.lowerBound = numCellsToReserve - 1;
+
 		cellData.positionsX = (float*)malloc(numCellsToReserve * sizeof(float));
 		cellData.positionsY = (float*)malloc(numCellsToReserve * sizeof(float));
 		cellData.positionsZ = (float*)malloc(numCellsToReserve * sizeof(float));
@@ -29,6 +32,21 @@ struct  Crypt
 		cellData.otherSubCellIndex = (int*)malloc(numCellsToReserve * sizeof(int));
 
 		cellData.cycleStages = (CellCycleStages::Stages*)malloc(numCellsToReserve * sizeof(CellCycleStages::Stages));
+
+		cellData.deadCellCount = 0;
+		cellData.deadCells = (int*)malloc(numCellsToReserve * sizeof(int));
+
+		cellData.AddNewCell();
+	}
+
+	void Step()
+	{
+		for(int i = cellData.lowerBound; i < cellData.upperBound; i++)
+		{
+			cellData.UpdateCell(i);
+		}
+
+		cellData.RemoveDeadCells();
 	}
 
 	void CleanUp()

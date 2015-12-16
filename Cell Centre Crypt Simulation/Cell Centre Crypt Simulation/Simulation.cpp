@@ -7,6 +7,7 @@ void InitialiseSimulation()
 
 void StepSimulation()
 {
+	crypt.Step();
 }
 
 void CleanUpSimulation()
