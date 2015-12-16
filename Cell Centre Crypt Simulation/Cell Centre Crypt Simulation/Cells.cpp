@@ -51,6 +51,7 @@ struct Cells
 			}
 		}
 
+		upperBound -= deadCellCount;
 
 		deadCellCount = 0;
 	}
