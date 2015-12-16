@@ -45,5 +45,8 @@
     <ClCompile Include="ProgramIncludes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CellCycle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
