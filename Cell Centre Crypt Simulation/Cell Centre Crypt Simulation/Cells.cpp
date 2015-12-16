@@ -4,6 +4,8 @@ struct Cells
 	int upperBound;
 	int lowerBound;
 
+	int upperMemoryBound;
+
 	float* positionsX;
 	float* positionsY;
 	float* positionsZ;
@@ -81,9 +83,15 @@ struct Cells
 		if(lowerBound == 0)
 		{
 			//Memcpy the whole thing back to the top of the data segment and start again
-			// don't return fail when this is implemented.  There are fail states but if
-			// they occur the simulation has horribly broken anyway.
-			return;
+			int newLowerBound = upperMemoryBound - upperBound; // off by 1?
+
+			for(int i = 0; i < upperBound; i++)
+			{
+				CopyCell(i, newLowerBound + i);
+			}
+
+			lowerBound = newLowerBound;
+			upperBound = upperMemoryBound;
 		}
 
 		lowerBound--;

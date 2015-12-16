@@ -15,6 +15,7 @@ struct  Crypt
 
 		cellData.upperBound = numCellsToReserve - 1;
 		cellData.lowerBound = numCellsToReserve - 1;
+		cellData.upperMemoryBound = numCellsToReserve - 1;
 
 		cellData.positionsX = (float*)malloc(numCellsToReserve * sizeof(float));
 		cellData.positionsY = (float*)malloc(numCellsToReserve * sizeof(float));
