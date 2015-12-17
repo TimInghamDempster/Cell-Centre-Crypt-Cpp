@@ -16,6 +16,9 @@
     <Filter Include="Tests">
       <UniqueIdentifier>{b53ccb18-385f-45d2-bf1b-aa7760ebf5b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="D3D">
+      <UniqueIdentifier>{32de76fc-c487-466f-8d66-f69fa9b015a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -28,9 +31,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Simulation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Crypt.cpp">
@@ -56,6 +56,21 @@
     </ClCompile>
     <ClCompile Include="Tests\TestIncludes.cpp">
       <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\D3D\D3DRenderer.cpp">
+      <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\D3D\Mesh.cpp">
+      <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\D3D\D3DIncludes.cpp">
+      <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\D3D\WindProc.cpp">
+      <Filter>D3D</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

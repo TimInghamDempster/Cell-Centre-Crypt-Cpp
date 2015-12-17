@@ -5,7 +5,7 @@
 
 #include "ProgramIncludes.cpp"
 
-#include "Renderer.cpp"
+#include "../D3D/D3DIncludes.cpp"
 
 int main(int argc, char* argv[])
 {
@@ -13,17 +13,20 @@ int main(int argc, char* argv[])
 	const int totalFrames = 50000000;
 
 	InitialiseSimulation();
-	InitRenderer();
+	HINSTANCE hInst = GetModuleHandle(NULL);
+	HWND hwnd = TCreateWindow(hInst);
+	Renderer::Init(hwnd, 1280, 720);
 	
 	while(framecount < totalFrames)
 	{
+		TWinMain();
 		StepSimulation();
-		DrawScene();
+		Renderer::Draw();
 		framecount++;
 	}
 
 	CleanUpSimulation();
-	CleanUpRenderer();
+	Renderer::CleanUp();
 
 	return 0;
 }
