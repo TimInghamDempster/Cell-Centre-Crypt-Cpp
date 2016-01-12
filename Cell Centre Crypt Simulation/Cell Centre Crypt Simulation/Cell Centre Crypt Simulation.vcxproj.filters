@@ -73,4 +73,12 @@
       <Filter>D3D</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\D3D\SimpleVS.hlsl">
+      <Filter>D3D</Filter>
+    </FxCompile>
+    <FxCompile Include="..\D3D\SimplePS.hlsl">
+      <Filter>D3D</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

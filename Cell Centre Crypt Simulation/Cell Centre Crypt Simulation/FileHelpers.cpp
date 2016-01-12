@@ -7,7 +7,8 @@ namespace Utils
 		file.open(filename, std::ios::binary);
 		
 		if(file.fail() || file.bad() || !file.good() || !file.is_open())
-		{
+		{			
+			std::cerr << strerror(errno);
 			outSuccess = false;
 			outFileLength = 0;
 			return new char[0];

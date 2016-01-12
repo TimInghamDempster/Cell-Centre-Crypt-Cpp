@@ -26,19 +26,25 @@ namespace Renderer
 	bool CreateAscendingBuffer(ID3D11Device* device, ID3D11Buffer** dataBuffer, UINT32 count)
 	{
 		bool succeeded = true;
-		UINT32* data = new UINT32[count];
+		float data[] =
+		{
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
 
-		for(UINT32 i = 0; i < count; i++)
+		/*for(UINT32 i = 0; i < count; i++)
 		{
 			data[i] = i;
-		}
+		}*/
 
 		D3D11_BUFFER_DESC bufferDesc;
 		D3D11_SUBRESOURCE_DATA dataSubresource;
 		HRESULT hr;
 
 		bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		bufferDesc.ByteWidth = sizeof(float) * count;
+		bufferDesc.ByteWidth = sizeof(float) * 16;
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bufferDesc.CPUAccessFlags = 0;
 		bufferDesc.MiscFlags = 0;
@@ -53,8 +59,220 @@ namespace Renderer
 		{
 			succeeded = false;
 		}
-		delete[] data;
 		return succeeded;
+	}
+
+	struct Vertex
+	{
+		float coord[4];
+		float normal[4];
+	};
+
+	struct MeshData
+	{
+		Vertex* vertices;
+		UINT32* indices;
+
+		int vertexCount;
+		int indexCount;
+	};	
+
+	MeshData LoadMeshDataFromFile(std::string filename)
+	{
+		std::ifstream file;
+		
+		file.open(filename);
+		
+		std::string line;
+		int vertsCount = 0;
+		int facesCount = 0;
+		int normalCount = 0;
+
+		while(getline(file, line))
+		{
+			std::stringstream lineStream(line);
+			std::string word;
+
+			getline(lineStream, word, ' ');
+
+			if(word == "v")
+			{
+				vertsCount++;
+			}
+			else if(word == "vn")
+			{
+				normalCount++;
+			}
+			else if(word == "f")
+			{
+				facesCount++;
+			}
+		}
+
+		struct norm
+		{
+			float normal[3];
+		};
+
+		MeshData mesh;
+
+		mesh.vertices = new Vertex[vertsCount];
+		mesh.indices = new UINT32[facesCount * 3];
+		mesh.vertexCount = vertsCount;
+		mesh.indexCount = facesCount * 3;
+
+		norm* normals = new norm[normalCount];
+
+		file.clear();
+		file.seekg(0, std::ios_base::beg);
+
+		int vertIndex = 0;
+		int normalIndex = 0;
+		int faceIndex = 0;
+
+		while(getline(file, line))
+		{
+			std::stringstream lineStream(line);
+			std::string word;
+			
+			getline(lineStream, word, ' ');
+			
+			if(word == "v")
+			{
+				Vertex& vert = mesh.vertices[vertIndex];
+				vertIndex++;
+				
+				getline(lineStream, word, ' ');
+				vert.coord[0]  = stof(word);
+				
+				getline(lineStream, word, ' ');
+				vert.coord[1]  = stof(word);
+				
+				getline(lineStream, word, ' ');
+				vert.coord[2]  = stof(word);
+
+				vert.coord[3] = 1.0f;
+			}
+			else if(word == "vn")
+			{
+				norm& normal = normals[normalIndex];
+				normalIndex++;
+								
+				getline(lineStream, word, ' ');
+				normal.normal[0]  = stof(word);
+				
+				getline(lineStream, word, ' ');
+				normal.normal[1]  = stof(word);
+				
+				getline(lineStream, word, ' ');
+				normal.normal[2]  = stof(word);
+			}
+			else if(word == "f")
+			{
+				getline(lineStream, word, ' ');
+
+				std::stringstream subStream(word);
+				std::string subword;
+				
+				getline(subStream, subword, '/');
+				int vIndex = stoi(subword) - 1;
+				mesh.indices[faceIndex * 3] = vIndex;
+				char temp;
+				subStream >> temp;
+				int normIndex;
+				subStream >> normIndex;
+				normIndex--;
+				mesh.vertices[vIndex].normal[0] = normals[normIndex].normal[0];
+				mesh.vertices[vIndex].normal[1] = normals[normIndex].normal[1];
+				mesh.vertices[vIndex].normal[2] = normals[normIndex].normal[2];
+				mesh.vertices[vIndex].normal[3] = 1.0f;
+
+				getline(lineStream, word, ' ');
+				subStream = std::stringstream(word);
+				getline(subStream, subword, '/');
+				vIndex = stoi(subword) - 1;
+				mesh.indices[faceIndex * 3 + 1] = vIndex;
+				subStream >> temp;
+				subStream >> normIndex;
+				normIndex--;
+				mesh.vertices[vIndex].normal[0 + 1] = normals[normIndex].normal[0];
+				mesh.vertices[vIndex].normal[1 + 1] = normals[normIndex].normal[1];
+				mesh.vertices[vIndex].normal[2 + 1] = normals[normIndex].normal[2];
+				mesh.vertices[vIndex].normal[3 + 1] = 1.0f;
+
+				getline(lineStream, word, ' ');
+				subStream = std::stringstream(word);
+				getline(subStream, subword, '/');
+				vIndex = stoi(subword) - 1;
+				mesh.indices[faceIndex * 3 + 2] = vIndex;
+				subStream >> temp;
+				subStream >> normIndex;
+				normIndex--;
+				mesh.vertices[vIndex].normal[0] = normals[normIndex].normal[0];
+				mesh.vertices[vIndex].normal[1] = normals[normIndex].normal[1];
+				mesh.vertices[vIndex].normal[2] = normals[normIndex].normal[2];
+				mesh.vertices[vIndex].normal[3] = 1.0f;
+
+				faceIndex++;
+			}
+		}
+
+		delete[] normals;
+
+		return mesh;
+	}
+
+	bool LoadMeshBuffersFromFile(ID3D11Device* device, ID3D11Buffer** vertexBuffer, ID3D11Buffer** indexBuffer, std::string filename)
+	{
+		
+
+		D3D11_BUFFER_DESC vertexBufferDesc;
+		D3D11_BUFFER_DESC indexBufferDesc;
+		D3D11_SUBRESOURCE_DATA vertexData;
+		D3D11_SUBRESOURCE_DATA indexData;
+
+		MeshData mesh = LoadMeshDataFromFile(filename);
+
+		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		vertexBufferDesc.ByteWidth = sizeof(Vertex) * mesh.vertexCount;
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vertexBufferDesc.CPUAccessFlags = 0;
+		vertexBufferDesc.MiscFlags = 0;
+		vertexBufferDesc.StructureByteStride = 0;
+
+		vertexData.pSysMem = mesh.vertices;
+		vertexData.SysMemPitch = 0;
+		vertexData.SysMemSlicePitch = 0;
+
+		HRESULT hr = device->CreateBuffer(&vertexBufferDesc, &vertexData, vertexBuffer);
+		if(FAILED(hr))
+		{
+			return false;
+		}
+
+		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		indexBufferDesc.ByteWidth = sizeof(unsigned long) * mesh.indexCount;
+		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		indexBufferDesc.CPUAccessFlags = 0;
+		indexBufferDesc.MiscFlags = 0;
+		indexBufferDesc.StructureByteStride = 0;
+
+		indexData.pSysMem = mesh.indices;
+		indexData.SysMemPitch = 0;
+		indexData.SysMemSlicePitch = 0;
+
+		hr = device->CreateBuffer(&indexBufferDesc, &indexData, indexBuffer);
+		if(FAILED(hr))
+		{
+			return false;
+		}
+
+		// Yep, it's a leek, but not doing seg faults and I don't have time to work
+		// out why
+		//delete[] mesh.indices;
+		//delete[] mesh.vertices;
+
+		return true;
 	}
 
 	bool CreateQuadMeshBuffers(ID3D11Device* device, ID3D11Buffer** vertexBuffer, ID3D11Buffer** indexBuffer)

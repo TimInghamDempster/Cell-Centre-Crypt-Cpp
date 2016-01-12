@@ -248,8 +248,8 @@ namespace Renderer
 		featureLevel = D3D_FEATURE_LEVEL_11_0;
 		
 
-		//result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT, &featureLevel, 1, 
-		result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, D3D11_CREATE_DEVICE_BGRA_SUPPORT, &featureLevel, 1, 
+		result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT, &featureLevel, 1, 
+		//result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, D3D11_CREATE_DEVICE_BGRA_SUPPORT, &featureLevel, 1, 
 			D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &mainDevice, NULL, &deviceContext);
 		if(FAILED(result))
 		{
@@ -334,7 +334,7 @@ namespace Renderer
 		deviceContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
 
 		rasterDesc.AntialiasedLineEnable = false;
-		rasterDesc.CullMode = D3D11_CULL_BACK;
+		rasterDesc.CullMode = D3D11_CULL_NONE;
 		rasterDesc.DepthBias = 0;
 		rasterDesc.DepthBiasClamp = 0.0f;
 		rasterDesc.DepthClipEnable = true;
@@ -385,14 +385,23 @@ namespace Renderer
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 
 			D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32_UINT, 1, 0, 
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, 
+			D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, 
+			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
+			{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32_FLOAT, 2, 16, 
+			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
+			{ "TEXCOORD", 2, DXGI_FORMAT_R32G32B32_FLOAT, 2, 32, 
+			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
+			{ "TEXCOORD", 3, DXGI_FORMAT_R32G32B32_FLOAT, 2, 48, 
 			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
 		};
 
-		LoadVertexShaderAndBuildInputLayout("Content\\Shaders\\UIvs.cso", &uiVertexShader, layout, 2, &uiInputLayout);
-		LoadPixelShader("Content\\Shaders\\UIps.cso", &uiPixelShader);
-		CreateQuadMeshBuffers(mainDevice, &unitQuadVertexBuffer, &unitQuadIndexBuffer);
+		LoadVertexShaderAndBuildInputLayout("SimpleVS.cso", &uiVertexShader, layout, 6, &uiInputLayout);
+		LoadPixelShader("SimplePS.cso", &uiPixelShader);
+		//CreateQuadMeshBuffers(mainDevice, &unitQuadVertexBuffer, &unitQuadIndexBuffer);
 		CreateConstantBuffer(mainDevice, &uiTransformConstantBuffer, 4096*16);
+		LoadMeshBuffersFromFile(mainDevice, &unitQuadVertexBuffer, &unitQuadIndexBuffer,"TestCube.obj");
 	}
 
 	void ReportLiveObjects()
@@ -443,14 +452,14 @@ namespace Renderer
 
 	void DrawScene()
 	{
-	}
+	
 		// Leaving in for now as this is how the main rendering will work.
-		/*UINT32 strides[2];
+		UINT32 strides[2];
 		UINT32 offsets[2];
 		ID3D11Buffer* bufferPointers[2];
 
-		strides[0] = sizeof(UINT32) * 4;
-		strides[1] = sizeof(float); 
+		strides[0] = sizeof(UINT32) * 8;
+		strides[1] = sizeof(float) * 4; 
 
 		offsets[0] = 0;
 		offsets[1] = 0;
@@ -469,8 +478,9 @@ namespace Renderer
 		deviceContext->VSSetConstantBuffers(0, 1, &uiTransformConstantBuffer);
 
 		// TODO loop over all quads
-		for(UINT32 i = 0; i < numUIQuads; i++)
+		//for(UINT32 i = 0; i < numUIQuads; i++)
 		{
-		deviceContext->DrawIndexedInstanced(6, 1, 0, 0, i);
-		}*/
+		deviceContext->DrawIndexedInstanced(36, 1, 0, 0, 0);
+		}
+	}
 }
