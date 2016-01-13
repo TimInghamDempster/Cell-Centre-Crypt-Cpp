@@ -26,8 +26,18 @@ struct Cells
 	int deadCellCount;
 	int* deadCells;
 
+	int newCellCount;
+	int* newCells;
+
+	Grid* grid;
+
 	void UpdateCell(int cellPositionInArrays)
 	{
+	}
+
+	void InsertNewCells()
+	{
+
 	}
 
 	void RemoveDeadCells()
@@ -56,6 +66,60 @@ struct Cells
 		upperBound -= deadCellCount;
 
 		deadCellCount = 0;
+	}
+
+	// Could make a move down version as well but since cells migrate up the majority of moves will be up so
+	// this should be all we need.
+	void MoveBoxUpY(int sourceIndex)
+	{
+		int sourceGrid = grid->FindBox(positionsX[sourceIndex], positionsY[sourceIndex], positionsZ[sourceIndex]);
+		int topCell = grid->m_boxBoundaryIndicesUpperBound[sourceGrid];
+
+		SwapCells(sourceIndex, topCell); // Put the cell at the top of it's box
+		grid->m_boxBoundaryIndicesUpperBound[sourceGrid]--; // Move the box boundary down one so top cell is now in the box above
+	}
+
+	void SwapCells(int cell1, int cell2)
+	{
+		float tempX = positionsX[cell1];
+		positionsX[cell1] = positionsX[cell2];
+		positionsX[cell2] = tempX;
+		float tempY = positionsY[cell1];
+		positionsY[cell1] = positionsY[cell2];
+		positionsY[cell2] = tempY;
+		float tempZ = positionsZ[cell1];
+		positionsZ[cell1] = positionsZ[cell2];
+		positionsZ[cell2] = tempZ;
+		
+		float tempMembraneX = onMembranePositionsX[cell1];
+		onMembranePositionsX[cell1] = onMembranePositionsX[cell2];
+		onMembranePositionsX[cell2] = tempMembraneX;
+		float tempMembraneY = onMembranePositionsY[cell1];
+		onMembranePositionsY[cell1] = onMembranePositionsY[cell2];
+		onMembranePositionsY[cell2] = tempMembraneY;
+		float tempMembraneZ = onMembranePositionsZ[cell1];
+		onMembranePositionsZ[cell1] = onMembranePositionsZ[cell2];
+		onMembranePositionsZ[cell2] = tempMembraneZ;
+
+		float tempR = radii[cell1];
+		radii[cell1] = radii[cell2];
+		radii[cell2] = tempR;
+
+		int tempStageTimestep = currentStageNumTimesteps[cell1];
+		currentStageNumTimesteps[cell1] = currentStageNumTimesteps[cell2];
+		currentStageNumTimesteps[cell2] = tempStageTimestep;
+
+		int tempGrowthTimestep = growthStageRequiredTimesteps[cell1];
+		growthStageRequiredTimesteps[cell1] = growthStageRequiredTimesteps[cell2];
+		growthStageRequiredTimesteps[cell2] = tempGrowthTimestep;
+
+		int tempSubCell = otherSubCellIndex[cell1];
+		otherSubCellIndex[cell1] = otherSubCellIndex[cell2];
+		otherSubCellIndex[cell2] = tempSubCell;
+
+		CellCycleStages::Stages tempStage = cycleStages[cell1];
+		cycleStages[cell1] = cycleStages[cell2];
+		cycleStages[cell2] = tempStage;
 	}
 
 	void CopyCell(int sourceIndex, int destIndex)

@@ -1,7 +1,8 @@
 
 struct  Crypt
 {
-	Cells cellData;
+	Cells m_cellData;
+	Grid m_grid;
 
 	int m_numRows;
 	int m_numColumns;
@@ -13,59 +14,61 @@ struct  Crypt
 
 		int numCellsToReserve = numRows * numColumns * 10;
 
-		cellData.upperBound = numCellsToReserve - 1;
-		cellData.lowerBound = numCellsToReserve - 1;
-		cellData.upperMemoryBound = numCellsToReserve - 1;
+		m_cellData.grid = &m_grid;
 
-		cellData.positionsX = (float*)malloc(numCellsToReserve * sizeof(float));
-		cellData.positionsY = (float*)malloc(numCellsToReserve * sizeof(float));
-		cellData.positionsZ = (float*)malloc(numCellsToReserve * sizeof(float));
+		m_cellData.upperBound = numCellsToReserve - 1;
+		m_cellData.lowerBound = numCellsToReserve - 1;
+		m_cellData.upperMemoryBound = numCellsToReserve - 1;
 
-		cellData.onMembranePositionsX = (float*)malloc(numCellsToReserve * sizeof(float));
-		cellData.onMembranePositionsY = (float*)malloc(numCellsToReserve * sizeof(float));
-		cellData.onMembranePositionsZ = (float*)malloc(numCellsToReserve * sizeof(float));
+		m_cellData.positionsX = (float*)malloc(numCellsToReserve * sizeof(float));
+		m_cellData.positionsY = (float*)malloc(numCellsToReserve * sizeof(float));
+		m_cellData.positionsZ = (float*)malloc(numCellsToReserve * sizeof(float));
 
-		cellData.radii = (float*)malloc(numCellsToReserve * sizeof(float));
+		m_cellData.onMembranePositionsX = (float*)malloc(numCellsToReserve * sizeof(float));
+		m_cellData.onMembranePositionsY = (float*)malloc(numCellsToReserve * sizeof(float));
+		m_cellData.onMembranePositionsZ = (float*)malloc(numCellsToReserve * sizeof(float));
 
-		cellData.currentStageNumTimesteps = (int*)malloc(numCellsToReserve * sizeof(int));
-		cellData.growthStageRequiredTimesteps = (int*)malloc(numCellsToReserve * sizeof(int));
+		m_cellData.radii = (float*)malloc(numCellsToReserve * sizeof(float));
 
-		cellData.otherSubCellIndex = (int*)malloc(numCellsToReserve * sizeof(int));
+		m_cellData.currentStageNumTimesteps = (int*)malloc(numCellsToReserve * sizeof(int));
+		m_cellData.growthStageRequiredTimesteps = (int*)malloc(numCellsToReserve * sizeof(int));
 
-		cellData.cycleStages = (CellCycleStages::Stages*)malloc(numCellsToReserve * sizeof(CellCycleStages::Stages));
+		m_cellData.otherSubCellIndex = (int*)malloc(numCellsToReserve * sizeof(int));
 
-		cellData.deadCellCount = 0;
-		cellData.deadCells = (int*)malloc(numCellsToReserve * sizeof(int));
+		m_cellData.cycleStages = (CellCycleStages::Stages*)malloc(numCellsToReserve * sizeof(CellCycleStages::Stages));
 
-		cellData.AddNewCell();
+		m_cellData.deadCellCount = 0;
+		m_cellData.deadCells = (int*)malloc(numCellsToReserve * sizeof(int));
+
+		m_cellData.AddNewCell();
 	}
 
 	void Step()
 	{
-		for(int i = cellData.lowerBound; i < cellData.upperBound; i++)
+		for(int i = m_cellData.lowerBound; i < m_cellData.upperBound; i++)
 		{
-			cellData.UpdateCell(i);
+			m_cellData.UpdateCell(i);
 		}
 
-		cellData.RemoveDeadCells();
+		m_cellData.RemoveDeadCells();
 	}
 
 	void CleanUp()
 	{
-		free(cellData.positionsX);
-		free(cellData.positionsY);
-		free(cellData.positionsZ);
+		free(m_cellData.positionsX);
+		free(m_cellData.positionsY);
+		free(m_cellData.positionsZ);
 
-		free(cellData.onMembranePositionsX);
-		free(cellData.onMembranePositionsY);
-		free(cellData.onMembranePositionsZ);
+		free(m_cellData.onMembranePositionsX);
+		free(m_cellData.onMembranePositionsY);
+		free(m_cellData.onMembranePositionsZ);
 
-		free(cellData.radii);
+		free(m_cellData.radii);
 
-		free(cellData.currentStageNumTimesteps);
-		free(cellData.growthStageRequiredTimesteps);
-		free(cellData.otherSubCellIndex);
+		free(m_cellData.currentStageNumTimesteps);
+		free(m_cellData.growthStageRequiredTimesteps);
+		free(m_cellData.otherSubCellIndex);
 
-		free(cellData.cycleStages);
+		free(m_cellData.cycleStages);
 	}
 };
