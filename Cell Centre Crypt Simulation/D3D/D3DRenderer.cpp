@@ -459,7 +459,7 @@ namespace Renderer
 		ID3D11Buffer* bufferPointers[2];
 
 		strides[0] = sizeof(UINT32) * 8;
-		strides[1] = sizeof(float) * 4; 
+		strides[1] = sizeof(float) * 16; 
 
 		offsets[0] = 0;
 		offsets[1] = 0;
