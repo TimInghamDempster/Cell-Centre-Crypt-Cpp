@@ -70,21 +70,21 @@ struct Cells
 
 	void MoveBoxDownY(int cellToMove)
 	{
-		BoxId boxBelowCellToMove = grid->FindBox(positionsX[cellToMove], positionsY[cellToMove], positionsZ[cellToMove]);
-		boxBelowCellToMove.row--;
-		int bottomCell = grid->GetUpperIndex(boxBelowCellToMove) + 1;
+		FenceId fenceBelowCellToMove = grid->FindFenceAbove(positionsX[cellToMove], positionsY[cellToMove], positionsZ[cellToMove]);
+		fenceBelowCellToMove.row--;
+		int bottomCell = grid->GetFenceIndex(fenceBelowCellToMove) + 1;
 
 		SwapCells(cellToMove, bottomCell); // Put the cell at the bottom of it's box
-		grid->IncrementUpperIndex(boxBelowCellToMove); // Move the box boundary up one so bottom cell of box above is now in this box
+		grid->IncrementFenceIndex(fenceBelowCellToMove); // Move the box boundary up one so bottom cell of box above is now in this box
 	}
 
 	void MoveBoxUpY(int cellToMove)
 	{
-		BoxId boxOfCellToMove = grid->FindBox(positionsX[cellToMove], positionsY[cellToMove], positionsZ[cellToMove]);
-		int topCell = grid->GetUpperIndex(boxOfCellToMove);
+		FenceId fenceAboveCellToMove = grid->FindFenceAbove(positionsX[cellToMove], positionsY[cellToMove], positionsZ[cellToMove]);
+		int topCell = grid->GetFenceIndex(fenceAboveCellToMove);
 
 		SwapCells(cellToMove, topCell); // Put the cell at the top of it's box
-		grid->DecrementUpperIndex(boxOfCellToMove); // Move the box boundary down one so top cell is now in the box above
+		grid->DecrementFenceIndex(fenceAboveCellToMove); // Move the box boundary down one so top cell is now in the box above
 	}
 
 	void SwapCells(int cell1, int cell2)

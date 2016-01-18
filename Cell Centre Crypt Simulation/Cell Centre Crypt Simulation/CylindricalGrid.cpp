@@ -1,10 +1,10 @@
 
-struct BoxId
+struct FenceId
 {
 	int row;
 	int column;
 
-	BoxId()
+	FenceId()
 	{
 		row = -1;
 		column = -1;
@@ -22,23 +22,23 @@ struct CylindricalGrid
 	int m_numColumns;
 	int m_numRows;
 
-	BoxId FindBox(float x, float y, float z)
+	FenceId FindFenceAbove(float x, float y, float z)
 	{
-		BoxId id;
+		FenceId id;
 		return id;
 	}
 
-	int GetUpperIndex(BoxId id)
+	int GetFenceIndex(FenceId id)
 	{
 		return m_columns[id.column].m_boxUpperBounds[id.row];
 	}
 
-	void IncrementUpperIndex(BoxId id)
+	void IncrementFenceIndex(FenceId id)
 	{
 		m_columns[id.column].m_boxUpperBounds[id.row]++;
 	}
 
-	void DecrementUpperIndex(BoxId id)
+	void DecrementFenceIndex(FenceId id)
 	{
 		m_columns[id.column].m_boxUpperBounds[id.row]--;
 	}
