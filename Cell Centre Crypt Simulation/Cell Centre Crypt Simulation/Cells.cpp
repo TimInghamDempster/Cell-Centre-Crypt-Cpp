@@ -29,7 +29,7 @@ struct Cells
 	int newCellCount;
 	int* newCells;
 
-	Grid* grid;
+	CylindricalGrid* grid;
 
 	void UpdateCell(int cellPositionInArrays)
 	{
@@ -68,15 +68,23 @@ struct Cells
 		deadCellCount = 0;
 	}
 
-	// Could make a move down version as well but since cells migrate up the majority of moves will be up so
-	// this should be all we need.
-	void MoveBoxUpY(int sourceIndex)
+	void MoveBoxDownY(int cellToMove)
 	{
-		int sourceGrid = grid->FindBox(positionsX[sourceIndex], positionsY[sourceIndex], positionsZ[sourceIndex]);
-		int topCell = grid->m_boxBoundaryIndicesUpperBound[sourceGrid];
+		BoxId boxBelowCellToMove = grid->FindBox(positionsX[cellToMove], positionsY[cellToMove], positionsZ[cellToMove]);
+		boxBelowCellToMove.row--;
+		int bottomCell = grid->GetUpperIndex(boxBelowCellToMove) + 1;
 
-		SwapCells(sourceIndex, topCell); // Put the cell at the top of it's box
-		grid->m_boxBoundaryIndicesUpperBound[sourceGrid]--; // Move the box boundary down one so top cell is now in the box above
+		SwapCells(cellToMove, bottomCell); // Put the cell at the bottom of it's box
+		grid->IncrementUpperIndex(boxBelowCellToMove); // Move the box boundary up one so bottom cell of box above is now in this box
+	}
+
+	void MoveBoxUpY(int cellToMove)
+	{
+		BoxId boxOfCellToMove = grid->FindBox(positionsX[cellToMove], positionsY[cellToMove], positionsZ[cellToMove]);
+		int topCell = grid->GetUpperIndex(boxOfCellToMove);
+
+		SwapCells(cellToMove, topCell); // Put the cell at the top of it's box
+		grid->DecrementUpperIndex(boxOfCellToMove); // Move the box boundary down one so top cell is now in the box above
 	}
 
 	void SwapCells(int cell1, int cell2)

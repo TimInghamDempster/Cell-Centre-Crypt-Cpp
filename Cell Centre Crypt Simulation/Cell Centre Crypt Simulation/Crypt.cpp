@@ -2,7 +2,7 @@
 struct  Crypt
 {
 	Cells m_cellData;
-	Grid m_grid;
+	CylindricalGrid m_grid;
 
 	int m_numRows;
 	int m_numColumns;

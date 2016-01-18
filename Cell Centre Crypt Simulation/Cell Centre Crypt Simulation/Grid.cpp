@@ -24,6 +24,36 @@ struct Grid
 		return GetBox(x, y, z);
 	}
 
+	void CheckIntegrity()
+	{
+		for(int x = 0; x < m_numBoxesX; x++)
+		{
+			for(int z = 0; z < m_numBoxesZ; z++)
+			{
+				int bottomBox = GetBox(x, 0, z);
+				int topBox = GetBox(x, m_numBoxesY - 1, z);
+				
+				int bottomIndex = m_boxBoundaryIndicesUpperBound[bottomBox];
+				int topIndex = m_boxBoundaryIndicesUpperBound[topBox];
+
+				if(topIndex < CalcArrayLength() - 1)
+				{
+					int nextColumnBottomIndex = m_boxBoundaryIndicesUpperBound[topBox + 1];
+
+					if(nextColumnBottomIndex < topIndex && nextColumnBottomIndex > bottomIndex)
+					{
+						std::cerr << "Error: data structure collision.  See Grid.cpp CheckIntegrity()";
+					}
+				}
+			}
+		}
+	}
+
+	int CalcArrayLength()
+	{
+		return m_numBoxesX * m_numBoxesY * m_numBoxesZ;
+	}
+
 	static int CalcBoxOnAxis(const float pos, const float gridCentreInZeroSpace, const float boxSize, const int boxCount)
 	{
 		int boxInInfiniteUniverse = (int)((pos + gridCentreInZeroSpace) / boxSize);
