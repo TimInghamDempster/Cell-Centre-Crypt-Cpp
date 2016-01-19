@@ -29,7 +29,53 @@ struct Cells
 	int newCellCount;
 	int* newCells;
 
-	CylindricalGrid* grid;
+	void AllocateCells(int count)
+	{
+		int numCellsToReserve = count * 10;
+
+		upperBound = numCellsToReserve - 1;
+		lowerBound = numCellsToReserve - 1;
+		upperMemoryBound = numCellsToReserve - 1;
+
+		positionsX = (float*)malloc(numCellsToReserve * sizeof(float));
+		positionsY = (float*)malloc(numCellsToReserve * sizeof(float));
+		positionsZ = (float*)malloc(numCellsToReserve * sizeof(float));
+
+		onMembranePositionsX = (float*)malloc(numCellsToReserve * sizeof(float));
+		onMembranePositionsY = (float*)malloc(numCellsToReserve * sizeof(float));
+		onMembranePositionsZ = (float*)malloc(numCellsToReserve * sizeof(float));
+
+		radii = (float*)malloc(numCellsToReserve * sizeof(float));
+
+		currentStageNumTimesteps = (int*)malloc(numCellsToReserve * sizeof(int));
+		growthStageRequiredTimesteps = (int*)malloc(numCellsToReserve * sizeof(int));
+
+		otherSubCellIndex = (int*)malloc(numCellsToReserve * sizeof(int));
+
+		cycleStages = (CellCycleStages::Stages*)malloc(numCellsToReserve * sizeof(CellCycleStages::Stages));
+
+		deadCellCount = 0;
+		deadCells = (int*)malloc(numCellsToReserve * sizeof(int));
+	}
+
+	void CleanUp()
+	{
+		free(positionsX);
+		free(positionsY);
+		free(positionsZ);
+
+		free(onMembranePositionsX);
+		free(onMembranePositionsY);
+		free(onMembranePositionsZ);
+
+		free(radii);
+
+		free(currentStageNumTimesteps);
+		free(growthStageRequiredTimesteps);
+		free(otherSubCellIndex);
+
+		free(cycleStages);
+	}
 
 	void UpdateCell(int cellPositionInArrays)
 	{
@@ -66,25 +112,6 @@ struct Cells
 		upperBound -= deadCellCount;
 
 		deadCellCount = 0;
-	}
-
-	void MoveBoxDownY(int cellToMove)
-	{
-		FenceId fenceBelowCellToMove = grid->FindFenceAbove(positionsX[cellToMove], positionsY[cellToMove], positionsZ[cellToMove]);
-		fenceBelowCellToMove.row--;
-		int bottomCell = grid->GetFenceIndex(fenceBelowCellToMove) + 1;
-
-		SwapCells(cellToMove, bottomCell); // Put the cell at the bottom of it's box
-		grid->IncrementFenceIndex(fenceBelowCellToMove); // Move the box boundary up one so bottom cell of box above is now in this box
-	}
-
-	void MoveBoxUpY(int cellToMove)
-	{
-		FenceId fenceAboveCellToMove = grid->FindFenceAbove(positionsX[cellToMove], positionsY[cellToMove], positionsZ[cellToMove]);
-		int topCell = grid->GetFenceIndex(fenceAboveCellToMove);
-
-		SwapCells(cellToMove, topCell); // Put the cell at the top of it's box
-		grid->DecrementFenceIndex(fenceAboveCellToMove); // Move the box boundary down one so top cell is now in the box above
 	}
 
 	void SwapCells(int cell1, int cell2)
