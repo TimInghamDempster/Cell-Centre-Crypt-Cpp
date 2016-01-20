@@ -18,10 +18,9 @@ namespace Renderer
 	ID3D11VertexShader* uiVertexShader = nullptr;
 	ID3D11InputLayout* uiInputLayout = nullptr;
 	ID3D11PixelShader* uiPixelShader = nullptr;
-	ID3D11Buffer* unitQuadVertexBuffer = nullptr;
-	ID3D11Buffer* unitQuadIndexBuffer = nullptr;
-	ID3D11Buffer* ascendingCountBuffer = nullptr;
-	ID3D11Buffer* uiTransformConstantBuffer = nullptr;
+	ID3D11Buffer* meshVertexBuffer = nullptr;
+	ID3D11Buffer* meshIndexBuffer = nullptr;
+	ID3D11Buffer* matrixBuffer = nullptr;
 
 	float clearColour[4];
 	UINT32 videoCardMemory = 0;
@@ -379,7 +378,7 @@ namespace Renderer
 		// On the other hand it would make jumping to the specific piece of code much harder.
 		InitD3DDevice(hwnd);
 
-		CreateAscendingBuffer(mainDevice, &ascendingCountBuffer, 4096);
+		CreateInstancingMatrixBuffer(mainDevice, &matrixBuffer, 4096);
 
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
@@ -399,9 +398,7 @@ namespace Renderer
 
 		LoadVertexShaderAndBuildInputLayout("SimpleVS.cso", &uiVertexShader, layout, 6, &uiInputLayout);
 		LoadPixelShader("SimplePS.cso", &uiPixelShader);
-		//CreateQuadMeshBuffers(mainDevice, &unitQuadVertexBuffer, &unitQuadIndexBuffer);
-		CreateConstantBuffer(mainDevice, &uiTransformConstantBuffer, 4096*16);
-		LoadMeshBuffersFromFile(mainDevice, &unitQuadVertexBuffer, &unitQuadIndexBuffer,"TestCube.obj");
+		LoadMeshBuffersFromFile(mainDevice, &meshVertexBuffer, &meshIndexBuffer,"TestCube.obj");
 	}
 
 	void ReportLiveObjects()
@@ -430,10 +427,9 @@ namespace Renderer
 		uiVertexShader->Release();
 		uiPixelShader->Release();
 		uiInputLayout->Release();
-		unitQuadIndexBuffer->Release();
-		unitQuadVertexBuffer->Release();
-		ascendingCountBuffer->Release();
-		uiTransformConstantBuffer->Release();
+		meshIndexBuffer->Release();
+		meshVertexBuffer->Release();
+		matrixBuffer->Release();
 
 		ReportLiveObjects();
 		mainDevice->Release();
@@ -464,23 +460,17 @@ namespace Renderer
 		offsets[0] = 0;
 		offsets[1] = 0;
 
-		bufferPointers[0] = unitQuadVertexBuffer;
-		bufferPointers[1] = ascendingCountBuffer;
+		bufferPointers[0] = meshVertexBuffer;
+		bufferPointers[1] = matrixBuffer;
 
 		deviceContext->IASetVertexBuffers(0, 2, bufferPointers, strides, offsets);
-		deviceContext->IASetIndexBuffer(unitQuadIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		deviceContext->IASetIndexBuffer(meshIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		deviceContext->IASetInputLayout(uiInputLayout);
 		deviceContext->VSSetShader(uiVertexShader, nullptr, 0);
 		deviceContext->PSSetShader(uiPixelShader, nullptr, 0);
 
-		deviceContext->VSSetConstantBuffers(0, 1, &uiTransformConstantBuffer);
-
-		// TODO loop over all quads
-		//for(UINT32 i = 0; i < numUIQuads; i++)
-		{
 		deviceContext->DrawIndexedInstanced(36, 1, 0, 0, 0);
-		}
 	}
 }

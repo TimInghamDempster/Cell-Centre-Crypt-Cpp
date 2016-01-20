@@ -23,7 +23,7 @@ namespace Renderer
 	return true;
 	}
 
-	bool CreateAscendingBuffer(ID3D11Device* device, ID3D11Buffer** dataBuffer, UINT32 count)
+	bool CreateInstancingMatrixBuffer(ID3D11Device* device, ID3D11Buffer** dataBuffer, UINT32 count)
 	{
 		bool succeeded = true;
 		float data[] =
@@ -33,11 +33,6 @@ namespace Renderer
 			0.0f, 0.0f, 1.0f, 0.0f,
 			0.0f, 0.0f, 0.0f, 1.0f
 		};
-
-		/*for(UINT32 i = 0; i < count; i++)
-		{
-			data[i] = i;
-		}*/
 
 		D3D11_BUFFER_DESC bufferDesc;
 		D3D11_SUBRESOURCE_DATA dataSubresource;
@@ -195,10 +190,10 @@ namespace Renderer
 				subStream >> temp;
 				subStream >> normIndex;
 				normIndex--;
-				mesh.vertices[vIndex].normal[0 + 1] = normals[normIndex].normal[0];
-				mesh.vertices[vIndex].normal[1 + 1] = normals[normIndex].normal[1];
-				mesh.vertices[vIndex].normal[2 + 1] = normals[normIndex].normal[2];
-				mesh.vertices[vIndex].normal[3 + 1] = 1.0f;
+				mesh.vertices[vIndex].normal[0] = normals[normIndex].normal[0];
+				mesh.vertices[vIndex].normal[1] = normals[normIndex].normal[1];
+				mesh.vertices[vIndex].normal[2] = normals[normIndex].normal[2];
+				mesh.vertices[vIndex].normal[3] = 1.0f;
 
 				getline(lineStream, word, ' ');
 				subStream = std::stringstream(word);
@@ -251,7 +246,7 @@ namespace Renderer
 		}
 
 		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		indexBufferDesc.ByteWidth = sizeof(unsigned long) * mesh.indexCount;
+		indexBufferDesc.ByteWidth = sizeof(int) * mesh.indexCount;
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indexBufferDesc.CPUAccessFlags = 0;
 		indexBufferDesc.MiscFlags = 0;
