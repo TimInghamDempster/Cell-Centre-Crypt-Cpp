@@ -31,17 +31,17 @@ namespace Renderer
 			1.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f
+			0.0f, 0.0f, 0.0f, 2.0f
 		};
 
 		D3D11_BUFFER_DESC bufferDesc;
 		D3D11_SUBRESOURCE_DATA dataSubresource;
 		HRESULT hr;
 
-		bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 		bufferDesc.ByteWidth = sizeof(float) * 16;
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bufferDesc.CPUAccessFlags = 0;
+		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		bufferDesc.MiscFlags = 0;
 		bufferDesc.StructureByteStride = 0;
 

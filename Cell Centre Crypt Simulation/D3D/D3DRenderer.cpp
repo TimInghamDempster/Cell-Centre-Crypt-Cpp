@@ -28,6 +28,8 @@ namespace Renderer
 
 	UINT width;
 	UINT height;
+
+	float frame;
 	
 	namespace Colours
 	{
@@ -126,6 +128,7 @@ namespace Renderer
 		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 		D3D11_RASTERIZER_DESC rasterDesc;
 		D3D11_VIEWPORT viewport;
+
 
 		result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
 		if(FAILED(result))
@@ -365,6 +368,8 @@ namespace Renderer
 
 	void Init(HWND hwnd, UINT screenWidth, UINT screenHeight)
 	{
+		frame = 0;
+
 		clearColour[0] = 0.0f;
 		clearColour[1] = 0.0f;
 		clearColour[2] = 1.0f;
@@ -448,7 +453,26 @@ namespace Renderer
 
 	void DrawScene()
 	{
-	
+		frame++;
+
+		D3D11_MAPPED_SUBRESOURCE matrix;
+		deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matrix);
+		
+		
+		float matrixData[] =
+		{
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 2.0f
+		};
+
+		matrixData[3] = frame / 100000.0f;
+
+		memcpy(matrix.pData, matrixData, sizeof(matrixData));
+
+		deviceContext->Unmap(matrixBuffer, 0);
+
 		// Leaving in for now as this is how the main rendering will work.
 		UINT32 strides[2];
 		UINT32 offsets[2];
