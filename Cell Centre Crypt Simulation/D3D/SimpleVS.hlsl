@@ -26,7 +26,7 @@ PixelInputType main(VertexInputType input)
     PixelInputType output;
     
 	//float4 screenPos = positionsAndSizes[input.index];
-	float4 pos = mul(input.position, input.world);
+	float4 pos = mul(input.world, input.position);
 	
 	/*pos.xy *= screenPos.zw;
 	pos.xy += screenPos.xy;

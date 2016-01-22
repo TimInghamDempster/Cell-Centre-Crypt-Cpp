@@ -455,25 +455,27 @@ namespace Renderer
 	{
 		frame++;
 
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, 0.1, 1000.0f);
+		
+		DirectX::FXMVECTOR camPos = {0.0f, 0.0f, 10.0f, 0.0f };
+		DirectX::FXMVECTOR camLookAt = {0.0f, 0.0f, 0.0f, 0.0f };
+		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
+
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(-frame / 1000.0f, 0.0f, 0.0f);
+		
+		proj = DirectX::XMMatrixMultiply(view, proj);
+
+		proj = DirectX::XMMatrixMultiply(world, proj);
+
 		D3D11_MAPPED_SUBRESOURCE matrix;
 		deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matrix);
-		
-		
-		float matrixData[] =
-		{
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 2.0f
-		};
 
-		matrixData[3] = frame / 100000.0f;
-
-		memcpy(matrix.pData, matrixData, sizeof(matrixData));
+		memcpy(matrix.pData, &proj, sizeof(float) * 16);
 
 		deviceContext->Unmap(matrixBuffer, 0);
 
-		// Leaving in for now as this is how the main rendering will work.
 		UINT32 strides[2];
 		UINT32 offsets[2];
 		ID3D11Buffer* bufferPointers[2];
