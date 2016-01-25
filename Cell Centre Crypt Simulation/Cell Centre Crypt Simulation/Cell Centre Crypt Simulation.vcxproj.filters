@@ -72,9 +72,6 @@
     <ClCompile Include="..\D3D\WindProc.cpp">
       <Filter>D3D</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CylindricalGrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

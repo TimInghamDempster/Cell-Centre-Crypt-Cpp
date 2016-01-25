@@ -455,7 +455,7 @@ namespace Renderer
 	{
 		frame++;
 
-		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, 0.1, 1000.0f);
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, 0.1f, 1000.0f);
 		
 		DirectX::FXMVECTOR camPos = {0.0f, 0.0f, 10.0f, 0.0f };
 		DirectX::FXMVECTOR camLookAt = {0.0f, 0.0f, 0.0f, 0.0f };

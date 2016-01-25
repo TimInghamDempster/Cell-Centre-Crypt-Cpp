@@ -24,16 +24,30 @@ struct CylindricalGrid
 	CGridColumn* m_columns;
 	int m_numColumns;
 	int m_numRows;
+	float m_boxHeight;
 
 	FenceId FindFenceAbove(float x, float y, float z)
 	{
 		FenceId id;
+		
+		float theta = atan2(z, x);
+		float normalisedTheta = theta / (2.0f * PI);
+		float normalisedColumnWidth = 1.0f / m_numColumns;
+
+		id.column = (int)(normalisedTheta / normalisedColumnWidth);
+		id.row = (int)(y / m_boxHeight);
+		
 		return id;
 	}
 
 	void Step()
 	{
 
+	}
+
+	void AddCell(float x, float y, float z)
+	{
+		FindFenceAbove(x, y, z);
 	}
 
 	int GetFenceIndex(FenceId id)
