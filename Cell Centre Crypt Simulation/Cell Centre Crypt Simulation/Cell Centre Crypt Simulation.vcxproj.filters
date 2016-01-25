@@ -36,9 +36,6 @@
     <ClCompile Include="Crypt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Cells.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WindowsPlatform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -73,6 +70,12 @@
       <Filter>D3D</Filter>
     </ClCompile>
     <ClCompile Include="CylindricalGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CellBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

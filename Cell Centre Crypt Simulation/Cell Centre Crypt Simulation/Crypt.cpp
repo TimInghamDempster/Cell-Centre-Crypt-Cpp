@@ -11,16 +11,11 @@ struct  Crypt
 		m_numRows = numRows;
 		m_numColumns = numColumns;
 
-		m_grid.Init(numRows / 2, numColumns / 2, numRows * 2);
+		m_grid.Init(numRows / 2, numColumns / 2, numRows * 2, 4);
 	}
 
 	void Step()
 	{
 		m_grid.Step();
-	}
-
-	void CleanUp()
-	{
-		m_grid.CleanUp();
 	}
 };

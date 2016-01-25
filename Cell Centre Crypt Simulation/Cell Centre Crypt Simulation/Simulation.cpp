@@ -12,5 +12,4 @@ void StepSimulation()
 
 void CleanUpSimulation()
 {
-	crypt.CleanUp();
 }
