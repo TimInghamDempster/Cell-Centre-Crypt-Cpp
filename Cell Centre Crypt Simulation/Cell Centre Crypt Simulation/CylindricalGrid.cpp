@@ -31,6 +31,11 @@ struct CylindricalGrid
 		return id;
 	}
 
+	void Step()
+	{
+
+	}
+
 	int GetFenceIndex(FenceId id)
 	{
 		return m_columns[id.column].m_boxFences[id.row];

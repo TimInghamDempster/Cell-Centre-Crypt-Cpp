@@ -16,6 +16,7 @@ struct  Crypt
 
 	void Step()
 	{
+		m_grid.Step();
 	}
 
 	void CleanUp()
