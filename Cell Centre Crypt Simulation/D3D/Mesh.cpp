@@ -26,20 +26,14 @@ namespace Renderer
 	bool CreateInstancingMatrixBuffer(ID3D11Device* device, ID3D11Buffer** dataBuffer, UINT32 count)
 	{
 		bool succeeded = true;
-		float data[] =
-		{
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 2.0f
-		};
+		float* data = new float[16 * count];
 
 		D3D11_BUFFER_DESC bufferDesc;
 		D3D11_SUBRESOURCE_DATA dataSubresource;
 		HRESULT hr;
 
 		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-		bufferDesc.ByteWidth = sizeof(float) * 16;
+		bufferDesc.ByteWidth = sizeof(float) * 16 * count;
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		bufferDesc.MiscFlags = 0;
@@ -54,6 +48,9 @@ namespace Renderer
 		{
 			succeeded = false;
 		}
+
+		delete[] data;
+
 		return succeeded;
 	}
 
@@ -262,10 +259,8 @@ namespace Renderer
 			return false;
 		}
 
-		// Yep, it's a leek, but not doing seg faults and I don't have time to work
-		// out why
-		//delete[] mesh.indices;
-		//delete[] mesh.vertices;
+		delete[] mesh.indices;
+		delete[] mesh.vertices;
 
 		return true;
 	}

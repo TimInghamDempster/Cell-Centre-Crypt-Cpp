@@ -12,11 +12,11 @@ struct  Crypt
 		m_numRows = numRows;
 		m_numColumns = numColumns;
 
-		Vector3D pos(10.0f, 5.0f, 7.0f);
+		Vector3D pos(1.0f, 0.0f, 0.0f);
 		CellBox* box = m_grid.FindBox(pos);
 		box->AddCell(pos, pos, 0.0f, 0, 0, 0, CellCycleStages::G0);
 
-		pos = Vector3D(2.0f, 1.0f, -3.0f);
+		pos = Vector3D(-1.0f, 2.0f, -0.0f);
 		box = m_grid.FindBox(pos);
 		box->AddCell(pos, pos, 0.0f, 0, 0, 0, CellCycleStages::G0);
 	}

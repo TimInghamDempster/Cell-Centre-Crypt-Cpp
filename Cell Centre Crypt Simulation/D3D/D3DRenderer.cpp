@@ -31,6 +31,10 @@ namespace Renderer
 
 	float frame;
 	
+	const int batchSize = 4096;
+
+	float* matrixScratchBuffer;
+	
 	namespace Colours
 	{
 		enum Values
@@ -378,12 +382,14 @@ namespace Renderer
 		width = screenWidth;
 		height = screenHeight;
 
+		matrixScratchBuffer = new float[16 * batchSize];
+
 		// There is an argument to be made for rolling all of these functions into this main
 		// Init.  It would gauruntee that they are only called here and in the correct order.
 		// On the other hand it would make jumping to the specific piece of code much harder.
 		InitD3DDevice(hwnd);
 
-		CreateInstancingMatrixBuffer(mainDevice, &matrixBuffer, 4096);
+		CreateInstancingMatrixBuffer(mainDevice, &matrixBuffer, batchSize);
 
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
@@ -392,13 +398,13 @@ namespace Renderer
 			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, 
 			D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, 
-			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
+			D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 			{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, 
-			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
+			D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 			{ "TEXCOORD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, 
-			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
+			D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 			{ "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, 
-			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
+			D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 		};
 
 		LoadVertexShaderAndBuildInputLayout("SimpleVS.cso", &uiVertexShader, layout, 6, &uiInputLayout);
@@ -438,6 +444,8 @@ namespace Renderer
 
 		ReportLiveObjects();
 		mainDevice->Release();
+
+		delete[] matrixScratchBuffer;
 	}
 
 
@@ -463,16 +471,37 @@ namespace Renderer
 
 		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
 
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(-frame / 1000.0f, 0.0f, 0.0f);
-		
 		proj = DirectX::XMMatrixMultiply(view, proj);
 
-		proj = DirectX::XMMatrixMultiply(world, proj);
+		
+		
+		int numInBatch = 0;
+
+		for(int col = 0; col < crypt.m_grid.m_columns.size(); col++)
+		{
+			std::vector<CellBox>& column = crypt.m_grid.m_columns[col];
+			for(int row = 0; row < column.size(); row++)
+			{
+				CellBox& box = column[row];
+				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				{
+					Vector3D& vec = box.m_positions[cell];
+					DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+					world = DirectX::XMMatrixMultiply(world, proj);
+
+					DirectX::XMFLOAT4X4 mat;
+					DirectX::XMStoreFloat4x4(&mat, world);
+					
+					memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+					numInBatch++;
+				}
+			}
+		}
 
 		D3D11_MAPPED_SUBRESOURCE matrix;
 		deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matrix);
 
-		memcpy(matrix.pData, &proj, sizeof(float) * 16);
+		memcpy(matrix.pData, matrixScratchBuffer, sizeof(float) * 16 * numInBatch);
 
 		deviceContext->Unmap(matrixBuffer, 0);
 
@@ -497,6 +526,6 @@ namespace Renderer
 		deviceContext->VSSetShader(uiVertexShader, nullptr, 0);
 		deviceContext->PSSetShader(uiPixelShader, nullptr, 0);
 
-		deviceContext->DrawIndexedInstanced(36, 1, 0, 0, 0);
+		deviceContext->DrawIndexedInstanced(36, numInBatch, 0, 0, 0);
 	}
 }
