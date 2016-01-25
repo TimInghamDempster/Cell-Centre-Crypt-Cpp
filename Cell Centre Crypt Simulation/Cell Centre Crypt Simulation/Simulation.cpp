@@ -1,9 +1,5 @@
 
-Crypt crypt;
-void InitialiseSimulation()
-{
-	crypt.Init(80, 23);
-}
+Crypt crypt(80, 23);
 
 void StepSimulation()
 {

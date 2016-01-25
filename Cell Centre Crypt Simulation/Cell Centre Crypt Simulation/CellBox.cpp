@@ -21,8 +21,22 @@ struct CellBox
 		m_cycleStages.reserve(reserveSize);
 	}
 
-	int AddCell(Vector3D position)
+	void AddCell(Vector3D position,
+				Vector3D onMembranePosition,
+				float radius,
+				int currentStageTimesteps,
+				int growthStageTimesteps,
+				int otherSubCellIndex,
+				CellCycleStages::Stages cycleStage)
 	{
-		return 0;
+		m_positions.push_back(position);
+		m_onMembranePositions.push_back(onMembranePosition);
+		m_radii.push_back(radius);
+		m_currentStageNumTimesteps.push_back(currentStageTimesteps);
+		m_growthStageNumTimesteps.push_back(growthStageTimesteps);
+		m_otherSubCellIndex.push_back(otherSubCellIndex);
+		m_cycleStages.push_back(cycleStage);
+
+		return;
 	}
 };

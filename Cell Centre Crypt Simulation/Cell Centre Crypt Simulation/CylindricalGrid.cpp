@@ -5,11 +5,19 @@ struct CylindricalGrid
 	int m_numColumns;
 	int m_numRows;
 	float m_boxHeight;
+	
+	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, float height)
+	{
+		m_columns = std::vector<std::vector<CellBox> > (numBoxesTheta, std::vector<CellBox> (numBoxesY, CellBox(expectedNumberOfCellsInBox)));
+		m_numColumns = numBoxesTheta;
+		m_numRows = numBoxesY;
+		m_boxHeight = height / numBoxesY;
+	}
 
 	CellBox* FindBox(Vector3D position)
 	{		
 		float theta = atan2(position.z, position.x);
-		float normalisedTheta = theta / (2.0f * (float)PI);
+		float normalisedTheta = theta / (2.0f * (float)PI) + 0.5; // Map from -PI < x < PI to 0 < x < 1
 		float normalisedColumnWidth = 1.0f / m_numColumns;
 
 		int column = (int)(normalisedTheta / normalisedColumnWidth);
@@ -21,18 +29,5 @@ struct CylindricalGrid
 	void Step()
 	{
 
-	}
-
-	void AddCell(Vector3D position)
-	{
-		CellBox* box = FindBox(position);
-		box->AddCell(position);
-	}
-
-	void Init(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox)
-	{
-		m_columns = std::vector<std::vector<CellBox> > (numBoxesTheta, std::vector<CellBox> (numBoxesY, CellBox(expectedNumberOfCellsInBox)));
-		m_numColumns = numBoxesTheta;
-		m_numRows = numBoxesY;
 	}
 };
