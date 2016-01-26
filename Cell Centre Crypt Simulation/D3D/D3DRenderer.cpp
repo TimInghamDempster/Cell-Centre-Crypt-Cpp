@@ -459,6 +459,39 @@ namespace Renderer
 		swapChain->Present(0, 0);
 	}
 
+	void DrawBatch(int numInBatch)
+	{
+		D3D11_MAPPED_SUBRESOURCE matrix;
+		deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matrix);
+
+		memcpy(matrix.pData, matrixScratchBuffer, sizeof(float) * 16 * numInBatch);
+
+		deviceContext->Unmap(matrixBuffer, 0);
+
+		UINT32 strides[2];
+		UINT32 offsets[2];
+		ID3D11Buffer* bufferPointers[2];
+
+		strides[0] = sizeof(UINT32) * 8;
+		strides[1] = sizeof(float) * 16; 
+
+		offsets[0] = 0;
+		offsets[1] = 0;
+
+		bufferPointers[0] = meshVertexBuffer;
+		bufferPointers[1] = matrixBuffer;
+
+		deviceContext->IASetVertexBuffers(0, 2, bufferPointers, strides, offsets);
+		deviceContext->IASetIndexBuffer(meshIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		deviceContext->IASetInputLayout(uiInputLayout);
+		deviceContext->VSSetShader(uiVertexShader, nullptr, 0);
+		deviceContext->PSSetShader(uiPixelShader, nullptr, 0);
+
+		deviceContext->DrawIndexedInstanced(36, numInBatch, 0, 0, 0);
+	}
+
 	void DrawScene()
 	{
 		frame++;
@@ -494,38 +527,15 @@ namespace Renderer
 					
 					memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
 					numInBatch++;
+
+					if(numInBatch == batchSize)
+					{
+						DrawBatch(numInBatch);
+						numInBatch = 0;
+					}
 				}
 			}
 		}
-
-		D3D11_MAPPED_SUBRESOURCE matrix;
-		deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matrix);
-
-		memcpy(matrix.pData, matrixScratchBuffer, sizeof(float) * 16 * numInBatch);
-
-		deviceContext->Unmap(matrixBuffer, 0);
-
-		UINT32 strides[2];
-		UINT32 offsets[2];
-		ID3D11Buffer* bufferPointers[2];
-
-		strides[0] = sizeof(UINT32) * 8;
-		strides[1] = sizeof(float) * 16; 
-
-		offsets[0] = 0;
-		offsets[1] = 0;
-
-		bufferPointers[0] = meshVertexBuffer;
-		bufferPointers[1] = matrixBuffer;
-
-		deviceContext->IASetVertexBuffers(0, 2, bufferPointers, strides, offsets);
-		deviceContext->IASetIndexBuffer(meshIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		deviceContext->IASetInputLayout(uiInputLayout);
-		deviceContext->VSSetShader(uiVertexShader, nullptr, 0);
-		deviceContext->PSSetShader(uiPixelShader, nullptr, 0);
-
-		deviceContext->DrawIndexedInstanced(36, numInBatch, 0, 0, 0);
+		DrawBatch(numInBatch);
 	}
 }
