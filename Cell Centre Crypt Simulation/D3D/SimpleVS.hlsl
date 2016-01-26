@@ -25,15 +25,8 @@ PixelInputType main(VertexInputType input)
 {
     PixelInputType output;
     
-	//float4 screenPos = positionsAndSizes[input.index];
 	float4 pos = mul(input.world, input.position);
-	
-	/*pos.xy *= screenPos.zw;
-	pos.xy += screenPos.xy;
 
-	// Convert quad to screen space
-	pos.xy /= float2(640.0f, -360.0f);
-	pos.xy -= float2(1.0f, -1.0f);*/
     output.position = pos;
     
     return output;

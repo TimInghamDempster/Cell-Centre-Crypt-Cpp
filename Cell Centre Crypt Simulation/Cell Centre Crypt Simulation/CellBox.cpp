@@ -3,6 +3,7 @@ struct CellBox
 {
 	std::vector<Vector3D> m_positions;
 	std::vector<Vector3D> m_onMembranePositions;
+	std::vector<float> m_offMembraneDistances;
 	std::vector<float> m_radii;
 	std::vector<int> m_currentStageNumTimesteps;
 	std::vector<int> m_growthStageNumTimesteps;
@@ -14,6 +15,7 @@ struct CellBox
 		int reserveSize = expectedNumberOfCells * 10;
 		m_positions.reserve(reserveSize);
 		m_onMembranePositions.reserve(reserveSize);
+		m_offMembraneDistances.reserve(reserveSize);
 		m_radii.reserve(reserveSize);
 		m_currentStageNumTimesteps.reserve(reserveSize);
 		m_growthStageNumTimesteps.reserve(reserveSize);
@@ -23,6 +25,7 @@ struct CellBox
 
 	void AddCell(Vector3D position,
 				Vector3D onMembranePosition,
+				float offMembraneDistance,
 				float radius,
 				int currentStageTimesteps,
 				int growthStageTimesteps,
@@ -31,6 +34,7 @@ struct CellBox
 	{
 		m_positions.push_back(position);
 		m_onMembranePositions.push_back(onMembranePosition);
+		m_offMembraneDistances.push_back(offMembraneDistance);
 		m_radii.push_back(radius);
 		m_currentStageNumTimesteps.push_back(currentStageTimesteps);
 		m_growthStageNumTimesteps.push_back(growthStageTimesteps);
@@ -38,5 +42,9 @@ struct CellBox
 		m_cycleStages.push_back(cycleStage);
 
 		return;
+	}
+
+	void RemoveCell(int cellId)
+	{
 	}
 };

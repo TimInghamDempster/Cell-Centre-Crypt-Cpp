@@ -3,6 +3,7 @@
 
 #include "FileHelpers.cpp"
 #include "Vector3D.cpp"
+#include "Vector2D.cpp"
 
 #include "CellCycle.cpp"
 #include "CellBox.cpp"
