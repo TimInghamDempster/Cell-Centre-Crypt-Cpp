@@ -410,7 +410,7 @@ namespace Renderer
 
 		LoadVertexShaderAndBuildInputLayout("SimpleVS.cso", &uiVertexShader, layout, 6, &uiInputLayout);
 		LoadPixelShader("SimplePS.cso", &uiPixelShader);
-		LoadMeshBuffersFromFile(mainDevice, &meshVertexBuffer, &meshIndexBuffer,"TestCube.obj", m_numVerts);
+		LoadMeshBuffersFromFile(mainDevice, &meshVertexBuffer, &meshIndexBuffer,"Sphere.obj", m_numVerts);
 	}
 
 	void ReportLiveObjects()
@@ -500,8 +500,8 @@ namespace Renderer
 
 		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, 0.1f, 10000.0f);
 		
-		DirectX::FXMVECTOR camPos = {0.0f, -6800.0f, 5000.0f, 0.0f };
-		DirectX::FXMVECTOR camLookAt = {0.0f, -6800.0f, 0.0f, 0.0f };
+		DirectX::FXMVECTOR camPos = {0.0f, -6100.0f, 2000.0f, 0.0f };
+		DirectX::FXMVECTOR camLookAt = {0.0f, -6100.0f, 0.0f, 0.0f };
 		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
 
 		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
