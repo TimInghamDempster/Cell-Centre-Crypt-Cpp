@@ -37,7 +37,7 @@ struct  Crypt
 	int m_numAnoikisEvents;
 
 	Crypt(int numRows, int numColumns, std::default_random_engine& random, float averageGrowthTimeSeconds) : 
-		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, 100.0f),
+		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, 100.0f, random),
 		m_numRows(numRows),
 		m_numColumns(numColumns),
 		m_secondsPerTimestep(30.0f),
@@ -55,7 +55,7 @@ struct  Crypt
 		m_offMembraneRestorationFactor(0.001f),
 		m_stromalRestorationFactor(0.3f),
 		m_membraneSeparationToTriggerAnoikis(100.0f),
-		m_colonBoundary(100.0f, 100.0f),
+		m_colonBoundary(1000.0f, 1000.0f),
 		m_random_generator(random),
 		m_random(0.0001f, 1.0f),
 		m_normalRNG(averageGrowthTimeSeconds / m_secondsPerTimestep, 2.625f * 3600.0f / m_secondsPerTimestep),
@@ -337,9 +337,9 @@ struct  Crypt
 		DoMPhase(box, cellId);
 		EnforceCryptWalls(box, cellId);
 		EnforceColonBoundary(box, cellId);
-		bool cellDied = DoAnoikis(box, cellId);
+		//bool cellDied = DoAnoikis(box, cellId);
 		
-		if(!cellDied)
+		//if(!cellDied)
 		{
 			AssignCellToGrid(box, cellId);
 		}

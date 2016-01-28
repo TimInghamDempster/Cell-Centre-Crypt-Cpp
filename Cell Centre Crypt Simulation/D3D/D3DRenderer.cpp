@@ -496,9 +496,9 @@ namespace Renderer
 	{
 		frame++;
 
-		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, 0.1f, 1000.0f);
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, 0.1f, 10000.0f);
 		
-		DirectX::FXMVECTOR camPos = {0.0f, -6800.0f, 500.0f, 0.0f };
+		DirectX::FXMVECTOR camPos = {0.0f, -6800.0f, 5000.0f, 0.0f };
 		DirectX::FXMVECTOR camLookAt = {0.0f, -6800.0f, 0.0f, 0.0f };
 		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
 
@@ -520,6 +520,9 @@ namespace Renderer
 				{
 					Vector3D& vec = box.m_positions[cell];
 					DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+					DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+					world = DirectX::XMMatrixMultiply(scale, world);
 					world = DirectX::XMMatrixMultiply(world, proj);
 
 					DirectX::XMFLOAT4X4 mat;
