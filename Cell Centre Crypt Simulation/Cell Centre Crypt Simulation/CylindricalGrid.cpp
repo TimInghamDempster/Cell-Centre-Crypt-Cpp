@@ -24,6 +24,7 @@ struct CylindricalGrid
 		int row = (int)(position.y / m_boxHeight);
 		
 		row = row >= 0 ? row : 0;
+		row = row < m_numRows ? row : m_numRows - 1;
 
 		return &m_columns[column][row]; // Garunteed safe because the column vector (and grid vector) never change.
 	}

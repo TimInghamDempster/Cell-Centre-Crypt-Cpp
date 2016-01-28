@@ -282,7 +282,7 @@ struct  Crypt
 		box.m_onMembranePositions[cellId] = membranePos;
 	}
 
-	void DoAnoikis(CellBox& box, int cellId)
+	bool DoAnoikis(CellBox& box, int cellId)
 	{
 		if (box.m_offMembraneDistances[cellId] > m_membraneSeparationToTriggerAnoikis)
 		{
@@ -294,7 +294,9 @@ struct  Crypt
 			}
 			box.RemoveCell(cellId);
 			m_numAnoikisEvents++;
+			return true;
 		}
+		return false;
 	}
 
 	void EnforceColonBoundary(CellBox& box, int cellId)
@@ -335,8 +337,12 @@ struct  Crypt
 		DoMPhase(box, cellId);
 		EnforceCryptWalls(box, cellId);
 		EnforceColonBoundary(box, cellId);
-		//DoAnoikis(box, cellId);
-		AssignCellToGrid(box, cellId);
+		bool cellDied = DoAnoikis(box, cellId);
+		
+		if(!cellDied)
+		{
+			AssignCellToGrid(box, cellId);
+		}
 	}
 
 	void UpdateCells()
