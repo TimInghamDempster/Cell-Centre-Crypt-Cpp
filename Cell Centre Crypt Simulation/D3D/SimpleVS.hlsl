@@ -1,12 +1,5 @@
 cbuffer UIConstants : register(cb0)
 {
-	float2 screenSize;
-	float2 sixteenByteAlignPad;
-};
-
-cbuffer PositionBuffer : register(cb1)
-{
-	float4 positionsAndSizes[4096];
 };
 
 struct VertexInputType
@@ -19,6 +12,7 @@ struct VertexInputType
 struct PixelInputType
 {
     float4 position : SV_POSITION;
+	float3 normal	: NORMAL;
 };
 
 PixelInputType main(VertexInputType input)
@@ -28,6 +22,7 @@ PixelInputType main(VertexInputType input)
 	float4 pos = mul(input.world, input.position);
 
     output.position = pos;
+	output.normal = input.normal.xyz;
     
     return output;
 }
