@@ -1,4 +1,20 @@
 
+struct CellBox;
+
+struct CellReference
+{
+	CellBox* m_box;
+	int m_cellId;
+	bool m_active;
+
+	CellReference() :
+		m_box(nullptr),
+		m_cellId(-1),
+		m_active(false)
+	{
+	}
+};
+
 struct CellBox
 {
 	std::vector<Vector3D> m_positions;
@@ -7,7 +23,7 @@ struct CellBox
 	std::vector<float> m_radii;
 	std::vector<int> m_currentStageNumTimesteps;
 	std::vector<int> m_growthStageNumTimesteps;
-	std::vector<int> m_otherSubCellIndex; // This is going to be a pain to keep synchronised - pay extra attention to it
+	std::vector<CellReference> m_otherSubCellIndex; // This is going to be a pain to keep synchronised - pay extra attention to it
 	std::vector<CellCycleStages::Stages> m_cycleStages;
 
 	CellBox(int expectedNumberOfCells)
@@ -23,13 +39,13 @@ struct CellBox
 		m_cycleStages.reserve(reserveSize);
 	}
 
-	void AddCell(Vector3D position,
+	int AddCell(Vector3D position,
 				Vector3D onMembranePosition,
 				float offMembraneDistance,
 				float radius,
 				int currentStageTimesteps,
 				int growthStageTimesteps,
-				int otherSubCellIndex,
+				CellReference otherSubCellIndex,
 				CellCycleStages::Stages cycleStage)
 	{
 		m_positions.push_back(position);
@@ -41,10 +57,57 @@ struct CellBox
 		m_otherSubCellIndex.push_back(otherSubCellIndex);
 		m_cycleStages.push_back(cycleStage);
 
-		return;
+		if(otherSubCellIndex.m_active == true)
+		{
+			CellBox* otherBox = otherSubCellIndex.m_box;
+			int indexInOtherBox = otherSubCellIndex.m_cellId;
+			CellReference& backReference = otherBox->m_otherSubCellIndex[indexInOtherBox];
+			backReference.m_box = this;
+			backReference.m_cellId = m_positions.size() - 1;
+		}
+
+		return m_positions.size() - 1;
+	}
+
+	void CopyCell(CellBox& box, int cellId)
+	{
+		AddCell(box.m_positions[cellId],
+			box.m_onMembranePositions[cellId],
+			box.m_offMembraneDistances[cellId],
+			box.m_radii[cellId],
+			box.m_currentStageNumTimesteps[cellId],
+			box.m_growthStageNumTimesteps[cellId],
+			box.m_otherSubCellIndex[cellId],
+			box.m_cycleStages[cellId]);
 	}
 
 	void RemoveCell(int cellId)
 	{
+		int last = m_positions.size() - 1;
+
+		m_positions[cellId] = m_positions[last];
+		m_positions.pop_back();
+		m_onMembranePositions[cellId] = m_onMembranePositions[last];
+		m_onMembranePositions.pop_back();
+		m_offMembraneDistances[cellId] = m_offMembraneDistances[last];
+		m_offMembraneDistances.pop_back();
+		m_radii[cellId] = m_radii[last];
+		m_radii.pop_back();
+		m_currentStageNumTimesteps[cellId] = m_currentStageNumTimesteps[last];
+		m_currentStageNumTimesteps.pop_back();
+		m_growthStageNumTimesteps[cellId] = m_growthStageNumTimesteps[last];
+		m_growthStageNumTimesteps.pop_back();
+		m_otherSubCellIndex[cellId] = m_otherSubCellIndex[last];
+		m_otherSubCellIndex.pop_back();
+		m_cycleStages[cellId] = m_cycleStages[last];
+		m_cycleStages.pop_back();
+
+		if(cellId < m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
+		{
+			CellBox* otherBox = m_otherSubCellIndex[cellId].m_box;
+			int indexInOtherBox = m_otherSubCellIndex[cellId].m_cellId;
+			CellReference& backReference = otherBox->m_otherSubCellIndex[indexInOtherBox];
+			backReference.m_cellId = cellId;
+		}
 	}
 };

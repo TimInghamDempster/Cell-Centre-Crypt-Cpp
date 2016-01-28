@@ -1,5 +1,7 @@
 
-Crypt crypt(80, 23);
+
+std::default_random_engine random;
+Crypt crypt(80, 23, random, 10800);
 
 void StepSimulation()
 {

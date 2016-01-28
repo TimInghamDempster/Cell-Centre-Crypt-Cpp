@@ -17,12 +17,14 @@ struct CylindricalGrid
 	CellBox* FindBox(Vector3D position)
 	{		
 		float theta = atan2(position.z, position.x);
-		float normalisedTheta = theta / (2.0f * (float)PI) + 0.5; // Map from -PI < x < PI to 0 < x < 1
+		float normalisedTheta = theta / (2.0f * (float)PI) + 0.5f; // Map from -PI < x < PI to 0 < x < 1
 		float normalisedColumnWidth = 1.0f / m_numColumns;
 
 		int column = (int)(normalisedTheta / normalisedColumnWidth);
 		int row = (int)(position.y / m_boxHeight);
 		
+		row = row >= 0 ? row : 0;
+
 		return &m_columns[column][row]; // Garunteed safe because the column vector (and grid vector) never change.
 	}
 

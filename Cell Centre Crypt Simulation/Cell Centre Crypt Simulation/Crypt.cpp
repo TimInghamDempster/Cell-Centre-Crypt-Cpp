@@ -5,20 +5,71 @@ struct  Crypt
 
 	int m_numRows;
 	int m_numColumns;
+	
+	const float m_secondsPerTimestep;
+	
+	const float m_cryptRadius;
+	const float m_flutingRadius;
 
-	Crypt(int numRows, int numColumns) : 
-		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, 100.0f)
+	const float m_compressionFactor;
+	const float m_cellSize;
+	const float m_cryptHeight;
+	
+	const float m_basicG0ProliferationBoundary;
+	const float m_basicG0StemBoundary;
+	
+	const float m_requiredG0TimestepsStem;
+	const float m_requiredG0TimestepsProliferation;
+	const float m_MPhaseTimesteps;
+
+	const float m_colonBoundaryRepulsionFactor;
+	const float m_offMembraneRestorationFactor;
+	const float m_stromalRestorationFactor;
+	const float m_membraneSeparationToTriggerAnoikis;
+
+	Vector2D m_colonBoundary;
+
+	std::default_random_engine& m_random_generator;
+	std::normal_distribution<float> m_normalRNG;
+	std::uniform_real_distribution<float> m_random;
+
+	int m_numBirthEvents;
+	int m_numAnoikisEvents;
+
+	Crypt(int numRows, int numColumns, std::default_random_engine& random, float averageGrowthTimeSeconds) : 
+		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, 100.0f),
+		m_numRows(numRows),
+		m_numColumns(numColumns),
+		m_secondsPerTimestep(30.0f),
+		m_cryptRadius(500.0f),
+		m_flutingRadius(500.0f),
+		m_compressionFactor(1.75f),
+		m_cellSize(m_cryptRadius * 2.0f * (float)PI / (numColumns * 2.0f)),
+		m_cryptHeight((m_cellSize * 2.0f * numRows + m_cryptRadius + m_flutingRadius) / m_compressionFactor),
+		m_basicG0ProliferationBoundary(m_cryptHeight * 0.7f),
+		m_basicG0StemBoundary(m_cryptHeight * 0.95f),
+		m_requiredG0TimestepsStem(averageGrowthTimeSeconds / m_secondsPerTimestep * 9.0f),
+		m_requiredG0TimestepsProliferation(100.0f),
+		m_MPhaseTimesteps(1238.4f / m_secondsPerTimestep),
+		m_colonBoundaryRepulsionFactor(0.3f),
+		m_offMembraneRestorationFactor(0.001f),
+		m_stromalRestorationFactor(0.3f),
+		m_membraneSeparationToTriggerAnoikis(100.0f),
+		m_colonBoundary(100.0f, 100.0f),
+		m_random_generator(random),
+		m_random(0.0001f, 1.0f),
+		m_normalRNG(averageGrowthTimeSeconds / m_secondsPerTimestep, 2.625f * 3600.0f / m_secondsPerTimestep),
+		m_numBirthEvents(0),
+		m_numAnoikisEvents(0)
 	{
-		m_numRows = numRows;
-		m_numColumns = numColumns;
-
+		CellReference ref;
 		Vector3D pos(1.0f, 0.0f, 0.0f);
 		CellBox* box = m_grid.FindBox(pos);
-		box->AddCell(pos, pos, 0.0f, 0, 0, 0, CellCycleStages::G0);
+		box->AddCell(pos, pos, 0.0f, m_cellSize, 0, (int)m_normalRNG(m_random_generator), ref, CellCycleStages::G0);
 
 		pos = Vector3D(-1.0f, 2.0f, -0.0f);
 		box = m_grid.FindBox(pos);
-		box->AddCell(pos, pos, 0.0f, 0, 0, 0, CellCycleStages::G0);
+		box->AddCell(pos, pos, 0.0f, m_cellSize, 0, (int)m_normalRNG(m_random_generator), ref, CellCycleStages::G0);
 	}
 
 	void EnterG1(CellBox& box, int cellId)
@@ -52,17 +103,48 @@ struct  Crypt
 
 	void EnterMPhase(CellBox& box, int cellId)
 	{
+		box.m_cycleStages[cellId] = CellCycleStages::M;
+		box.m_currentStageNumTimesteps[cellId] = 0;
+
+		Vector3D newPos = box.m_positions[cellId];
+		newPos.x += 5.0f - (m_random(m_random_generator) * 10.0f);
+		newPos.y += 5.0f - (m_random(m_random_generator) * 10.0f);
+		newPos.z += 5.0f - (m_random(m_random_generator) * 10.0f);
+
+		if (newPos.y < -1.0f * m_cryptHeight)
+		{
+			newPos.y = -1.0f * m_cryptHeight + 0.1f;
+		}
+
+		CellReference cellRef;
+		cellRef.m_active = true;
+		cellRef.m_box = &box;
+		cellRef.m_cellId = cellId;
+
+		int newCellId = box.AddCell(newPos,
+			newPos,
+			0.0f,
+			m_cellSize / m_MPhaseTimesteps,
+			0,
+			(int)m_normalRNG(m_random_generator),
+			cellRef,
+			CellCycleStages::Child);
+
+		box.m_growthStageNumTimesteps[cellId] = (int)m_normalRNG(m_random_generator);
+
+		box.m_otherSubCellIndex[cellId].m_active = true;
+		box.m_otherSubCellIndex[cellId].m_box = &box;
+		box.m_otherSubCellIndex[cellId].m_cellId = newCellId;
 	}
 
 	void DoGrowthPhase(CellBox& box, int cellId)
 	{
 		if (box.m_cycleStages[cellId] == CellCycleStages::G1)
 		{
-
 			box.m_currentStageNumTimesteps[cellId]++;
 
-			float lerpVal = box.m_currentStageNumTimesteps[cellId]++ / box.m_growthStageNumTimesteps[cellId]++;
-			box.m_radii[cellId] = m_cellSize * (1.0f - lerpVal) + CellSize * lerpVal * sqrt(2.0f);
+			float lerpVal = (float)box.m_currentStageNumTimesteps[cellId] / (float)box.m_growthStageNumTimesteps[cellId];
+			box.m_radii[cellId] = m_cellSize * (1.0f - lerpVal) + m_cellSize * lerpVal * sqrt(2.0f);
 
 			if (box.m_currentStageNumTimesteps[cellId] > box.m_growthStageNumTimesteps[cellId])
 			{
@@ -73,10 +155,41 @@ struct  Crypt
 
 	void DoMPhase(CellBox& box, int cellId)
 	{
+		if (box.m_cycleStages[cellId] == CellCycleStages::M)
+		{
+			box.m_currentStageNumTimesteps[cellId]++;
+
+			CellReference& childIndex = box.m_otherSubCellIndex[cellId];
+
+			float lerpVal = box.m_currentStageNumTimesteps[cellId] / m_MPhaseTimesteps;
+			childIndex.m_box->m_radii[childIndex.m_cellId] = m_cellSize * lerpVal;
+			box.m_radii[cellId] = m_cellSize * lerpVal + m_cellSize * sqrt(2.0f) * (1.0f - lerpVal);
+
+			if (box.m_currentStageNumTimesteps[cellId] > m_MPhaseTimesteps)
+			{
+				box.m_currentStageNumTimesteps[cellId] = 0;
+				box.m_cycleStages[cellId] = CellCycleStages::G0;
+
+				childIndex.m_box->m_currentStageNumTimesteps[childIndex.m_cellId] = 0;
+				childIndex.m_box->m_cycleStages[childIndex.m_cellId] = CellCycleStages::G0;
+
+				box.m_otherSubCellIndex[cellId].m_active = false;
+				childIndex.m_box->m_otherSubCellIndex[childIndex.m_cellId].m_active = false;
+
+				m_numBirthEvents++;
+			}
+		}
 	}
 
-	void AssignCellsToGrid(CellBox& box, int cellId)
+	void AssignCellToGrid(CellBox& box, int cellId)
 	{
+		CellBox* newBox = m_grid.FindBox(box.m_positions[cellId]);
+
+		if(&box != newBox)
+		{
+			newBox->CopyCell(box, cellId);
+			box.RemoveCell(cellId);
+		}
 	}
 
 	void GetClosestPointOnMembrane(const Vector3D inputPosition, Vector3D& outputPosition, Vector3D& outputNormal)
@@ -106,7 +219,7 @@ struct  Crypt
 
 			outputPosition = virtualSpherePosition + sphereRelativeCellPosition;
 		}
-		else if (inputPosition.y > (CryptHeight - m_cryptRadius) * -1.0f)
+		else if (inputPosition.y > (m_cryptHeight - m_cryptRadius) * -1.0f)
 		{
 			Vector2D final;
 			Vector2D normalised = pos2d / pos2d.Length();
@@ -123,7 +236,7 @@ struct  Crypt
 		}
 		else
 		{
-			Vector3D nicheCentre(0.0f, (CryptHeight - m_cryptRadius) * -1.0f, 0.0f);
+			Vector3D nicheCentre(0.0f, (m_cryptHeight - m_cryptRadius) * -1.0f, 0.0f);
 			Vector3D normalisedPositionRelativeToNicheCentre = inputPosition - nicheCentre;
 			normalisedPositionRelativeToNicheCentre = normalisedPositionRelativeToNicheCentre / normalisedPositionRelativeToNicheCentre.Length();
 			outputPosition = normalisedPositionRelativeToNicheCentre * m_cryptRadius + nicheCentre;
@@ -142,9 +255,9 @@ struct  Crypt
 		}
 
 		// Don't fall through the bottom of the crypt
-		if (pos.y < -1.0f * CryptHeight)
+		if (pos.y < -1.0f * m_cryptHeight)
 		{
-			pos.y = -1.0f * CryptHeight + 10.0f;
+			pos.y = -1.0f * m_cryptHeight + 10.0f;
 		}
 
 		Vector3D normal;
@@ -178,7 +291,9 @@ struct  Crypt
 		{
 			if (box.m_cycleStages[cellId] == CellCycleStages::M || box.m_cycleStages[cellId] == CellCycleStages::Child)
 			{
-				m_cells.Remove(m_cells.ChildPointIndices[i]);
+				CellBox* otherBox = box.m_otherSubCellIndex[cellId].m_box;
+				int indexInOtherBox = box.m_otherSubCellIndex[cellId].m_cellId;
+				otherBox->RemoveCell(indexInOtherBox);
 			}
 			box.RemoveCell(cellId);
 			m_numAnoikisEvents++;
@@ -189,27 +304,27 @@ struct  Crypt
 	{
 		Vector3D& pos = box.m_positions[cellId];
 
-		if (pos.x > m_colonBoundary.X)
+		if (pos.x > m_colonBoundary.x)
 		{
-			float delta = pos.x - m_colonBoundary.X;
+			float delta = pos.x - m_colonBoundary.x;
 			delta *= m_colonBoundaryRepulsionFactor;
 			pos.x -= delta;
 		}
-		if (pos.x < (-1.0f * m_colonBoundary.X))
+		if (pos.x < (-1.0f * m_colonBoundary.x))
 		{
-			float delta = pos.x - (-1.0f * m_colonBoundary.X);
+			float delta = pos.x - (-1.0f * m_colonBoundary.x);
 			delta *= m_colonBoundaryRepulsionFactor;
 			pos.x -= delta;
 		}
-		if (pos.z > m_colonBoundary.Y)
+		if (pos.z > m_colonBoundary.y)
 		{
-			float delta = pos.z - m_colonBoundary.Y;
+			float delta = pos.z - m_colonBoundary.y;
 			delta *= m_colonBoundaryRepulsionFactor;
 			pos.z -= delta;
 		}
-		if (pos.z < (-1.0f * m_colonBoundary.Y))
+		if (pos.z < (-1.0f * m_colonBoundary.y))
 		{
-			float delta = pos.z - (-1.0f * m_colonBoundary.Y);
+			float delta = pos.z - (-1.0f * m_colonBoundary.y);
 			delta *= m_colonBoundaryRepulsionFactor;
 			pos.z -= delta;
 		}
@@ -222,9 +337,9 @@ struct  Crypt
 		DoGrowthPhase(box, cellId);
 		DoMPhase(box, cellId);
 		EnforceCryptWalls(box, cellId);
-		EnforceCryptWalls(box, cellId);
 		DoAnoikis(box, cellId);
 		EnforceColonBoundary(box, cellId);
+		AssignCellToGrid(box, cellId);
 	}
 
 	void UpdateCells()
