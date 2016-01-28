@@ -63,12 +63,8 @@ struct  Crypt
 		m_numAnoikisEvents(0)
 	{
 		CellReference ref;
-		Vector3D pos(1.0f, 0.0f, 0.0f);
+		Vector3D pos(0.0f, m_cryptHeight * -0.999f, 0.0f);
 		CellBox* box = m_grid.FindBox(pos);
-		box->AddCell(pos, pos, 0.0f, m_cellSize, 0, (int)m_normalRNG(m_random_generator), ref, CellCycleStages::G0);
-
-		pos = Vector3D(-1.0f, 2.0f, -0.0f);
-		box = m_grid.FindBox(pos);
 		box->AddCell(pos, pos, 0.0f, m_cellSize, 0, (int)m_normalRNG(m_random_generator), ref, CellCycleStages::G0);
 	}
 
@@ -107,9 +103,9 @@ struct  Crypt
 		box.m_currentStageNumTimesteps[cellId] = 0;
 
 		Vector3D newPos = box.m_positions[cellId];
-		newPos.x += 5.0f - (m_random(m_random_generator) * 10.0f);
-		newPos.y += 5.0f - (m_random(m_random_generator) * 10.0f);
-		newPos.z += 5.0f - (m_random(m_random_generator) * 10.0f);
+		newPos.x += (5.0f - (m_random(m_random_generator) * 10.0f)) * 1.0f;
+		newPos.y += (5.0f - (m_random(m_random_generator) * 10.0f)) * 1.0f;
+		newPos.z += (5.0f - (m_random(m_random_generator) * 10.0f)) * 1.0f;
 
 		if (newPos.y < -1.0f * m_cryptHeight)
 		{
@@ -222,7 +218,8 @@ struct  Crypt
 		else if (inputPosition.y > (m_cryptHeight - m_cryptRadius) * -1.0f)
 		{
 			Vector2D final;
-			Vector2D normalised = pos2d / pos2d.Length();
+			float length = pos2d.Length();
+			Vector2D normalised = pos2d /length;
 			final = normalised * m_cryptRadius;
 
 			outputPosition.x = final.x;
@@ -337,8 +334,8 @@ struct  Crypt
 		DoGrowthPhase(box, cellId);
 		DoMPhase(box, cellId);
 		EnforceCryptWalls(box, cellId);
-		DoAnoikis(box, cellId);
 		EnforceColonBoundary(box, cellId);
+		//DoAnoikis(box, cellId);
 		AssignCellToGrid(box, cellId);
 	}
 

@@ -25,8 +25,8 @@ struct Vector3D
 	{
 		Vector3D sum;
 		sum.x = x + rhs.x;
-		sum.x = y + rhs.y;
-		sum.x = z + rhs.z;
+		sum.y = y + rhs.y;
+		sum.z = z + rhs.z;
 		return sum;
 	}
 
@@ -42,8 +42,8 @@ struct Vector3D
 	{
 		Vector3D res;
 		res.x = x - rhs.x;
-		res.x = y - rhs.y;
-		res.x = z - rhs.z;
+		res.y = y - rhs.y;
+		res.z = z - rhs.z;
 		return res;
 	}
 
@@ -59,8 +59,8 @@ struct Vector3D
 	{
 		Vector3D res;
 		res.x = x / rhs;
-		res.x = y / rhs;
-		res.x = z / rhs;
+		res.y = y / rhs;
+		res.z = z / rhs;
 		return res;
 	}
 
@@ -76,8 +76,8 @@ struct Vector3D
 	{
 		Vector3D res;
 		res.x = x * rhs;
-		res.x = y * rhs;
-		res.x = z * rhs;
+		res.y = y * rhs;
+		res.z = z * rhs;
 		return res;
 	}
 

@@ -22,7 +22,7 @@ struct Vector2D
 	{
 		Vector2D sum;
 		sum.x = x + rhs.x;
-		sum.x = y + rhs.y;
+		sum.y = y + rhs.y;
 		return sum;
 	}
 
@@ -37,7 +37,7 @@ struct Vector2D
 	{
 		Vector2D res;
 		res.x = x - rhs.x;
-		res.x = y - rhs.y;
+		res.y = y - rhs.y;
 		return res;
 	}
 
@@ -52,7 +52,7 @@ struct Vector2D
 	{
 		Vector2D res;
 		res.x = x / rhs;
-		res.x = y / rhs;
+		res.y = y / rhs;
 		return res;
 	}
 
@@ -67,7 +67,7 @@ struct Vector2D
 	{
 		Vector2D res;
 		res.x = x * rhs;
-		res.x = y * rhs;
+		res.y = y * rhs;
 		return res;
 	}
 
