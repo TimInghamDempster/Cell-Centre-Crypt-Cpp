@@ -214,7 +214,7 @@ namespace Renderer
 		return mesh;
 	}
 
-	bool LoadMeshBuffersFromFile(ID3D11Device* device, ID3D11Buffer** vertexBuffer, ID3D11Buffer** indexBuffer, std::string filename)
+	bool LoadMeshBuffersFromFile(ID3D11Device* device, ID3D11Buffer** vertexBuffer, ID3D11Buffer** indexBuffer, std::string filename, int& numVerts)
 	{
 		
 
@@ -224,6 +224,8 @@ namespace Renderer
 		D3D11_SUBRESOURCE_DATA indexData;
 
 		MeshData mesh = LoadMeshDataFromFile(filename);
+
+		numVerts = mesh.indexCount;
 
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.ByteWidth = sizeof(Vertex) * mesh.vertexCount;

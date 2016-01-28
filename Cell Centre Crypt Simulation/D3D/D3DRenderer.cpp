@@ -32,6 +32,7 @@ namespace Renderer
 	float frame;
 	
 	const int batchSize = 4096;
+	int m_numVerts;
 
 	float* matrixScratchBuffer;
 	
@@ -409,7 +410,7 @@ namespace Renderer
 
 		LoadVertexShaderAndBuildInputLayout("SimpleVS.cso", &uiVertexShader, layout, 6, &uiInputLayout);
 		LoadPixelShader("SimplePS.cso", &uiPixelShader);
-		LoadMeshBuffersFromFile(mainDevice, &meshVertexBuffer, &meshIndexBuffer,"TestCube.obj");
+		LoadMeshBuffersFromFile(mainDevice, &meshVertexBuffer, &meshIndexBuffer,"TestCube.obj", m_numVerts);
 	}
 
 	void ReportLiveObjects()
@@ -489,7 +490,7 @@ namespace Renderer
 		deviceContext->VSSetShader(uiVertexShader, nullptr, 0);
 		deviceContext->PSSetShader(uiPixelShader, nullptr, 0);
 
-		deviceContext->DrawIndexedInstanced(36, numInBatch, 0, 0, 0);
+		deviceContext->DrawIndexedInstanced(m_numVerts, numInBatch, 0, 0, 0);
 	}
 
 	void DrawScene()
