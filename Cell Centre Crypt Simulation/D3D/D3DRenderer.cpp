@@ -300,7 +300,7 @@ namespace Renderer
 
 		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 
-		depthStencilDesc.DepthEnable = false;
+		depthStencilDesc.DepthEnable = true;
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
@@ -341,7 +341,7 @@ namespace Renderer
 		deviceContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
 
 		rasterDesc.AntialiasedLineEnable = false;
-		rasterDesc.CullMode = D3D11_CULL_NONE;
+		rasterDesc.CullMode = D3D11_CULL_BACK;
 		rasterDesc.DepthBias = 0;
 		rasterDesc.DepthBiasClamp = 0.0f;
 		rasterDesc.DepthClipEnable = true;
@@ -454,6 +454,7 @@ namespace Renderer
 	void Draw()
 	{
 		deviceContext->ClearRenderTargetView(renderTargetView, clearColour);
+		deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 		
 		DrawScene();
 
