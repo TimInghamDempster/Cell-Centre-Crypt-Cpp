@@ -17,23 +17,74 @@ struct CylindricalGrid
 		m_numRows(numBoxesY),
 		m_height(height),
 		m_boxHeight(height / numBoxesY),
-		m_cellStiffness(0.03f),
+		m_cellStiffness(0.3f),
 		m_random_generator(random_generator)
 	{
 		m_columns = std::vector<std::vector<CellBox> > (numBoxesTheta, std::vector<CellBox> (numBoxesY, CellBox(expectedNumberOfCellsInBox)));
+
+		for(int col = 0; col < m_numColumns; col++)
+		{
+			for(int row = 0; row < m_numRows; row++)
+			{
+				m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col][row]);
+
+				if(row == 0)
+				{
+					for(int innerCol = col + 1; innerCol < m_numColumns; innerCol++)
+					{
+						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[innerCol][row]);
+					}
+				}
+
+				if(row < m_numRows - 1)
+				{
+					m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col][row + 1]);
+				}
+				if(col < m_numColumns - 1)
+				{
+					m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col + 1][row]);
+					
+					if(row < m_numRows - 1)
+					{
+						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col + 1][row + 1]);
+					}
+
+					if(row > 0)
+					{
+						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col + 1][row - 1]);
+					} 
+				}
+				else
+				{
+					m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col - 1][row]);
+					
+					if(row < m_numRows - 1)
+					{
+						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col - 1][row + 1]);
+					}
+
+					if(row > 0)
+					{
+						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col - 1][row - 1]);
+					} 
+				}
+			}
+		}
 	}
 
 	CellBox* FindBox(Vector3D position)
 	{		
 		float theta = atan2(position.z, position.x);
 		float normalisedTheta = theta / (2.0f * (float)PI) + 0.5f; // Map from -PI < x < PI to 0 < x < 1
-		float normalisedColumnWidth = 1.0f / (m_numColumns - 1);
+		float normalisedColumnWidth = 1.0f / m_numColumns;
 
 		int column = (int)(normalisedTheta / normalisedColumnWidth);
 		int row = (int)((position.y + m_height) / m_boxHeight);
 
 		row = row >= 0 ? row : 0;
 		row = row < m_numRows ? row : m_numRows - 1;
+
+		column = column < m_numColumns ? column : m_numColumns - 1; // Only happens in very rare circumstaces, floating point issue.
 
 		return &m_columns[column][row]; // Garunteed safe because the column vector (and grid vector) never change.
 	}
@@ -48,9 +99,15 @@ struct CylindricalGrid
 
 				for(int cellId = 0; cellId < (int)box.m_positions.size(); cellId++)
 				{
-					for(int innerCellId = cellId + 1; innerCellId < (int)box.m_positions.size(); innerCellId++)
+					for(int collisionBoxId = 0; collisionBoxId < (int)box.m_potentialCollisionBoxes.size(); collisionBoxId++)
 					{
+						CellBox* collisionBox = box.m_potentialCollisionBoxes[collisionBoxId];
+
+						int innnerCellStart = collisionBox != &box ? 0 : cellId + 1; // avoid double update when testing in same box
+
+						for(int innerCellId = innnerCellStart; innerCellId < (int)collisionBox->m_positions.size(); innerCellId++)
 						{
+
 
 							/*int cryptId1 = (int)m_cells.CryptIds[i];
 							int cryptId2 = (int)m_cells.CryptIds[j];
@@ -58,13 +115,13 @@ struct CylindricalGrid
 							Vector3D cryptPos1 = m_crypts.m_cryptPositions[cryptId1];
 							Vector3D cryptPos2 = m_crypts.m_cryptPositions[cryptId2];*/
 
-							/* Use this version for spherical cells
-							Vector3d outerPos = m_cells.Positions[i];
-							Vector3d innerPos = m_cells.Positions[j];
-							*/
+							// Use this version for spherical cells
+							/*Vector3D outerPos = box.m_positions[cellId];
+							Vector3D innerPos = collisionBox->m_positions[innerCellId];*/
+							
 
 							Vector3D outerPos = box.m_onMembranePositions[cellId];
-							Vector3D innerPos = box.m_onMembranePositions[innerCellId];
+							Vector3D innerPos = collisionBox->m_onMembranePositions[innerCellId];
 							//Vector3d dummy;
 
 							//GetClosestPointOnMembrane(m_cells.Positions[i] - cryptPos1, out outerPos, out dummy);
@@ -74,7 +131,7 @@ struct CylindricalGrid
 							float separation = delta.Length();
 
 
-							float targetSeparation = box.m_radii[cellId] + box.m_radii[innerCellId];
+							float targetSeparation = box.m_radii[cellId] + collisionBox->m_radii[innerCellId];
 
 							//if (j == m_cells.ChildPointIndices[i])
 							{
@@ -118,16 +175,16 @@ struct CylindricalGrid
 
 								if ((cryptPos1 - outerPos).Length() < m_cryptRadius + m_flutingRadius)
 								{
-									//m_crypts.m_forces[cryptId1] += cryptForce;
+								//m_crypts.m_forces[cryptId1] += cryptForce;
 								}
 
 								if ((cryptPos2 - innerPos).Length() < m_cryptRadius + m_flutingRadius)
 								{
-									//m_crypts.m_forces[cryptId2] -= cryptForce;
+								//m_crypts.m_forces[cryptId2] -= cryptForce;
 								}*/
 
 								box.m_positions[cellId] += force;
-								box.m_positions[innerCellId] -= force;
+								collisionBox->m_positions[innerCellId] -= force;
 							}
 						}
 					}

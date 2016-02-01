@@ -25,6 +25,7 @@ struct CellBox
 	std::vector<int> m_growthStageNumTimesteps;
 	std::vector<CellReference> m_otherSubCellIndex; // This is going to be a pain to keep synchronised - pay extra attention to it
 	std::vector<CellCycleStages::Stages> m_cycleStages;
+	std::vector<CellBox*> m_potentialCollisionBoxes;
 
 	CellBox(int expectedNumberOfCells)
 	{
