@@ -2,20 +2,25 @@
 struct CylindricalGrid
 {
 	std::vector<std::vector<CellBox> > m_columns;
-	int m_numColumns;
-	int m_numRows;
-	float m_boxHeight;
+	const int m_numColumns;
+	const int m_numRows;
+	const float m_height;
+	const float m_boxHeight;
 	const float m_cellStiffness;
 
 	std::default_random_engine& m_random_generator;
 	std::uniform_real_distribution<float> m_random;
 
-	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, float height, std::default_random_engine& random_generator) : m_cellStiffness(0.03f), m_random_generator(random_generator)
+	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, float height, std::default_random_engine& random_generator)
+		:
+		m_numColumns(numBoxesTheta),
+		m_numRows(numBoxesY),
+		m_height(height),
+		m_boxHeight(height / numBoxesY),
+		m_cellStiffness(0.03f),
+		m_random_generator(random_generator)
 	{
 		m_columns = std::vector<std::vector<CellBox> > (numBoxesTheta, std::vector<CellBox> (numBoxesY, CellBox(expectedNumberOfCellsInBox)));
-		m_numColumns = numBoxesTheta;
-		m_numRows = numBoxesY;
-		m_boxHeight = height / numBoxesY;
 	}
 
 	CellBox* FindBox(Vector3D position)
@@ -25,7 +30,7 @@ struct CylindricalGrid
 		float normalisedColumnWidth = 1.0f / (m_numColumns - 1);
 
 		int column = (int)(normalisedTheta / normalisedColumnWidth);
-		int row = (int)(position.y / m_boxHeight);
+		int row = (int)((position.y + m_height) / m_boxHeight);
 
 		row = row >= 0 ? row : 0;
 		row = row < m_numRows ? row : m_numRows - 1;
@@ -41,9 +46,9 @@ struct CylindricalGrid
 			{
 				CellBox& box = m_columns[colId][rowId];
 
-				for(int cellId = 0; cellId < box.m_positions.size(); cellId++)
+				for(int cellId = 0; cellId < (int)box.m_positions.size(); cellId++)
 				{
-					for(int innerCellId = cellId + 1; innerCellId < box.m_positions.size(); innerCellId++)
+					for(int innerCellId = cellId + 1; innerCellId < (int)box.m_positions.size(); innerCellId++)
 					{
 						{
 

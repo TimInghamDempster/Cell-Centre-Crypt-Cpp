@@ -102,7 +102,7 @@ struct CellBox
 		m_cycleStages[cellId] = m_cycleStages[last];
 		m_cycleStages.pop_back();
 
-		if(cellId < m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
+		if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 		{
 			CellBox* otherBox = m_otherSubCellIndex[cellId].m_box;
 			int indexInOtherBox = m_otherSubCellIndex[cellId].m_cellId;

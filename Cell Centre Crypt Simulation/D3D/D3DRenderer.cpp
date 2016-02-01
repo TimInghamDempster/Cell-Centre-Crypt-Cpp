@@ -512,13 +512,13 @@ namespace Renderer
 		
 		int numInBatch = 0;
 
-		for(int col = 0; col < crypt.m_grid.m_columns.size(); col++)
+		for(int col = 0; col < (int)crypt.m_grid.m_columns.size(); col++)
 		{
 			std::vector<CellBox>& column = crypt.m_grid.m_columns[col];
-			for(int row = 0; row < column.size(); row++)
+			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
-				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
 				{
 					Vector3D& vec = box.m_positions[cell];
 					DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);

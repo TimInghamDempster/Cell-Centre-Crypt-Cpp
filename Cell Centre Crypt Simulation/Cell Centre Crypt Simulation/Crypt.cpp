@@ -1,7 +1,6 @@
 
 struct  Crypt
 {
-	CylindricalGrid m_grid;
 
 	int m_numRows;
 	int m_numColumns;
@@ -36,8 +35,9 @@ struct  Crypt
 	int m_numBirthEvents;
 	int m_numAnoikisEvents;
 
+	CylindricalGrid m_grid;
+
 	Crypt(int numRows, int numColumns, std::default_random_engine& random, float averageGrowthTimeSeconds) : 
-		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, 100.0f, random),
 		m_numRows(numRows),
 		m_numColumns(numColumns),
 		m_secondsPerTimestep(30.0f),
@@ -60,7 +60,8 @@ struct  Crypt
 		m_random(0.0001f, 1.0f),
 		m_normalRNG(averageGrowthTimeSeconds / m_secondsPerTimestep, 2.625f * 3600.0f / m_secondsPerTimestep),
 		m_numBirthEvents(0),
-		m_numAnoikisEvents(0)
+		m_numAnoikisEvents(0),
+		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, m_cryptHeight, random)
 	{
 		CellReference ref;
 		Vector3D pos(0.0f, m_cryptHeight * -0.999f, 0.0f);
@@ -347,13 +348,13 @@ struct  Crypt
 
 	void UpdateCells()
 	{
-		for(int col = 0; col < m_grid.m_columns.size(); col++)
+		for(int col = 0; col < (int)m_grid.m_columns.size(); col++)
 		{
 			std::vector<CellBox>& column = m_grid.m_columns[col];
-			for(int row = 0; row < column.size(); row++)
+			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
-				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
 				{
 					UpdateCell(box, cell);
 				}
