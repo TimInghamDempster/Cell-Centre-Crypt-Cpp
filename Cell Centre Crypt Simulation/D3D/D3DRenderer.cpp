@@ -498,10 +498,11 @@ namespace Renderer
 	{
 		frame++;
 
-		float zDist = 10000.0f;
+		float zDist = 10000.1f;
+		float height = -3000.0f;
 
-		DirectX::FXMVECTOR camPos = {0.0f, -3000.0f, zDist, 0.0f };
-		DirectX::FXMVECTOR camLookAt = {0.0f, -3000.0f, 0.0f, 0.0f };
+		DirectX::FXMVECTOR camPos = {0.0f, height, zDist, 0.0f };
+		DirectX::FXMVECTOR camLookAt = {0.0f, height, 0.0f, 0.0f };
 		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
 
 		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
