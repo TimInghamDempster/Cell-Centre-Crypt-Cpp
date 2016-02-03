@@ -35,6 +35,8 @@ struct  Crypt
 	int m_numBirthEvents;
 	int m_numAnoikisEvents;
 
+	int m_cellularity;
+
 	CylindricalGrid m_grid;
 
 	Crypt(int numRows, int numColumns, std::default_random_engine& random, float averageGrowthTimeSeconds) : 
@@ -61,6 +63,7 @@ struct  Crypt
 		m_normalRNG(averageGrowthTimeSeconds / m_secondsPerTimestep, 2.625f * 3600.0f / m_secondsPerTimestep),
 		m_numBirthEvents(0),
 		m_numAnoikisEvents(0),
+		m_cellularity(0),
 		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, m_cryptHeight, random)
 	{
 		CellReference ref;
@@ -291,9 +294,9 @@ struct  Crypt
 			{
 				CellBox* otherBox = box.m_otherSubCellIndex[cellId].m_box;
 				int indexInOtherBox = box.m_otherSubCellIndex[cellId].m_cellId;
-				otherBox->RemoveCell(indexInOtherBox);
+				otherBox->KillCell(indexInOtherBox);
 			}
-			box.RemoveCell(cellId);
+			box.KillCell(cellId);
 			m_numAnoikisEvents++;
 			return true;
 		}
@@ -338,12 +341,7 @@ struct  Crypt
 		DoMPhase(box, cellId);
 		EnforceCryptWalls(box, cellId);
 		EnforceColonBoundary(box, cellId);
-		//bool cellDied = DoAnoikis(box, cellId);
-		
-		//if(!cellDied)
-		{
-			AssignCellToGrid(box, cellId);
-		}
+		AssignCellToGrid(box, cellId);
 	}
 
 	void UpdateCells()
@@ -358,6 +356,26 @@ struct  Crypt
 				{
 					UpdateCell(box, cell);
 				}
+			}
+		}
+		for(int col = 0; col < (int)m_grid.m_columns.size(); col++)
+		{
+			std::vector<CellBox>& column = m_grid.m_columns[col];
+			for(int row = 0; row < (int)column.size(); row++)
+			{
+				CellBox& box = column[row];
+				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
+				{
+					DoAnoikis(box, cell);
+				}
+			}
+		}
+		for(int col = 0; col < (int)m_grid.m_columns.size(); col++)
+		{
+			std::vector<CellBox>& column = m_grid.m_columns[col];
+			for(int row = 0; row < (int)column.size(); row++)
+			{
+				m_grid.m_columns[col][row].KillDeadCells();
 			}
 		}
 	}

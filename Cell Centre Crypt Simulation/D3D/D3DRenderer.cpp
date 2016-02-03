@@ -514,6 +514,8 @@ namespace Renderer
 		
 		int numInBatch = 0;
 
+		crypt.m_cellularity = 0;
+
 		for(int col = 0; col < (int)crypt.m_grid.m_columns.size(); col++)
 		{
 			std::vector<CellBox>& column = crypt.m_grid.m_columns[col];
@@ -522,6 +524,8 @@ namespace Renderer
 				CellBox& box = column[row];
 				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
 				{
+					crypt.m_cellularity++;
+
 					Vector3D& vec = box.m_positions[cell];
 					DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
 					DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);

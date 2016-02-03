@@ -26,6 +26,7 @@ struct CellBox
 	std::vector<CellReference> m_otherSubCellIndex; // This is going to be a pain to keep synchronised - pay extra attention to it
 	std::vector<CellCycleStages::Stages> m_cycleStages;
 	std::vector<CellBox*> m_potentialCollisionBoxes;
+	std::vector<int> m_deathList;
 
 	CellBox(int expectedNumberOfCells)
 	{
@@ -38,6 +39,7 @@ struct CellBox
 		m_growthStageNumTimesteps.reserve(reserveSize);
 		m_otherSubCellIndex.reserve(reserveSize);
 		m_cycleStages.reserve(reserveSize);
+		m_deathList.reserve(reserveSize);
 	}
 
 	int AddCell(Vector3D position,
@@ -110,5 +112,64 @@ struct CellBox
 			CellReference& backReference = otherBox->m_otherSubCellIndex[indexInOtherBox];
 			backReference.m_cellId = cellId;
 		}
+
+		for(int j = 0; j < (int)m_deathList.size(); j++)
+		{
+			if(m_deathList[j] == last)
+			{
+				m_deathList[j] = cellId;
+			}
+		}
+	}
+
+	void KillCell(int cellId)
+	{
+		if(std::find(m_deathList.begin(), m_deathList.end(), cellId) == m_deathList.end()) // Protect against double entry (ie cell and child cell both meet anoikis conditions)
+		{
+			m_deathList.push_back(cellId);
+		}
+	}
+
+	void KillDeadCells()
+	{
+		for(int i = 0; i < (int)m_deathList.size(); i++)
+		{
+			int cellId = m_deathList[i];
+			int last = m_positions.size() - 1;
+
+			m_positions[cellId] = m_positions[last];
+			m_positions.pop_back();
+			m_onMembranePositions[cellId] = m_onMembranePositions[last];
+			m_onMembranePositions.pop_back();
+			m_offMembraneDistances[cellId] = m_offMembraneDistances[last];
+			m_offMembraneDistances.pop_back();
+			m_radii[cellId] = m_radii[last];
+			m_radii.pop_back();
+			m_currentStageNumTimesteps[cellId] = m_currentStageNumTimesteps[last];
+			m_currentStageNumTimesteps.pop_back();
+			m_growthStageNumTimesteps[cellId] = m_growthStageNumTimesteps[last];
+			m_growthStageNumTimesteps.pop_back();
+			m_otherSubCellIndex[cellId] = m_otherSubCellIndex[last];
+			m_otherSubCellIndex.pop_back();
+			m_cycleStages[cellId] = m_cycleStages[last];
+			m_cycleStages.pop_back();
+
+			if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
+			{
+				CellBox* otherBox = m_otherSubCellIndex[cellId].m_box;
+				int indexInOtherBox = m_otherSubCellIndex[cellId].m_cellId;
+				CellReference& backReference = otherBox->m_otherSubCellIndex[indexInOtherBox];
+				backReference.m_cellId = cellId;
+			}
+
+			for(int j = i + 1; j < (int)m_deathList.size(); j++)
+			{
+				if(m_deathList[j] == last)
+				{
+					m_deathList[j] = cellId;
+				}
+			}
+		}
+		m_deathList.clear();
 	}
 };
