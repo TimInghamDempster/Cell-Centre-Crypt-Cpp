@@ -45,7 +45,7 @@ struct  Crypt
 		m_secondsPerTimestep(30.0f),
 		m_cryptRadius(500.0f),
 		m_flutingRadius(500.0f),
-		m_compressionFactor(1.75f),
+		m_compressionFactor(1.9f),
 		m_cellSize(m_cryptRadius * 2.0f * (float)PI / (numColumns * 2.0f)),
 		m_cryptHeight((m_cellSize * 2.0f * numRows + m_cryptRadius + m_flutingRadius) / m_compressionFactor),
 		m_basicG0ProliferationBoundary(m_cryptHeight * -0.7f),
@@ -64,7 +64,7 @@ struct  Crypt
 		m_numBirthEvents(0),
 		m_numAnoikisEvents(0),
 		m_cellularity(0),
-		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, m_cryptHeight, random)
+		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, m_cryptHeight, random, 1238.4f / m_secondsPerTimestep)
 	{
 		CellReference ref;
 		Vector3D pos(0.0f, m_cryptHeight * -0.999f, 0.0f);

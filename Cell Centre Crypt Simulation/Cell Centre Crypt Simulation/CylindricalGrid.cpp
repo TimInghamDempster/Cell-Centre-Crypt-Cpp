@@ -7,17 +7,19 @@ struct CylindricalGrid
 	const float m_height;
 	const float m_boxHeight;
 	const float m_cellStiffness;
+	const float m_MStageRequiredTimesteps;
 
 	std::default_random_engine& m_random_generator;
 	std::uniform_real_distribution<float> m_random;
 
-	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, float height, std::default_random_engine& random_generator)
+	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, float height, std::default_random_engine& random_generator, float mStageRequiredTimesteps)
 		:
 		m_numColumns(numBoxesTheta),
 		m_numRows(numBoxesY),
 		m_height(height),
 		m_boxHeight(height / numBoxesY),
 		m_cellStiffness(0.3f),
+		m_MStageRequiredTimesteps(mStageRequiredTimesteps),
 		m_random_generator(random_generator)
 	{
 		m_columns = std::vector<std::vector<CellBox> > (numBoxesTheta, std::vector<CellBox> (numBoxesY, CellBox(expectedNumberOfCellsInBox)));
@@ -133,10 +135,23 @@ struct CylindricalGrid
 
 							float targetSeparation = box.m_radii[cellId] + collisionBox->m_radii[innerCellId];
 
-							//if (j == m_cells.ChildPointIndices[i])
+							CellReference& otherCell  = box.m_otherSubCellIndex[cellId];
+							if (otherCell.m_active
+								&& otherCell.m_box == collisionBox
+								&& otherCell.m_cellId == innerCellId)
 							{
-								//float growthFactor = m_cells.MStageCurrentTimesteps[i] / MStageRequiredTimesteps;
-								//targetSeparation *= growthFactor;
+								float growthFactor;
+								
+								if(box.m_cycleStages[cellId] == CellCycleStages::M)
+								{
+									growthFactor = box.m_currentStageNumTimesteps[cellId] / m_MStageRequiredTimesteps;
+								}
+								else
+								{
+									growthFactor = collisionBox->m_currentStageNumTimesteps[innerCellId] / m_MStageRequiredTimesteps;
+								}
+								
+								targetSeparation *= growthFactor;
 							}
 							/*else
 							{
