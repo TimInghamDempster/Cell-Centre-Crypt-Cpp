@@ -58,7 +58,7 @@ HWND TCreateWindow(HINSTANCE hInstance)
     hwnd = CreateWindowEx(
         WS_EX_CLIENTEDGE,
         g_className,
-        L"TimEngine Sample Project",
+        L"Cell Centre Crypt Model",
         style,
 		CW_USEDEFAULT, CW_USEDEFAULT, wrect.right, wrect.bottom,
         NULL, NULL, hInstance, NULL);
