@@ -10,7 +10,7 @@
 int main(int argc, char* argv[])
 {
 	int framecount = 0;
-	const int totalFrames = 200000;
+	const int totalFrames = 1000000;
 
 	HINSTANCE hInst = GetModuleHandle(NULL);
 	HWND hwnd = TCreateWindow(hInst);

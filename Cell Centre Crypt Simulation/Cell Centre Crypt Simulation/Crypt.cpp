@@ -17,6 +17,7 @@ struct  Crypt
 	const float m_basicG0ProliferationBoundary;
 	const float m_basicG0StemBoundary;
 	
+	const float m_averageGrowthTimesteps;
 	const float m_requiredG0TimestepsStem;
 	const float m_requiredG0TimestepsProliferation;
 	const float m_MPhaseTimesteps;
@@ -50,7 +51,8 @@ struct  Crypt
 		m_cryptHeight((m_cellSize * 2.0f * numRows + m_cryptRadius + m_flutingRadius) / m_compressionFactor),
 		m_basicG0ProliferationBoundary(m_cryptHeight * -0.7f),
 		m_basicG0StemBoundary(m_cryptHeight * -0.95f),
-		m_requiredG0TimestepsStem(averageGrowthTimeSeconds / m_secondsPerTimestep * 9.0f),
+		m_averageGrowthTimesteps(averageGrowthTimeSeconds / m_secondsPerTimestep),
+		m_requiredG0TimestepsStem(m_averageGrowthTimesteps * 9.0f),
 		m_requiredG0TimestepsProliferation(100.0f),
 		m_MPhaseTimesteps(1238.4f / m_secondsPerTimestep),
 		m_colonBoundaryRepulsionFactor(0.3f),
@@ -60,7 +62,7 @@ struct  Crypt
 		m_colonBoundary(1000.0f, 1000.0f),
 		m_random_generator(random),
 		m_random(0.0001f, 1.0f),
-		m_normalRNG(averageGrowthTimeSeconds / m_secondsPerTimestep, 2.625f * 3600.0f / m_secondsPerTimestep),
+		m_normalRNG(m_averageGrowthTimesteps, 2.625f * 3600.0f / m_secondsPerTimestep),
 		m_numBirthEvents(0),
 		m_numAnoikisEvents(0),
 		m_cellularity(0),
@@ -69,8 +71,52 @@ struct  Crypt
 		CellReference ref;
 		Vector3D pos(0.0f, m_cryptHeight * -0.999f, 0.0f);
 		CellBox* box = m_grid.FindBox(pos);
-		box->AddCell(pos, pos, 0.0f, m_cellSize, 0, (int)m_normalRNG(m_random_generator), ref, CellCycleStages::G0);
+		//box->AddCell(pos, pos, 0.0f, m_cellSize, 0, (int)m_normalRNG(m_random_generator), ref, CellCycleStages::G0);
+		PopulateCrypt();
 	}
+
+	void PopulateCrypt()
+		{
+			for(int hIndex = 1; hIndex < m_numRows / m_compressionFactor - 2; hIndex++)
+			{
+				float height = ( m_cryptHeight * hIndex * m_compressionFactor / m_numRows);
+
+				for(int rIndex = 0; rIndex < m_numColumns; rIndex++)
+				{
+					float theta = 2.0f * PI * rIndex / m_numColumns;
+
+					float x = cos(theta) * m_cryptRadius;
+					float z = sin(theta) * m_cryptRadius;
+
+					Vector3D pos;// = new Vector3d(cryptX * m_initialCryptSeparation - centeringOffset, -1.0f * CryptHeight, cryptY * m_initialCryptSeparation - centeringOffset);
+					pos.x += x;
+					pos.y -= m_cryptHeight;
+					pos.y += height;
+					pos.z += z;
+
+					CellBox* box = m_grid.FindBox(pos);
+					CellReference ref;
+
+					box->AddCell(pos,
+						pos,
+						0.0f,
+						m_cellSize,
+						m_random(m_random_generator) * -10.0f * m_averageGrowthTimesteps, 
+						m_normalRNG(m_random_generator),
+						ref, 
+						CellCycleStages::G0);
+					/*
+					m_cells.AddCell(pos,
+                               (float)(-m_averageGrowthTimesteps * m_random.NextDouble() * 10), // Randomise time of first division as we are jumping in part way through the simulation.
+							   m_averageGrowthTimesteps,
+							   m_baseColours[cryptColourIndex],
+							   cryptColourIndex,
+							   (UInt32)(cryptX + cryptY * m_numCryptsPerSide),
+							   CellSize,
+							   CellCycleStage.G0);*/
+				}
+			}
+		}
 
 	void EnterG1(CellBox& box, int cellId)
 	{
