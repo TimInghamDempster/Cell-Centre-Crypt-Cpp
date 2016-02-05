@@ -385,4 +385,9 @@ struct  Crypt
 		m_grid.Step();
 		UpdateCells();
 	}
+
+	int Cellularity()
+	{
+		return m_cellularity;
+	}
 };
