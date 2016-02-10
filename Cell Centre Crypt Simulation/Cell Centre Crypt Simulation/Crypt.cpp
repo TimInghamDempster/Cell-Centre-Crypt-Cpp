@@ -102,6 +102,7 @@ struct  Crypt
 						0.0f,
 						m_cellSize,
 						m_random(m_random_generator) * -10.0f * m_averageGrowthTimesteps, 
+						//0,
 						m_normalRNG(m_random_generator),
 						ref, 
 						CellCycleStages::G0);
@@ -215,9 +216,11 @@ struct  Crypt
 			{
 				box.m_currentStageNumTimesteps[cellId] = 0;
 				box.m_cycleStages[cellId] = CellCycleStages::G0;
+				box.m_radii[cellId] = m_cellSize;
 
 				childIndex.m_box->m_currentStageNumTimesteps[childIndex.m_cellId] = 0;
 				childIndex.m_box->m_cycleStages[childIndex.m_cellId] = CellCycleStages::G0;
+				childIndex.m_box->m_radii[childIndex.m_cellId] = m_cellSize;
 
 				box.m_otherSubCellIndex[cellId].m_active = false;
 				childIndex.m_box->m_otherSubCellIndex[childIndex.m_cellId].m_active = false;

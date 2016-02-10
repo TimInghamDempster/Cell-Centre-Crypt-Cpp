@@ -498,8 +498,8 @@ namespace Renderer
 	{
 		frame++;
 
-		float zDist = 10000.1f;
-		float height = -3000.0f;
+		float zDist = 1000.1f;
+		float height = -4000.0f;
 
 		DirectX::FXMVECTOR camPos = {0.0f, height, zDist, 0.0f };
 		DirectX::FXMVECTOR camLookAt = {0.0f, height, 0.0f, 0.0f };
@@ -527,22 +527,26 @@ namespace Renderer
 					crypt.m_cellularity++;
 
 					Vector3D& vec = box.m_positions[cell];
-					DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-					DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
 
-					world = DirectX::XMMatrixMultiply(scale, world);
-					world = DirectX::XMMatrixMultiply(world, proj);
-
-					DirectX::XMFLOAT4X4 mat;
-					DirectX::XMStoreFloat4x4(&mat, world);
-					
-					memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
-					numInBatch++;
-
-					if(numInBatch == batchSize)
+					//if(vec.z < 0.0f)
 					{
-						DrawBatch(numInBatch);
-						numInBatch = 0;
+						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+						world = DirectX::XMMatrixMultiply(scale, world);
+						world = DirectX::XMMatrixMultiply(world, proj);
+
+						DirectX::XMFLOAT4X4 mat;
+						DirectX::XMStoreFloat4x4(&mat, world);
+
+						memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+						numInBatch++;
+
+						if(numInBatch == batchSize)
+						{
+							DrawBatch(numInBatch);
+							numInBatch = 0;
+						} 
 					}
 				}
 			}

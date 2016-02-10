@@ -36,9 +36,6 @@
     <ClCompile Include="Crypt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindowsPlatform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SystemIncludes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

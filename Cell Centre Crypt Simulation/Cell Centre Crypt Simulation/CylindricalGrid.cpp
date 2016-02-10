@@ -42,9 +42,11 @@ struct CylindricalGrid
 				{
 					m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col][row + 1]);
 				}
+
+				
 				if(col < m_numColumns - 1)
 				{
-					m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col + 1][row]);
+						
 					
 					if(row < m_numRows - 1)
 					{
@@ -53,12 +55,12 @@ struct CylindricalGrid
 
 					if(row > 0)
 					{
+						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col + 1][row]);
 						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[col + 1][row - 1]);
 					} 
 				}
 				else
 				{
-					m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[0][row]);
 					
 					if(row < m_numRows - 1)
 					{
@@ -67,10 +69,12 @@ struct CylindricalGrid
 
 					if(row > 0)
 					{
+						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[0][row]);
 						m_columns[col][row].m_potentialCollisionBoxes.push_back(&m_columns[0][row - 1]);
 					} 
 				}
 			}
+			
 		}
 	}
 
