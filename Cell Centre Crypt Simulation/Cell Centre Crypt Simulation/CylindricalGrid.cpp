@@ -112,6 +112,7 @@ struct CylindricalGrid
 						int innnerCellStart = collisionBox != &box ? 0 : cellId + 1; // avoid double update when testing in same box
 
 						for(int innerCellId = innnerCellStart; innerCellId < (int)collisionBox->m_positions.size(); innerCellId++)
+						//for(int innerCellId = (int)collisionBox->m_positions.size() - 1; innerCellId >= innnerCellStart; innerCellId--)
 						{
 
 

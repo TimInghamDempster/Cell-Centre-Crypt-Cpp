@@ -498,8 +498,8 @@ namespace Renderer
 	{
 		frame++;
 
-		float zDist = 1000.1f;
-		float height = -4000.0f;
+		float zDist = 10000.1f;
+		float height = -3000.0f;
 
 		DirectX::FXMVECTOR camPos = {0.0f, height, zDist, 0.0f };
 		DirectX::FXMVECTOR camLookAt = {0.0f, height, 0.0f, 0.0f };

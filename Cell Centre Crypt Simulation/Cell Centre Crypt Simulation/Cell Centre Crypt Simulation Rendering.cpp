@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
 	HINSTANCE hInst = GetModuleHandle(NULL);
 	HWND hwnd = TCreateWindow(hInst);
 	Renderer::Init(hwnd, 1280, 720);
+	InitSimulation();
 	
 	std::ofstream outputFile;
 	outputFile.open("C:/Users/Tim/Desktop/testData.csv");
@@ -31,6 +32,8 @@ int main(int argc, char* argv[])
 			outputFile << crypt.Cellularity();
 			outputFile << ",\n";
 		}
+
+		//Sleep(10);
 	}
 
 	outputFile.close();
