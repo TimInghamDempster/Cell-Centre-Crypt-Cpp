@@ -12,6 +12,9 @@ struct  Crypt
 
 	const float m_compressionFactor;
 	const float m_cellSize;
+	const float m_cellsPerSectionInNiche;
+    const float m_cellsPerSectionInTop;
+    const float m_numVerticalCells;
 	const float m_cryptHeight;
 	
 	const float m_basicG0ProliferationBoundary;
@@ -46,9 +49,12 @@ struct  Crypt
 		m_secondsPerTimestep(30.0f),
 		m_cryptRadius(500.0f),
 		m_flutingRadius(500.0f),
-		m_compressionFactor(1.9f),
+		m_compressionFactor(1.75f),
 		m_cellSize(m_cryptRadius * 2.0f * (float)PI / (numColumns * 2.0f)),
-		m_cryptHeight((m_cellSize * 2.0f * numRows + m_cryptRadius + m_flutingRadius) / m_compressionFactor),
+		m_cellsPerSectionInNiche(m_cryptRadius * 2.0f * PI / 4.0f /(m_cellSize * 2.0f)), // Quarter circumference (2 * Pi * R / 4) / cell size (2 * r)
+		m_cellsPerSectionInTop(m_flutingRadius * 2.0f * PI / 4.0f / (m_cellSize * 2.0f)), // Quarter circumference (2 * Pi * R / 4) / cell size (2 * r)
+		m_numVerticalCells(numRows - m_cellsPerSectionInNiche - m_cellsPerSectionInTop), // Work out how many cells in the vertical section of the crypt
+		m_cryptHeight((m_cellSize * 2.0f * m_numVerticalCells + m_cryptRadius + m_flutingRadius) / m_compressionFactor),
 		m_basicG0ProliferationBoundary(m_cryptHeight * -0.7f),
 		m_basicG0StemBoundary(m_cryptHeight * -0.95f),
 		m_averageGrowthTimesteps(averageGrowthTimeSeconds / m_secondsPerTimestep),
@@ -106,15 +112,6 @@ struct  Crypt
 						m_normalRNG(m_random_generator),
 						ref, 
 						CellCycleStages::G0);
-					/*
-					m_cells.AddCell(pos,
-                               (float)(-m_averageGrowthTimesteps * m_random.NextDouble() * 10), // Randomise time of first division as we are jumping in part way through the simulation.
-							   m_averageGrowthTimesteps,
-							   m_baseColours[cryptColourIndex],
-							   cryptColourIndex,
-							   (UInt32)(cryptX + cryptY * m_numCryptsPerSide),
-							   CellSize,
-							   CellCycleStage.G0);*/
 				}
 			}
 		}
