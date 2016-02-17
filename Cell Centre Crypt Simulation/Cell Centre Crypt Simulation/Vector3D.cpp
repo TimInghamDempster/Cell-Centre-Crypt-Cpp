@@ -1,15 +1,15 @@
 
 struct Vector3D
 {
-	float x;
-	float y;
-	float z;
+	double x;
+	double y;
+	double z;
 
 	Vector3D() : x(0.0f), y(0.0f), z(0.0f)
 	{
 	}
 
-	Vector3D(float X, float Y, float Z) : x(X), y(Y), z(Z)
+	Vector3D(double X, double Y, double Z) : x(X), y(Y), z(Z)
 	{
 	}
 
@@ -47,7 +47,7 @@ struct Vector3D
 		return res;
 	}
 
-	Vector3D& operator/=(const float rhs) 
+	Vector3D& operator/=(const double rhs) 
 	{
 		x /= rhs;
 		y /= rhs;
@@ -55,7 +55,7 @@ struct Vector3D
 		return *this;
 	}
 
-	Vector3D operator/(const float rhs) const
+	Vector3D operator/(const double rhs) const
 	{
 		Vector3D res;
 		res.x = x / rhs;
@@ -64,7 +64,7 @@ struct Vector3D
 		return res;
 	}
 
-	Vector3D& operator*=(const float rhs) 
+	Vector3D& operator*=(const double rhs) 
 	{
 		x *= rhs;
 		y *= rhs;
@@ -72,7 +72,7 @@ struct Vector3D
 		return *this;
 	}
 
-	Vector3D operator*(const float rhs) const
+	Vector3D operator*(const double rhs) const
 	{
 		Vector3D res;
 		res.x = x * rhs;
@@ -81,12 +81,12 @@ struct Vector3D
 		return res;
 	}
 
-	float Length()
+	double Length()
 	{
 		return sqrt(DotProduct(*this, *this));
 	}
 
-	static float DotProduct(Vector3D& first, Vector3D& second)
+	static double DotProduct(Vector3D& first, Vector3D& second)
 	{
 		return first.x * second.x + first.y * second.y + first.z * second.z;
 	}

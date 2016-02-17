@@ -5,36 +5,36 @@ struct  Crypt
 	int m_numRows;
 	int m_numColumns;
 	
-	const float m_secondsPerTimestep;
+	const double m_secondsPerTimestep;
 	
-	const float m_cryptRadius;
-	const float m_flutingRadius;
+	const double m_cryptRadius;
+	const double m_flutingRadius;
 
-	const float m_compressionFactor;
-	const float m_cellSize;
-	const float m_cellsPerSectionInNiche;
-    const float m_cellsPerSectionInTop;
-    const float m_numVerticalCells;
-	const float m_cryptHeight;
+	const double m_compressionFactor;
+	const double m_cellSize;
+	const double m_cellsPerSectionInNiche;
+    const double m_cellsPerSectionInTop;
+    const double m_numVerticalCells;
+	const double m_cryptHeight;
 	
-	const float m_basicG0ProliferationBoundary;
-	const float m_basicG0StemBoundary;
+	const double m_basicG0ProliferationBoundary;
+	const double m_basicG0StemBoundary;
 	
-	const float m_averageGrowthTimesteps;
-	const float m_requiredG0TimestepsStem;
-	const float m_requiredG0TimestepsProliferation;
-	const float m_MPhaseTimesteps;
+	const double m_averageGrowthTimesteps;
+	const double m_requiredG0TimestepsStem;
+	const double m_requiredG0TimestepsProliferation;
+	const double m_MPhaseTimesteps;
 
-	const float m_colonBoundaryRepulsionFactor;
-	const float m_offMembraneRestorationFactor;
-	const float m_stromalRestorationFactor;
-	const float m_membraneSeparationToTriggerAnoikis;
+	const double m_colonBoundaryRepulsionFactor;
+	const double m_offMembraneRestorationFactor;
+	const double m_stromalRestorationFactor;
+	const double m_membraneSeparationToTriggerAnoikis;
 
 	Vector2D m_colonBoundary;
 
 	std::default_random_engine& m_random_generator;
-	std::normal_distribution<float> m_normalRNG;
-	std::uniform_real_distribution<float> m_random;
+	std::normal_distribution<double> m_normalRNG;
+	std::uniform_real_distribution<double> m_random;
 
 	int m_numBirthEvents;
 	int m_numAnoikisEvents;
@@ -43,14 +43,14 @@ struct  Crypt
 
 	CylindricalGrid m_grid;
 
-	Crypt(int numRows, int numColumns, std::default_random_engine& random, float averageGrowthTimeSeconds) : 
+	Crypt(int numRows, int numColumns, std::default_random_engine& random, double averageGrowthTimeSeconds) : 
 		m_numRows(numRows),
 		m_numColumns(numColumns),
 		m_secondsPerTimestep(30.0f),
 		m_cryptRadius(500.0f),
 		m_flutingRadius(500.0f),
 		m_compressionFactor(1.75f),
-		m_cellSize(m_cryptRadius * 2.0f * (float)PI / (numColumns * 2.0f)),
+		m_cellSize(m_cryptRadius * 2.0f * (double)PI / (numColumns * 2.0f)),
 		m_cellsPerSectionInNiche(m_cryptRadius * 2.0f * PI / 4.0f /(m_cellSize * 2.0f)), // Quarter circumference (2 * Pi * R / 4) / cell size (2 * r)
 		m_cellsPerSectionInTop(m_flutingRadius * 2.0f * PI / 4.0f / (m_cellSize * 2.0f)), // Quarter circumference (2 * Pi * R / 4) / cell size (2 * r)
 		m_numVerticalCells(numRows - m_cellsPerSectionInNiche - m_cellsPerSectionInTop), // Work out how many cells in the vertical section of the crypt
@@ -85,14 +85,14 @@ struct  Crypt
 		{
 			for(int hIndex = 1; hIndex < m_numRows / m_compressionFactor - 2; hIndex++)
 			{
-				float height = ( m_cryptHeight * hIndex * m_compressionFactor / m_numRows);
+				double height = ( m_cryptHeight * hIndex * m_compressionFactor / m_numRows);
 
 				for(int rIndex = 0; rIndex < m_numColumns; rIndex++)
 				{
-					float theta = 2.0f * PI * rIndex / m_numColumns;
+					double theta = 2.0f * PI * rIndex / m_numColumns;
 
-					float x = cos(theta) * m_cryptRadius;
-					float z = sin(theta) * m_cryptRadius;
+					double x = cos(theta) * m_cryptRadius;
+					double z = sin(theta) * m_cryptRadius;
 
 					Vector3D pos;// = new Vector3d(cryptX * m_initialCryptSeparation - centeringOffset, -1.0f * CryptHeight, cryptY * m_initialCryptSeparation - centeringOffset);
 					pos.x += x;
@@ -187,7 +187,7 @@ struct  Crypt
 		{
 			box.m_currentStageNumTimesteps[cellId]++;
 
-			float lerpVal = (float)box.m_currentStageNumTimesteps[cellId] / (float)box.m_growthStageNumTimesteps[cellId];
+			double lerpVal = (double)box.m_currentStageNumTimesteps[cellId] / (double)box.m_growthStageNumTimesteps[cellId];
 			box.m_radii[cellId] = m_cellSize * (1.0f - lerpVal) + m_cellSize * lerpVal * sqrt(2.0f);
 
 			if (box.m_currentStageNumTimesteps[cellId] > box.m_growthStageNumTimesteps[cellId])
@@ -205,7 +205,7 @@ struct  Crypt
 
 			CellReference& childIndex = box.m_otherSubCellIndex[cellId];
 
-			float lerpVal = box.m_currentStageNumTimesteps[cellId] / m_MPhaseTimesteps;
+			double lerpVal = box.m_currentStageNumTimesteps[cellId] / m_MPhaseTimesteps;
 			childIndex.m_box->m_radii[childIndex.m_cellId] = m_cellSize * lerpVal;
 			box.m_radii[cellId] = m_cellSize * lerpVal + m_cellSize * sqrt(2.0f) * (1.0f - lerpVal);
 
@@ -268,7 +268,7 @@ struct  Crypt
 		else if (inputPosition.y > (m_cryptHeight - m_cryptRadius) * -1.0f)
 		{
 			Vector2D final;
-			float length = pos2d.Length();
+			double length = pos2d.Length();
 			Vector2D normalised = pos2d /length;
 			final = normalised * m_cryptRadius;
 
@@ -355,25 +355,25 @@ struct  Crypt
 
 		if (pos.x > m_colonBoundary.x)
 		{
-			float delta = pos.x - m_colonBoundary.x;
+			double delta = pos.x - m_colonBoundary.x;
 			delta *= m_colonBoundaryRepulsionFactor;
 			pos.x -= delta;
 		}
 		if (pos.x < (-1.0f * m_colonBoundary.x))
 		{
-			float delta = pos.x - (-1.0f * m_colonBoundary.x);
+			double delta = pos.x - (-1.0f * m_colonBoundary.x);
 			delta *= m_colonBoundaryRepulsionFactor;
 			pos.x -= delta;
 		}
 		if (pos.z > m_colonBoundary.y)
 		{
-			float delta = pos.z - m_colonBoundary.y;
+			double delta = pos.z - m_colonBoundary.y;
 			delta *= m_colonBoundaryRepulsionFactor;
 			pos.z -= delta;
 		}
 		if (pos.z < (-1.0f * m_colonBoundary.y))
 		{
-			float delta = pos.z - (-1.0f * m_colonBoundary.y);
+			double delta = pos.z - (-1.0f * m_colonBoundary.y);
 			delta *= m_colonBoundaryRepulsionFactor;
 			pos.z -= delta;
 		}

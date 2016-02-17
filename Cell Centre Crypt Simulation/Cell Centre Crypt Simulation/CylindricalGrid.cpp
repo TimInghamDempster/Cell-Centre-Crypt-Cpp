@@ -4,15 +4,15 @@ struct CylindricalGrid
 	std::vector<std::vector<CellBox> > m_columns;
 	const int m_numColumns;
 	const int m_numRows;
-	const float m_height;
-	const float m_boxHeight;
-	const float m_cellStiffness;
-	const float m_MStageRequiredTimesteps;
+	const double m_height;
+	const double m_boxHeight;
+	const double m_cellStiffness;
+	const double m_MStageRequiredTimesteps;
 
 	std::default_random_engine& m_random_generator;
-	std::uniform_real_distribution<float> m_random;
+	std::uniform_real_distribution<double> m_random;
 
-	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, float height, std::default_random_engine& random_generator, float mStageRequiredTimesteps)
+	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, double height, std::default_random_engine& random_generator, double mStageRequiredTimesteps)
 		:
 		m_numColumns(numBoxesTheta),
 		m_numRows(numBoxesY),
@@ -80,9 +80,9 @@ struct CylindricalGrid
 
 	CellBox* FindBox(Vector3D position)
 	{		
-		float theta = atan2(position.z, position.x);
-		float normalisedTheta = theta / (2.0f * (float)PI) + 0.5f; // Map from -PI < x < PI to 0 < x < 1
-		float normalisedColumnWidth = 1.0f / m_numColumns;
+		double theta = atan2(position.z, position.x);
+		double normalisedTheta = theta / (2.0f * (double)PI) + 0.5f; // Map from -PI < x < PI to 0 < x < 1
+		double normalisedColumnWidth = 1.0f / m_numColumns;
 
 		int column = (int)(normalisedTheta / normalisedColumnWidth);
 		int row = (int)((position.y + m_height) / m_boxHeight);
@@ -90,7 +90,7 @@ struct CylindricalGrid
 		row = row >= 0 ? row : 0;
 		row = row < m_numRows ? row : m_numRows - 1;
 
-		column = column < m_numColumns ? column : m_numColumns - 1; // Only happens in very rare circumstaces, floating point issue.
+		column = column < m_numColumns ? column : m_numColumns - 1; // Only happens in very rare circumstaces, doubleing point issue.
 
 		return &m_columns[column][row]; // Garunteed safe because the column vector (and grid vector) never change.
 	}
@@ -135,17 +135,17 @@ struct CylindricalGrid
 							//GetClosestPointOnMembrane(m_cells.Positions[j] - cryptPos2, out innerPos, out dummy);
 
 							Vector3D delta = outerPos - innerPos;
-							float separation = delta.Length();
+							double separation = delta.Length();
 
 
-							float targetSeparation = box.m_radii[cellId] + collisionBox->m_radii[innerCellId];
+							double targetSeparation = box.m_radii[cellId] + collisionBox->m_radii[innerCellId];
 
 							CellReference& otherCell  = box.m_otherSubCellIndex[cellId];
 							if (otherCell.m_active
 								&& otherCell.m_box == collisionBox
 								&& otherCell.m_cellId == innerCellId)
 							{
-								float growthFactor;
+								double growthFactor;
 								
 								if(box.m_cycleStages[cellId] == CellCycleStages::M)
 								{
@@ -163,27 +163,27 @@ struct CylindricalGrid
 							if (m_cells.CycleStages[i] == CellCycleStage.Child)
 							{
 							int parentId = m_cells.ChildPointIndices[i];
-							float growthFactor = m_cells.GrowthStageCurrentTimesteps[parentId] / m_cells.GrowthStageRequiredTimesteps[parentId];
+							double growthFactor = m_cells.GrowthStageCurrentTimesteps[parentId] / m_cells.GrowthStageRequiredTimesteps[parentId];
 							targetSeparation = m_cells.Radii[j] + m_cells.Radii[i] * growthFactor;
 							}
 							if (m_cells.CycleStages[j] == CellCycleStage.Child)
 							{
 							int parentId = m_cells.ChildPointIndices[j];
-							float growthFactor = m_cells.GrowthStageCurrentTimesteps[parentId] / m_cells.GrowthStageRequiredTimesteps[parentId];
+							double growthFactor = m_cells.GrowthStageCurrentTimesteps[parentId] / m_cells.GrowthStageRequiredTimesteps[parentId];
 							targetSeparation = m_cells.Radii[i] + m_cells.Radii[j] * growthFactor;
 							}
 							}*/
 
 							if (separation < targetSeparation)
 							{
-								float restitution = targetSeparation - separation;
+								double restitution = targetSeparation - separation;
 								restitution *= m_cellStiffness;
 								if (separation < 0.1f)
 								{
 									separation = 0.1f;
-									delta.x = (float)m_random(m_random_generator) - 0.5f;
-									delta.y = (float)m_random(m_random_generator) - 0.5f;
-									delta.z = (float)m_random(m_random_generator) - 0.5f;
+									delta.x = (double)m_random(m_random_generator) - 0.5f;
+									delta.y = (double)m_random(m_random_generator) - 0.5f;
+									delta.z = (double)m_random(m_random_generator) - 0.5f;
 								}
 
 								Vector3D force = delta * restitution / separation;

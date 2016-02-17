@@ -1,13 +1,13 @@
 struct Vector2D
 {
-	float x;
-	float y;
+	double x;
+	double y;
 
 	Vector2D() : x(0.0f), y(0.0f)
 	{
 	}
 
-	Vector2D(float X, float Y) : x(X), y(Y)
+	Vector2D(double X, double Y) : x(X), y(Y)
 	{
 	}
 
@@ -41,14 +41,14 @@ struct Vector2D
 		return res;
 	}
 
-	Vector2D& operator/=(const float rhs) 
+	Vector2D& operator/=(const double rhs) 
 	{
 		x /= rhs;
 		y /= rhs;
 		return *this;
 	}
 
-	Vector2D operator/(const float rhs) const
+	Vector2D operator/(const double rhs) const
 	{
 		Vector2D res;
 		res.x = x / rhs;
@@ -56,14 +56,14 @@ struct Vector2D
 		return res;
 	}
 
-	Vector2D& operator*=(const float rhs) 
+	Vector2D& operator*=(const double rhs) 
 	{
 		x *= rhs;
 		y *= rhs;
 		return *this;
 	}
 
-	Vector2D operator*(const float rhs) const
+	Vector2D operator*(const double rhs) const
 	{
 		Vector2D res;
 		res.x = x * rhs;
@@ -71,12 +71,12 @@ struct Vector2D
 		return res;
 	}
 
-	float Length()
+	double Length()
 	{
 		return sqrt(DotProduct(*this, *this));
 	}
 
-	static float DotProduct(Vector2D& first, Vector2D& second)
+	static double DotProduct(Vector2D& first, Vector2D& second)
 	{
 		return first.x * second.x + first.y * second.y;
 	}

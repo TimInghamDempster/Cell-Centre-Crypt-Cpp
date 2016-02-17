@@ -19,8 +19,8 @@ struct CellBox
 {
 	std::vector<Vector3D> m_positions;
 	std::vector<Vector3D> m_onMembranePositions;
-	std::vector<float> m_offMembraneDistances;
-	std::vector<float> m_radii;
+	std::vector<double> m_offMembraneDistances;
+	std::vector<double> m_radii;
 	std::vector<int> m_currentStageNumTimesteps;
 	std::vector<int> m_growthStageNumTimesteps;
 	std::vector<CellReference> m_otherSubCellIndex; // This is going to be a pain to keep synchronised - pay extra attention to it
@@ -44,8 +44,8 @@ struct CellBox
 
 	int AddCell(Vector3D position,
 				Vector3D onMembranePosition,
-				float offMembraneDistance,
-				float radius,
+				double offMembraneDistance,
+				double radius,
 				int currentStageTimesteps,
 				int growthStageTimesteps,
 				CellReference otherSubCellIndex,
