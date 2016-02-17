@@ -1,8 +1,6 @@
 
 #include "SystemIncludes.cpp"
 
-#include "WindowsPlatform.cpp"
-
 #include "ProgramIncludes.cpp"
 
 #include "../D3D/D3DIncludes.cpp"

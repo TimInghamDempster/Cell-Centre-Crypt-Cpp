@@ -388,10 +388,12 @@ struct  Crypt
 		EnforceCryptWalls(box, cellId);
 		EnforceColonBoundary(box, cellId);
 		AssignCellToGrid(box, cellId);
+		m_cellularity++;
 	}
 
 	void UpdateCells()
 	{
+		m_cellularity = 0;
 		for(int col = 0; col < (int)m_grid.m_columns.size(); col++)
 		{
 			std::vector<CellBox>& column = m_grid.m_columns[col];
