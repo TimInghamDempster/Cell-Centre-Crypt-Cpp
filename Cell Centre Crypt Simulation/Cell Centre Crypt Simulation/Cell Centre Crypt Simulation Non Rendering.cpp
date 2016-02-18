@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 	InitSimulation();
 	
 	std::ofstream outputFile;
-	outputFile.open("C:/Users/Tim/Desktop/testData.csv");
+	outputFile.open("testData.csv");
 
 	while(framecount < totalFrames)
 	{
