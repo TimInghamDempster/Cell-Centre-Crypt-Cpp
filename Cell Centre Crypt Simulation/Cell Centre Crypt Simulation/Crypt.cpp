@@ -43,7 +43,7 @@ struct  Crypt
 
 	CylindricalGrid m_grid;
 
-	Crypt(int numRows, int numColumns, std::default_random_engine& random, double averageGrowthTimeSeconds) : 
+	Crypt(int numRows, int numColumns, std::default_random_engine& random, double averageGrowthTimeSeconds, double attachmentForce) : 
 		m_numRows(numRows),
 		m_numColumns(numColumns),
 		m_secondsPerTimestep(30.0f),
@@ -62,7 +62,7 @@ struct  Crypt
 		m_requiredG0TimestepsProliferation(100.0f),
 		m_MPhaseTimesteps(1238.4f / m_secondsPerTimestep),
 		m_colonBoundaryRepulsionFactor(0.3f),
-		m_offMembraneRestorationFactor(0.001f),
+		m_offMembraneRestorationFactor(attachmentForce),
 		m_stromalRestorationFactor(0.3f),
 		m_membraneSeparationToTriggerAnoikis(100.0f),
 		m_colonBoundary(1000.0f, 1000.0f),

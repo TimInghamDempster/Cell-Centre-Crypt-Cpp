@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	HINSTANCE hInst = GetModuleHandle(NULL);
 	HWND hwnd = TCreateWindow(hInst);
 	Renderer::Init(hwnd, 1280, 720);
-	InitSimulation();
+	Simulation::InitSimulation();
 	
 	std::ofstream outputFile;
 	outputFile.open("C:/Users/Tim/Desktop/testData.csv");
@@ -21,13 +21,13 @@ int main(int argc, char* argv[])
 	while(framecount < totalFrames)
 	{
 		TWinMain();
-		StepSimulation();
+		Simulation::StepSimulation();
 		Renderer::Draw();
 		framecount++;
 
 		if(framecount % 200 == 0)
 		{
-			outputFile << crypt.Cellularity();
+			outputFile << Simulation::crypt->Cellularity();
 			outputFile << ",\n";
 		}
 
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 
 	outputFile.close();
 	
-	CleanUpSimulation();
+	Simulation::CleanUpSimulation();
 	Renderer::CleanUp();	
 
 	return 0;
