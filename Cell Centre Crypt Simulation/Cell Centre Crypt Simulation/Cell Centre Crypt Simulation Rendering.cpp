@@ -18,6 +18,9 @@ int main(int argc, char* argv[])
 	std::ofstream outputFile;
 	outputFile.open("C:/Users/Tim/Desktop/testData.csv");
 
+	outputFile << "cellularity, anoikis, divisions, stem count, stem count in cycle, proliferation count, proliferation count in cycle";
+	outputFile << ",\n";
+
 	while(framecount < totalFrames)
 	{
 		TWinMain();
@@ -27,8 +30,29 @@ int main(int argc, char* argv[])
 
 		if(framecount % 200 == 0)
 		{
-			outputFile << Simulation::crypt->Cellularity();
+			int cellularity = 0;
+			int stemCount = 0;
+			int stemInCycleCount = 0;
+			int proliferatingCount = 0;
+			int proliferatingInCycleCount = 0;
+
+			Simulation::crypt->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount);
+
+			outputFile << cellularity;
+			outputFile << ',';
+			outputFile << Simulation::crypt->m_numAnoikisEvents;
+			outputFile << ',';
+			outputFile << Simulation::crypt->m_numBirthEvents;
+			outputFile << ',';
+			outputFile << stemCount;
+			outputFile << ',';
+			outputFile << stemInCycleCount;
+			outputFile << ',';
+			outputFile << proliferatingCount;
+			outputFile << ',';
+			outputFile << proliferatingInCycleCount;
 			outputFile << ",\n";
+			Simulation::crypt->ClearCounters();
 		}
 
 		//Sleep(10);

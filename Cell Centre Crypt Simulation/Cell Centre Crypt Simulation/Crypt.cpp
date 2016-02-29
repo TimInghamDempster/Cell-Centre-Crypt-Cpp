@@ -428,14 +428,52 @@ struct  Crypt
 		}
 	}
 
+	void ClearCounters()
+	{
+		m_numBirthEvents = 0;
+		m_numAnoikisEvents = 0;
+	}
+
 	void Step()
 	{
 		m_grid.Step();
 		UpdateCells();
 	}
 
-	int Cellularity()
+	void GetCounts(int& cellulairty, int& stemCount, int& stemCycleCount, int& proliferationCount, int& proliferationCycleCount)
 	{
-		return m_cellularity;
+		cellulairty = m_cellularity;
+		stemCount = 0;
+		stemCycleCount = 0;
+		proliferationCount = 0;
+		proliferationCycleCount = 0;
+
+		for(int col = 0; col < (int)m_grid.m_columns.size(); col++)
+		{
+			std::vector<CellBox>& column = m_grid.m_columns[col];
+			for(int row = 0; row < (int)column.size(); row++)
+			{
+				CellBox& box = column[row];
+				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
+				{
+					if (box.m_positions[cell].y < m_basicG0StemBoundary)
+					{
+						stemCount++;
+						if(box.m_cycleStages[cell] == CellCycleStages::G1 || box.m_cycleStages[cell] == CellCycleStages::M)
+						{
+							stemCycleCount++;
+						}
+					}
+					else if(box.m_positions[cell].y < m_basicG0ProliferationBoundary)
+					{
+						proliferationCount++;
+						if(box.m_cycleStages[cell] == CellCycleStages::G1 || box.m_cycleStages[cell] == CellCycleStages::M)
+						{
+							proliferationCycleCount++;
+						}
+					}
+				}
+			}
+		}
 	}
 };

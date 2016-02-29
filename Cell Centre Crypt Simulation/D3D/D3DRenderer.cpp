@@ -514,9 +514,9 @@ namespace Renderer
 		
 		int numInBatch = 0;
 		
-		for(int col = 0; col < (int)crypt.m_grid.m_columns.size(); col++)
+		for(int col = 0; col < (int)Simulation::crypt->m_grid.m_columns.size(); col++)
 		{
-			std::vector<CellBox>& column = crypt.m_grid.m_columns[col];
+			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
 			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
