@@ -41,6 +41,8 @@ struct  Crypt
 
 	int m_cellularity;
 
+	int m_anoikisHeights[100];
+
 	CylindricalGrid m_grid;
 
 	Crypt(int numRows, int numColumns, std::default_random_engine& random, double averageGrowthTimeSeconds, double attachmentForce) : 
@@ -340,8 +342,20 @@ struct  Crypt
 			{
 				CellBox* otherBox = box.m_otherSubCellIndex[cellId].m_box;
 				int indexInOtherBox = box.m_otherSubCellIndex[cellId].m_cellId;
+
+				double y = otherBox->m_positions[indexInOtherBox].y;
+				int yPercent = (int)((y - 250) / (m_cryptHeight + 250) * 100.0f);
+				yPercent *= -1;
+				m_anoikisHeights[yPercent]++;
+
 				otherBox->KillCell(indexInOtherBox);
 			}
+			
+			double y = box.m_positions[cellId].y;
+			int yPercent = (int)((y - 250) / (m_cryptHeight + 250) * 100.0f);
+			yPercent *= -1;
+			m_anoikisHeights[yPercent]++;
+
 			box.KillCell(cellId);
 			m_numAnoikisEvents++;
 			return true;

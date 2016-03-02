@@ -52,6 +52,14 @@ int main(int argc, char* argv[])
 			//Sleep(10);
 		}
 
+		outputFile << "\n Anoikis Locations \n";
+
+		for(int i = 0; i < 100; i++)
+		{
+			outputFile << Simulation::crypt->m_anoikisHeights[i];
+			outputFile << ",\n";
+		}
+
 		outputFile.close();
 
 		Simulation::CleanUpSimulation();
