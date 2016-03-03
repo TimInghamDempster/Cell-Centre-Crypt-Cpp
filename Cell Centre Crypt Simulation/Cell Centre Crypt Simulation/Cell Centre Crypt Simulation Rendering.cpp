@@ -13,54 +13,65 @@ int main(int argc, char* argv[])
 	HINSTANCE hInst = GetModuleHandle(NULL);
 	HWND hwnd = TCreateWindow(hInst);
 	Renderer::Init(hwnd, 1280, 720);
-	Simulation::InitSimulation();
+	bool init = Simulation::InitSimulation();
 	
-	std::ofstream outputFile;
-	outputFile.open("C:/Users/Tim/Desktop/testData.csv");
-
-	outputFile << "cellularity, anoikis, divisions, stem count, stem count in cycle, proliferation count, proliferation count in cycle";
-	outputFile << ",\n";
-
-	while(framecount < totalFrames)
+	if(init)
 	{
-		TWinMain();
-		Simulation::StepSimulation();
-		Renderer::Draw();
-		framecount++;
+		std::ofstream outputFile;
+		outputFile.open("C:/Users/Tim/Desktop/testData.csv");
 
-		if(framecount % 200 == 0)
+		outputFile << "cellularity, anoikis, divisions, stem count, stem count in cycle, proliferation count, proliferation count in cycle";
+		outputFile << ",\n";
+
+		while(framecount < totalFrames)
 		{
-			int cellularity = 0;
-			int stemCount = 0;
-			int stemInCycleCount = 0;
-			int proliferatingCount = 0;
-			int proliferatingInCycleCount = 0;
+			TWinMain();
+			Simulation::StepSimulation();
+			Renderer::Draw();
+			framecount++;
 
-			Simulation::crypt->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount);
+			if(framecount % 200 == 0)
+			{
+				int cellularity = 0;
+				int stemCount = 0;
+				int stemInCycleCount = 0;
+				int proliferatingCount = 0;
+				int proliferatingInCycleCount = 0;
 
-			outputFile << cellularity;
-			outputFile << ',';
-			outputFile << Simulation::crypt->m_numAnoikisEvents;
-			outputFile << ',';
-			outputFile << Simulation::crypt->m_numBirthEvents;
-			outputFile << ',';
-			outputFile << stemCount;
-			outputFile << ',';
-			outputFile << stemInCycleCount;
-			outputFile << ',';
-			outputFile << proliferatingCount;
-			outputFile << ',';
-			outputFile << proliferatingInCycleCount;
+				Simulation::crypt->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount);
+
+				outputFile << cellularity;
+				outputFile << ',';
+				outputFile << Simulation::crypt->m_numAnoikisEvents;
+				outputFile << ',';
+				outputFile << Simulation::crypt->m_numBirthEvents;
+				outputFile << ',';
+				outputFile << stemCount;
+				outputFile << ',';
+				outputFile << stemInCycleCount;
+				outputFile << ',';
+				outputFile << proliferatingCount;
+				outputFile << ',';
+				outputFile << proliferatingInCycleCount;
+				outputFile << ",\n";
+				Simulation::crypt->ClearCounters();
+			}
+
+			//Sleep(10);
+		}
+	
+		outputFile << "\n Anoikis Locations \n";
+
+		for(int i = 0; i < 100; i++)
+		{
+			outputFile << Simulation::crypt->m_anoikisHeights[i];
 			outputFile << ",\n";
-			Simulation::crypt->ClearCounters();
 		}
 
-		//Sleep(10);
-	}
-
-	outputFile.close();
+		outputFile.close();
 	
-	Simulation::CleanUpSimulation();
+		Simulation::CleanUpSimulation();
+	}
 	Renderer::CleanUp();	
 
 	return 0;

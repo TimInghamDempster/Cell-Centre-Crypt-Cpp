@@ -81,6 +81,11 @@ struct  Crypt
 		CellBox* box = m_grid.FindBox(pos);
 		//box->AddCell(pos, pos, 0.0f, m_cellSize, 0, (int)m_normalRNG(m_random_generator), ref, CellCycleStages::G0);
 		PopulateCrypt();
+
+		for(int i = 0; i < 100; i++)
+		{
+			m_anoikisHeights[i] = 0;
+		}
 	}
 
 	void PopulateCrypt()
