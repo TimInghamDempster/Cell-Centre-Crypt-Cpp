@@ -520,13 +520,16 @@ namespace Renderer
 			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
-				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
+				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				//for(int cell = 0; cell < Simulation::crypt->deadcells.size(); cell++)
 				{
+					//Vector3D& vec = Simulation::crypt->deadcells[cell];
 					Vector3D& vec = box.m_positions[cell];
 
 					//if(vec.z < 0.0f)
 					{
 						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+						//DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(10.0f, 10.0f, 10.0f);
 						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
 
 						world = DirectX::XMMatrixMultiply(scale, world);
