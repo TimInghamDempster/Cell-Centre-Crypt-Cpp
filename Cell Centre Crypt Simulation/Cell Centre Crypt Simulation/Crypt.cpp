@@ -36,6 +36,8 @@ struct  Crypt
 	std::normal_distribution<double> m_normalRNG;
 	std::uniform_real_distribution<double> m_random;
 
+	//std::vector<Vector3D> deadcells;
+
 	int m_numBirthEvents;
 	int m_numAnoikisEvents;
 
@@ -355,6 +357,8 @@ struct  Crypt
 
 				otherBox->KillCell(indexInOtherBox);
 			}
+
+			//deadcells.push_back(box.m_positions[cellId]);
 			
 			double y = box.m_positions[cellId].y;
 			int yPercent = (int)((y - 250) / (m_cryptHeight + 250) * 100.0f);
