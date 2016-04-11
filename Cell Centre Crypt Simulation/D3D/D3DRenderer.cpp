@@ -21,6 +21,7 @@ namespace Renderer
 	ID3D11Buffer* meshVertexBuffer = nullptr;
 	ID3D11Buffer* meshIndexBuffer = nullptr;
 	ID3D11Buffer* matrixBuffer = nullptr;
+	ID3D11Buffer* psCBuffer = nullptr;
 
 	float clearColour[4];
 	UINT32 videoCardMemory = 0;
@@ -411,6 +412,26 @@ namespace Renderer
 		LoadVertexShaderAndBuildInputLayout("SimpleVS.cso", &uiVertexShader, layout, 6, &uiInputLayout);
 		LoadPixelShader("SimplePS.cso", &uiPixelShader);
 		LoadMeshBuffersFromFile(mainDevice, &meshVertexBuffer, &meshIndexBuffer,"Sphere.obj", m_numVerts);
+
+		float initCol[] = {1.0f, 1.0f, 0.0f, 1.0f};
+
+		D3D11_BUFFER_DESC cbDesc;
+		cbDesc.ByteWidth = 16;
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.MiscFlags = 0;
+		cbDesc.StructureByteStride = 0;
+
+		D3D11_SUBRESOURCE_DATA initData;
+		initData.pSysMem = &initCol;
+		initData.SysMemPitch = 0;
+		initData.SysMemSlicePitch = 0;
+
+		mainDevice->CreateBuffer( &cbDesc, &initData, 
+								 &psCBuffer );
+
+		deviceContext->PSSetConstantBuffers( 0, 1, &psCBuffer );
 	}
 
 	void ReportLiveObjects()
@@ -442,6 +463,7 @@ namespace Renderer
 		meshIndexBuffer->Release();
 		meshVertexBuffer->Release();
 		matrixBuffer->Release();
+		psCBuffer->Release();
 
 		ReportLiveObjects();
 		mainDevice->Release();
@@ -494,7 +516,71 @@ namespace Renderer
 		deviceContext->DrawIndexedInstanced(m_numVerts, numInBatch, 0, 0, 0);
 	}
 
-	void DrawScene()
+	void DrawCellsInBounds(float upper, float lower, float colour[], bool drawQuiescentCells)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedColour;
+		deviceContext->Map(psCBuffer,0, D3D11_MAP_WRITE_DISCARD, 0, &mappedColour);
+
+		memcpy(mappedColour.pData, colour, 16);
+
+		deviceContext->Unmap(psCBuffer, 0);
+
+		float zDist = 10000.1f;
+		float height = -3000.0f;
+
+		DirectX::FXMVECTOR camPos = {0.0f, height, zDist, 0.0f };
+		DirectX::FXMVECTOR camLookAt = {0.0f, height, 0.0f, 0.0f };
+		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, zDist - 1000.0f, zDist + 1000.0f);
+
+		proj = DirectX::XMMatrixMultiply(view, proj);
+
+		
+		
+		int numInBatch = 0;
+		
+		for(int col = 0; col < (int)Simulation::crypt->m_grid.m_columns.size(); col++)
+		{
+			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
+			for(int row = 0; row < (int)column.size(); row++)
+			{
+				CellBox& box = column[row];
+
+
+				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
+				{
+					Vector3D& vec = box.m_positions[cell];
+					bool quiescent = box.m_cycleStages[cell] == CellCycleStages::G0;
+
+					if(vec.y < upper && vec.y > lower && quiescent == drawQuiescentCells)
+					{
+						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+						world = DirectX::XMMatrixMultiply(scale, world);
+						world = DirectX::XMMatrixMultiply(world, proj);
+
+						DirectX::XMFLOAT4X4 mat;
+						DirectX::XMStoreFloat4x4(&mat, world);
+
+						memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+						numInBatch++;
+
+						if(numInBatch == batchSize)
+						{
+							DrawBatch(numInBatch);
+							numInBatch = 0;
+						} 
+					}
+				}
+			}
+		}
+		DrawBatch(numInBatch);
+	}
+
+	void DrawAllCells()
 	{
 		frame++;
 
@@ -548,5 +634,18 @@ namespace Renderer
 			}
 		}
 		DrawBatch(numInBatch);
+	}
+
+	void DrawScene()
+	{
+		float redCol[] = {1.0f, 0.0f, 0.0f, 1.0f};
+		float purpleCol[] = {0.7f, 0.0f, 1.0f, 1.0f};
+		float blueCol[] = {0.0f, 0.87f, 1.0f, 1.0f};
+
+		DrawCellsInBounds(Simulation::crypt->m_basicG0StemBoundary, Simulation::crypt->m_cryptHeight * -1.0f, purpleCol, true); // quiescent stem cells
+		DrawCellsInBounds(Simulation::crypt->m_basicG0StemBoundary, Simulation::crypt->m_cryptHeight * -1.0f, purpleCol, false); // cycling stem cells
+		DrawCellsInBounds(1000.0f, Simulation::crypt->m_basicG0StemBoundary, blueCol, false); // cycling proliferating cells
+		DrawCellsInBounds(Simulation::crypt->m_basicG0ProliferationBoundary, Simulation::crypt->m_basicG0StemBoundary, blueCol, true); // quiescent proliferating cells
+		DrawCellsInBounds(1000.0, Simulation::crypt->m_basicG0ProliferationBoundary, redCol, true); // differentiated cells
 	}
 }
