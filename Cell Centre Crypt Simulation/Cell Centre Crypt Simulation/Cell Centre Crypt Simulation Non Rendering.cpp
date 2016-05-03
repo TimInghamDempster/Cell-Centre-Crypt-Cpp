@@ -6,6 +6,7 @@ int main(int argc, char* argv[])
 {
 	int framecount = 0;
 	const int totalFrames = 1000000;
+	const int mutationFrame = 1000;
 	
 	bool init = Simulation::InitSimulation();
 	
@@ -21,6 +22,11 @@ int main(int argc, char* argv[])
 		{
 			Simulation::StepSimulation();
 			framecount++;
+
+			if(framecount == mutationFrame)
+			{
+				Simulation::DoMutation();
+			}
 
 			if(framecount % 200 == 0)
 			{

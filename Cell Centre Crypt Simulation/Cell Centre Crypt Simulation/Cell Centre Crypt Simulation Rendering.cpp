@@ -9,6 +9,7 @@ int main(int argc, char* argv[])
 {
 	int framecount = 0;
 	const int totalFrames = 1000000;
+	const int mutationFrame = 1000;
 
 	HINSTANCE hInst = GetModuleHandle(NULL);
 	HWND hwnd = TCreateWindow(hInst);
@@ -29,6 +30,11 @@ int main(int argc, char* argv[])
 			Simulation::StepSimulation();
 			Renderer::Draw();
 			framecount++;
+
+			if(framecount == mutationFrame)
+			{
+				Simulation::DoMutation();
+			}
 
 			if(framecount % 200 == 0)
 			{

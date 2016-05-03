@@ -27,6 +27,7 @@ struct CellBox
 	std::vector<CellCycleStages::Stages> m_cycleStages;
 	std::vector<CellBox*> m_potentialCollisionBoxes;
 	std::vector<int> m_deathList;
+	std::vector<double> m_attachmentStrengths;
 
 	CellBox(int expectedNumberOfCells)
 	{
@@ -40,6 +41,7 @@ struct CellBox
 		m_otherSubCellIndex.reserve(reserveSize);
 		m_cycleStages.reserve(reserveSize);
 		m_deathList.reserve(reserveSize);
+		m_attachmentStrengths.reserve(reserveSize);
 	}
 
 	int AddCell(Vector3D position,
@@ -49,7 +51,8 @@ struct CellBox
 				int currentStageTimesteps,
 				int growthStageTimesteps,
 				CellReference otherSubCellIndex,
-				CellCycleStages::Stages cycleStage)
+				CellCycleStages::Stages cycleStage,
+				double attachmentStrength)
 	{
 		m_positions.push_back(position);
 		m_onMembranePositions.push_back(onMembranePosition);
@@ -59,6 +62,7 @@ struct CellBox
 		m_growthStageNumTimesteps.push_back(growthStageTimesteps);
 		m_otherSubCellIndex.push_back(otherSubCellIndex);
 		m_cycleStages.push_back(cycleStage);
+		m_attachmentStrengths.push_back(attachmentStrength);
 
 		if(otherSubCellIndex.m_active == true)
 		{
@@ -81,7 +85,8 @@ struct CellBox
 			box.m_currentStageNumTimesteps[cellId],
 			box.m_growthStageNumTimesteps[cellId],
 			box.m_otherSubCellIndex[cellId],
-			box.m_cycleStages[cellId]);
+			box.m_cycleStages[cellId],
+			box.m_attachmentStrengths[cellId] );
 	}
 
 	void RemoveCell(int cellId)
@@ -104,6 +109,8 @@ struct CellBox
 		m_otherSubCellIndex.pop_back();
 		m_cycleStages[cellId] = m_cycleStages[last];
 		m_cycleStages.pop_back();
+		m_attachmentStrengths[cellId] = m_attachmentStrengths[last];
+		m_attachmentStrengths.pop_back();
 
 		if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 		{
@@ -124,7 +131,7 @@ struct CellBox
 
 	void KillCell(int cellId)
 	{
-		if(std::find(m_deathList.begin(), m_deathList.end(), cellId) == m_deathList.end()) // Protect against double entry (ie cell and child cell both meet anoikis conditions)
+		if(std::find(m_deathList.begin(), m_deathList.end(), cellId) == m_deathList.end()) // Protect against double entry (ie when cell and child cell both meet anoikis conditions)
 		{
 			m_deathList.push_back(cellId);
 		}
@@ -153,6 +160,8 @@ struct CellBox
 			m_otherSubCellIndex.pop_back();
 			m_cycleStages[cellId] = m_cycleStages[last];
 			m_cycleStages.pop_back();
+			m_attachmentStrengths[cellId] = m_attachmentStrengths[last];
+			m_attachmentStrengths.pop_back();
 
 			if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 			{

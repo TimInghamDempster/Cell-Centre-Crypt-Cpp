@@ -120,7 +120,8 @@ struct  Crypt
 						//0,
 						m_normalRNG(m_random_generator),
 						ref, 
-						CellCycleStages::G0);
+						CellCycleStages::G0,
+						m_offMembraneRestorationFactor);
 				}
 			}
 		}
@@ -181,7 +182,8 @@ struct  Crypt
 			0,
 			(int)m_normalRNG(m_random_generator),
 			cellRef,
-			CellCycleStages::Child);
+			CellCycleStages::Child,
+			box.m_attachmentStrengths[cellId]);
 
 		box.m_growthStageNumTimesteps[cellId] = (int)m_normalRNG(m_random_generator);
 
@@ -334,7 +336,7 @@ struct  Crypt
 		}
 		else
 		{
-			delta *= m_offMembraneRestorationFactor;
+			delta *= box.m_attachmentStrengths[cellId];
 		}
 
 		box.m_positions[cellId] -= delta;

@@ -3,7 +3,8 @@ namespace Renderer
 #pragma comment(lib, "DXGI.lib")
 #pragma comment(lib, "D3D11.lib") 
 
-	void DrawScene();
+	void DrawSceneByCellType();
+	void DrawCellsByAttachmentStrength();
 	void DrawUI();
 
 	IDXGISwapChain* swapChain = nullptr;
@@ -478,7 +479,8 @@ namespace Renderer
 		deviceContext->ClearRenderTargetView(renderTargetView, clearColour);
 		deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 		
-		DrawScene();
+		//DrawSceneByCellType();
+		DrawCellsByAttachmentStrength();
 
 		swapChain->Present(0, 0);
 	}
@@ -580,6 +582,112 @@ namespace Renderer
 		DrawBatch(numInBatch);
 	}
 
+	void DrawCellsByAttachmentStrength()
+	{
+		frame++;
+
+		float zDist = 10000.1f;
+		float height = -3000.0f;
+
+		DirectX::FXMVECTOR camPos = {0.0f, height, zDist, 0.0f };
+		DirectX::FXMVECTOR camLookAt = {0.0f, height, 0.0f, 0.0f };
+		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, zDist - 1000.0f, zDist + 1000.0f);
+
+		proj = DirectX::XMMatrixMultiply(view, proj);
+
+		float colour[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+		D3D11_MAPPED_SUBRESOURCE mappedColour;
+		deviceContext->Map(psCBuffer,0, D3D11_MAP_WRITE_DISCARD, 0, &mappedColour);
+
+		memcpy(mappedColour.pData, colour, 16);
+
+		deviceContext->Unmap(psCBuffer, 0);
+		
+		int numInBatch = 0;
+		
+		for(int col = 0; col < (int)Simulation::crypt->m_grid.m_columns.size(); col++)
+		{
+			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
+			for(int row = 0; row < (int)column.size(); row++)
+			{
+				CellBox& box = column[row];
+				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				{
+					Vector3D& vec = box.m_positions[cell];
+
+					if(box.m_attachmentStrengths[cell] == 0.001)
+					{
+						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+						world = DirectX::XMMatrixMultiply(scale, world);
+						world = DirectX::XMMatrixMultiply(world, proj);
+
+						DirectX::XMFLOAT4X4 mat;
+						DirectX::XMStoreFloat4x4(&mat, world);
+
+						memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+						numInBatch++;
+
+						if(numInBatch == batchSize)
+						{
+							DrawBatch(numInBatch);
+							numInBatch = 0;
+						} 
+					}
+				}
+			}
+		}
+		DrawBatch(numInBatch);
+
+		colour[0] = 0.0f;
+		deviceContext->Map(psCBuffer,0, D3D11_MAP_WRITE_DISCARD, 0, &mappedColour);
+
+		memcpy(mappedColour.pData, colour, 16);
+
+		deviceContext->Unmap(psCBuffer, 0);
+		
+		numInBatch = 0;
+		
+		for(int col = 0; col < (int)Simulation::crypt->m_grid.m_columns.size(); col++)
+		{
+			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
+			for(int row = 0; row < (int)column.size(); row++)
+			{
+				CellBox& box = column[row];
+				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				{
+					Vector3D& vec = box.m_positions[cell];
+
+					if(box.m_attachmentStrengths[cell] != 0.001)
+					{
+						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+						world = DirectX::XMMatrixMultiply(scale, world);
+						world = DirectX::XMMatrixMultiply(world, proj);
+
+						DirectX::XMFLOAT4X4 mat;
+						DirectX::XMStoreFloat4x4(&mat, world);
+
+						memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+						numInBatch++;
+
+						if(numInBatch == batchSize)
+						{
+							DrawBatch(numInBatch);
+							numInBatch = 0;
+						} 
+					}
+				}
+			}
+		}
+		DrawBatch(numInBatch);
+	}
+
 	void DrawAllCells()
 	{
 		frame++;
@@ -639,7 +747,7 @@ namespace Renderer
 		DrawBatch(numInBatch);
 	}
 
-	void DrawScene()
+	void DrawSceneByCellType()
 	{
 		float redCol[] = {1.0f, 0.0f, 0.0f, 1.0f};
 		float purpleCol[] = {0.7f, 0.0f, 1.0f, 1.0f};
