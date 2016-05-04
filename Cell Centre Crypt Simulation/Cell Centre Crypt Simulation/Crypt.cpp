@@ -472,13 +472,17 @@ struct  Crypt
 		UpdateCells();
 	}
 
-	void GetCounts(int& cellulairty, int& stemCount, int& stemCycleCount, int& proliferationCount, int& proliferationCycleCount)
+	void GetCounts(int& cellulairty, int& stemCount, int& stemCycleCount, int& proliferationCount, int& proliferationCycleCount, int& mutatedFlatMucosaCount, int& normalFlatMucosaCount, int& mutatedCryptCount, int& normalCryptCount)
 	{
 		cellulairty = m_cellularity;
 		stemCount = 0;
 		stemCycleCount = 0;
 		proliferationCount = 0;
 		proliferationCycleCount = 0;
+		mutatedFlatMucosaCount = 0;
+		normalFlatMucosaCount = 0;
+		mutatedCryptCount = 0;
+		normalCryptCount = 0;
 
 		for(int col = 0; col < (int)m_grid.m_columns.size(); col++)
 		{
@@ -503,6 +507,29 @@ struct  Crypt
 						{
 							proliferationCycleCount++;
 						}
+					}
+					if(box.m_mutations[cell].mutateAttachment == true || box.m_mutations[cell].mutateCellForces == true || box.m_mutations[cell].mutateQuiecence == true)
+					{
+						if(box.m_positions[cell].y > m_flutingRadius * -1.0f)
+						{
+							mutatedFlatMucosaCount++;
+						}
+						else
+						{
+							mutatedCryptCount++;
+						}						
+					}
+					else
+					{
+						
+						if(box.m_positions[cell].y > m_flutingRadius * -1.0f)
+						{
+							normalFlatMucosaCount++;
+						}
+						else
+						{
+							normalCryptCount++;
+						}						
 					}
 				}
 			}

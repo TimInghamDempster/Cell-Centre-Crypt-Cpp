@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 		std::ofstream outputFile;
 		outputFile.open(Simulation::filename);
 
-		outputFile << "cellularity, anoikis, divisions, stem count, stem count in cycle, proliferation count, proliferation count in cycle";
+		outputFile << "cellularity, anoikis, divisions, stem count, stem count in cycle, proliferation count, proliferation count in cycle, mutated cell count in flat mucosa, normal cell count in flat mucosa, mutated cell count in crypt, normal cell count in crypt";
 		outputFile << ",\n";
 
 		while(framecount < totalFrames)
@@ -35,8 +35,12 @@ int main(int argc, char* argv[])
 				int stemInCycleCount = 0;
 				int proliferatingCount = 0;
 				int proliferatingInCycleCount = 0;
+				int mutatedFlatMucosaCount = 0;
+				int normalFlatMucosaCount = 0;
+				int mutatedCryptCount = 0;
+				int normalCryptCount = 0;
 
-				Simulation::crypt->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount);
+				Simulation::crypt->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount, mutatedFlatMucosaCount, normalFlatMucosaCount, mutatedCryptCount, normalCryptCount);
 
 				outputFile << cellularity;
 				outputFile << ',';
@@ -51,6 +55,14 @@ int main(int argc, char* argv[])
 				outputFile << proliferatingCount;
 				outputFile << ',';
 				outputFile << proliferatingInCycleCount;
+				outputFile << ",\n";
+				outputFile << mutatedFlatMucosaCount;
+				outputFile << ",\n";
+				outputFile << normalFlatMucosaCount;
+				outputFile << ",\n";
+				outputFile << mutatedCryptCount;
+				outputFile << ",\n";
+				outputFile << normalCryptCount;
 				outputFile << ",\n";
 				Simulation::crypt->ClearCounters();
 			}
