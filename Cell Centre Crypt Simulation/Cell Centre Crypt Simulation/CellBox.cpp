@@ -1,6 +1,13 @@
 
 struct CellBox;
 
+struct MutationData
+{
+	bool mutateQuiecence;
+	bool mutateAttachment;
+	bool mutateCellForces;
+};
+
 struct CellReference
 {
 	CellBox* m_box;
@@ -27,7 +34,7 @@ struct CellBox
 	std::vector<CellCycleStages::Stages> m_cycleStages;
 	std::vector<CellBox*> m_potentialCollisionBoxes;
 	std::vector<int> m_deathList;
-	std::vector<double> m_attachmentStrengths;
+	std::vector<MutationData> m_mutations;
 
 	CellBox(int expectedNumberOfCells)
 	{
@@ -41,7 +48,7 @@ struct CellBox
 		m_otherSubCellIndex.reserve(reserveSize);
 		m_cycleStages.reserve(reserveSize);
 		m_deathList.reserve(reserveSize);
-		m_attachmentStrengths.reserve(reserveSize);
+		m_mutations.reserve(reserveSize);
 	}
 
 	int AddCell(Vector3D position,
@@ -52,7 +59,7 @@ struct CellBox
 				int growthStageTimesteps,
 				CellReference otherSubCellIndex,
 				CellCycleStages::Stages cycleStage,
-				double attachmentStrength)
+				MutationData mutation)
 	{
 		m_positions.push_back(position);
 		m_onMembranePositions.push_back(onMembranePosition);
@@ -62,7 +69,7 @@ struct CellBox
 		m_growthStageNumTimesteps.push_back(growthStageTimesteps);
 		m_otherSubCellIndex.push_back(otherSubCellIndex);
 		m_cycleStages.push_back(cycleStage);
-		m_attachmentStrengths.push_back(attachmentStrength);
+		m_mutations.push_back(mutation);
 
 		if(otherSubCellIndex.m_active == true)
 		{
@@ -86,7 +93,7 @@ struct CellBox
 			box.m_growthStageNumTimesteps[cellId],
 			box.m_otherSubCellIndex[cellId],
 			box.m_cycleStages[cellId],
-			box.m_attachmentStrengths[cellId] );
+			box.m_mutations[cellId] );
 	}
 
 	void RemoveCell(int cellId)
@@ -109,8 +116,8 @@ struct CellBox
 		m_otherSubCellIndex.pop_back();
 		m_cycleStages[cellId] = m_cycleStages[last];
 		m_cycleStages.pop_back();
-		m_attachmentStrengths[cellId] = m_attachmentStrengths[last];
-		m_attachmentStrengths.pop_back();
+		m_mutations[cellId] = m_mutations[last];
+		m_mutations.pop_back();
 
 		if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 		{
@@ -160,8 +167,8 @@ struct CellBox
 			m_otherSubCellIndex.pop_back();
 			m_cycleStages[cellId] = m_cycleStages[last];
 			m_cycleStages.pop_back();
-			m_attachmentStrengths[cellId] = m_attachmentStrengths[last];
-			m_attachmentStrengths.pop_back();
+			m_mutations[cellId] = m_mutations[last];
+			m_mutations.pop_back();
 
 			if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 			{

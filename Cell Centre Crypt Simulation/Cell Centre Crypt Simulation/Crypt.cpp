@@ -111,6 +111,7 @@ struct  Crypt
 
 					CellBox* box = m_grid.FindBox(pos);
 					CellReference ref;
+					MutationData noMutation = { false, false, false, };
 
 					box->AddCell(pos,
 						pos,
@@ -121,7 +122,7 @@ struct  Crypt
 						m_normalRNG(m_random_generator),
 						ref, 
 						CellCycleStages::G0,
-						m_offMembraneRestorationFactor);
+						noMutation);
 				}
 			}
 		}
@@ -140,7 +141,7 @@ struct  Crypt
 
 			if (box.m_positions[cellId].y < m_basicG0StemBoundary)
 			{
-				if (box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsStem)
+				if (box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsStem || (box.m_mutations[cellId].mutateQuiecence == true && box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsStem / 10.0f))
 				{
 					EnterG1(box, cellId);
 				}
@@ -183,7 +184,7 @@ struct  Crypt
 			(int)m_normalRNG(m_random_generator),
 			cellRef,
 			CellCycleStages::Child,
-			box.m_attachmentStrengths[cellId]);
+			box.m_mutations[cellId]);
 
 		box.m_growthStageNumTimesteps[cellId] = (int)m_normalRNG(m_random_generator);
 
@@ -336,7 +337,13 @@ struct  Crypt
 		}
 		else
 		{
-			delta *= box.m_attachmentStrengths[cellId];
+			double mutationFactor = 1.0;
+			if(box.m_mutations[cellId].mutateAttachment == true)
+			{
+				mutationFactor = 10.0;
+			}
+
+			delta *= std::min(m_offMembraneRestorationFactor * mutationFactor, 1.0);
 		}
 
 		box.m_positions[cellId] -= delta;

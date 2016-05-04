@@ -618,7 +618,7 @@ namespace Renderer
 				{
 					Vector3D& vec = box.m_positions[cell];
 
-					if(box.m_attachmentStrengths[cell] == 0.001)
+					if(box.m_mutations[cell].mutateAttachment == false && box.m_mutations[cell].mutateCellForces == false && box.m_mutations[cell].mutateQuiecence == false)
 					{
 						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
 						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
@@ -662,7 +662,7 @@ namespace Renderer
 				{
 					Vector3D& vec = box.m_positions[cell];
 
-					if(box.m_attachmentStrengths[cell] != 0.001)
+					if(box.m_mutations[cell].mutateAttachment == true || box.m_mutations[cell].mutateCellForces == true || box.m_mutations[cell].mutateQuiecence == true)
 					{
 						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
 						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);

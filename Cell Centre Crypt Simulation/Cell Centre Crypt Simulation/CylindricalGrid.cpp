@@ -203,8 +203,21 @@ struct CylindricalGrid
 								//m_crypts.m_forces[cryptId2] -= cryptForce;
 								}*/
 
-								box.m_positions[cellId] += force;
-								collisionBox->m_positions[innerCellId] -= force;
+								Vector3D outerForce = force;
+								Vector3D innerForce = force;
+
+								if(box.m_mutations[cellId].mutateCellForces)
+								{
+									outerForce /= 2.0;
+								}
+
+								if(collisionBox->m_mutations[innerCellId].mutateCellForces)
+								{
+									innerForce /= 2.0;
+								}
+
+								box.m_positions[cellId] += outerForce;
+								collisionBox->m_positions[innerCellId] -= innerForce;
 							}
 						}
 					}
