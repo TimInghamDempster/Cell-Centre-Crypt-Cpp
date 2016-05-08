@@ -55,13 +55,13 @@ int main(int argc, char* argv[])
 				outputFile << proliferatingCount;
 				outputFile << ',';
 				outputFile << proliferatingInCycleCount;
-				outputFile << ",\n";
+				outputFile << ",";
 				outputFile << mutatedFlatMucosaCount;
-				outputFile << ",\n";
+				outputFile << ",";
 				outputFile << normalFlatMucosaCount;
-				outputFile << ",\n";
+				outputFile << ",";
 				outputFile << mutatedCryptCount;
-				outputFile << ",\n";
+				outputFile << ",";
 				outputFile << normalCryptCount;
 				outputFile << ",\n";
 				Simulation::crypt->ClearCounters();
