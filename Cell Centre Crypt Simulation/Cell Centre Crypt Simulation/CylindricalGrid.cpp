@@ -186,7 +186,7 @@ struct CylindricalGrid
 									delta.z = (double)m_random(m_random_generator) - 0.5f;
 								}
 
-								Vector3D force = delta * restitution / separation;
+								Vector3D force = delta / separation * restitution;
 								/*Vector3D cryptForce = force;
 								cryptForce.Y = 0.0f;
 
