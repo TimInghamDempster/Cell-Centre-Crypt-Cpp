@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	if(init)
 	{
 		std::ofstream outputFile;
-		outputFile.open(Simulation::filename);
+		outputFile.open(Simulation::filename.c_str());
 
 		outputFile << "cellularity, anoikis, divisions, stem count, stem count in cycle, proliferation count, proliferation count in cycle, mutated cell count in flat mucosa, normal cell count in flat mucosa, mutated cell count in crypt, normal cell count in crypt";
 		outputFile << ",\n";

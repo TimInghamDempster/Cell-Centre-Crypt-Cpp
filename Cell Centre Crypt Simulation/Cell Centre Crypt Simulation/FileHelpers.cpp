@@ -4,7 +4,7 @@ namespace Utils
 	char* ReadBinaryFile(std::string filename, int& outFileLength, bool& outSuccess)
 	{
 		std::ifstream file;
-		file.open(filename, std::ios::binary);
+		file.open(filename.c_str(), std::ios::binary);
 		
 		if(file.fail() || file.bad() || !file.good() || !file.is_open())
 		{			

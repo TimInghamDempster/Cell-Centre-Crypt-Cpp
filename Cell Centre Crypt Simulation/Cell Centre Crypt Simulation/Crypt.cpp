@@ -32,10 +32,6 @@ struct  Crypt
 
 	Vector2D m_colonBoundary;
 
-	std::default_random_engine& m_random_generator;
-	std::normal_distribution<double> m_normalRNG;
-	std::uniform_real_distribution<double> m_random;
-
 	//std::vector<Vector3D> deadcells;
 
 	int m_numBirthEvents;
@@ -46,8 +42,9 @@ struct  Crypt
 	int m_anoikisHeights[100];
 
 	CylindricalGrid m_grid;
+	NormalDistributionRNG* m_normalRNG;
 
-	Crypt(int numRows, int numColumns, std::default_random_engine& random, double averageGrowthTimeSeconds, double attachmentForce) : 
+	Crypt(int numRows, int numColumns, double averageGrowthTimeSeconds, double attachmentForce, NormalDistributionRNG* normalRNG) : 
 		m_numRows(numRows),
 		m_numColumns(numColumns),
 		m_secondsPerTimestep(30.0f),
@@ -70,13 +67,11 @@ struct  Crypt
 		m_stromalRestorationFactor(0.3f),
 		m_membraneSeparationToTriggerAnoikis(100.0f),
 		m_colonBoundary(1000.0f, 1000.0f),
-		m_random_generator(random),
-		m_random(0.0001f, 1.0f),
-		m_normalRNG(m_averageGrowthTimesteps, 2.625f * 3600.0f / m_secondsPerTimestep),
+		m_normalRNG(normalRNG),
 		m_numBirthEvents(0),
 		m_numAnoikisEvents(0),
 		m_cellularity(0),
-		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, m_cryptHeight, random, 1238.4f / m_secondsPerTimestep)
+		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, m_cryptHeight, 1238.4f / m_secondsPerTimestep)
 	{
 		CellReference ref;
 		Vector3D pos(0.0f, m_cryptHeight * -0.999f, 0.0f);
@@ -117,9 +112,9 @@ struct  Crypt
 						pos,
 						0.0f,
 						m_cellSize,
-						m_random(m_random_generator) * -10.0f * m_averageGrowthTimesteps, 
+						(double)rand() / RAND_MAX * -10.0f * m_averageGrowthTimesteps, 
 						//0,
-						m_normalRNG(m_random_generator),
+						(int)m_normalRNG->Next(),
 						ref, 
 						CellCycleStages::G0,
 						noMutation);
@@ -162,9 +157,9 @@ struct  Crypt
 		box.m_currentStageNumTimesteps[cellId] = 0;
 
 		Vector3D newPos = box.m_positions[cellId];
-		newPos.x += (5.0f - (m_random(m_random_generator) * 10.0f)) * 1.0f;
-		newPos.y += (5.0f - (m_random(m_random_generator) * 10.0f)) * 1.0f;
-		newPos.z += (5.0f - (m_random(m_random_generator) * 10.0f)) * 1.0f;
+		newPos.x += (5.0f - ((double)rand() / RAND_MAX * 10.0f)) * 1.0f;
+		newPos.y += (5.0f - ((double)rand() / RAND_MAX * 10.0f)) * 1.0f;
+		newPos.z += (5.0f - ((double)rand() / RAND_MAX * 10.0f)) * 1.0f;
 
 		if (newPos.y < -1.0f * m_cryptHeight)
 		{
@@ -181,12 +176,12 @@ struct  Crypt
 			0.0f,
 			m_cellSize / m_MPhaseTimesteps,
 			0,
-			(int)m_normalRNG(m_random_generator),
+			(int)m_normalRNG->Next(),
 			cellRef,
 			CellCycleStages::Child,
 			box.m_mutations[cellId]);
 
-		box.m_growthStageNumTimesteps[cellId] = (int)m_normalRNG(m_random_generator);
+		box.m_growthStageNumTimesteps[cellId] = (int)m_normalRNG->Next();
 
 		box.m_otherSubCellIndex[cellId].m_active = true;
 		box.m_otherSubCellIndex[cellId].m_box = &box;

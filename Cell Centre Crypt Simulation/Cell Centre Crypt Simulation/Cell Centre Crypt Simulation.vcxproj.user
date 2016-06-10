@@ -8,4 +8,16 @@
     <LocalDebuggerEnvironment>SGE_TASK_ID=0</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test Debug|Win32'">
+    <LocalDebuggerEnvironment>SGE_TASK_ID=0</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IcebergRelease|Win32'">
+    <LocalDebuggerEnvironment>SGE_TASK_ID=0</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test Release|Win32'">
+    <LocalDebuggerEnvironment>SGE_TASK_ID=0</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

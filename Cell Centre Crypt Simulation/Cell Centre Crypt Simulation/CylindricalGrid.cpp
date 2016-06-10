@@ -8,19 +8,15 @@ struct CylindricalGrid
 	const double m_boxHeight;
 	const double m_cellStiffness;
 	const double m_MStageRequiredTimesteps;
-
-	std::default_random_engine& m_random_generator;
-	std::uniform_real_distribution<double> m_random;
-
-	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, double height, std::default_random_engine& random_generator, double mStageRequiredTimesteps)
+	
+	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, double height, double mStageRequiredTimesteps)
 		:
 		m_numColumns(numBoxesTheta),
 		m_numRows(numBoxesY),
 		m_height(height),
 		m_boxHeight(height / numBoxesY),
 		m_cellStiffness(0.3f),
-		m_MStageRequiredTimesteps(mStageRequiredTimesteps),
-		m_random_generator(random_generator)
+		m_MStageRequiredTimesteps(mStageRequiredTimesteps)
 	{
 		m_columns = std::vector<std::vector<CellBox> > (numBoxesTheta, std::vector<CellBox> (numBoxesY, CellBox(expectedNumberOfCellsInBox)));
 
@@ -181,9 +177,9 @@ struct CylindricalGrid
 								if (separation < 0.1f)
 								{
 									separation = 0.1f;
-									delta.x = (double)m_random(m_random_generator) - 0.5f;
-									delta.y = (double)m_random(m_random_generator) - 0.5f;
-									delta.z = (double)m_random(m_random_generator) - 0.5f;
+									delta.x = (double)std::rand() / RAND_MAX - 0.5f;
+									delta.y = (double)std::rand() / RAND_MAX - 0.5f;
+									delta.z = (double)std::rand() / RAND_MAX - 0.5f;
 								}
 
 								Vector3D force = delta / separation * restitution;

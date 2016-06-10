@@ -15,7 +15,7 @@ struct CellReference
 	bool m_active;
 
 	CellReference() :
-		m_box(nullptr),
+		m_box(NULL),
 		m_cellId(-1),
 		m_active(false)
 	{

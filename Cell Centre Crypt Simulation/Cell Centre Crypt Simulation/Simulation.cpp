@@ -9,14 +9,15 @@ namespace Simulation
 		MutationData mutationData;
 	};
 
-	std::default_random_engine myRandom;
 	Crypt* crypt;
 	std::string filename;
 	SimSetup currentSettings;
 	double mutationHeight = -100.0;
+	NormalDistributionRNG* normalRNG;
 
 	bool InitSimulation()
 	{
+
 		MutationData noMutation = { false, false, false };
 		MutationData g0Mutation = { true, false, false };
 		MutationData adhesionMutation = {false, true, false };
@@ -153,6 +154,7 @@ namespace Simulation
 
 		std::stringstream stream;
 	
+		int seed = time(NULL);
 		if(env)
 		{
 			unsigned taskId = 0;
@@ -162,17 +164,20 @@ namespace Simulation
 
 			if(taskId < numSettings)
 			{
-				
+				// time() resolution is really poor so need to make sure that repeats don't have the same seed.
+				seed += taskId;
+
 				currentSettings = settings[taskId];
 				
 				double cellCycleTime = settings[taskId].averageGrowthTimeInSeconds;
 				double attachmentForce = settings[taskId].membraneAttachmentForce;
 				filename = settings[taskId].filename;
 
-				crypt = new Crypt(80, 23, myRandom, cellCycleTime, attachmentForce);
+				double secondsPerTimestep = 30.0;
+				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
+				crypt = new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG);
 
-				unsigned time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-				myRandom.seed(time);
+				srand(seed);
 				return true;
 			}
 		}
@@ -183,7 +188,7 @@ namespace Simulation
 	void DoMutation()
 	{
 		float minDelta = 100000.0; // Sufficiently big number, ie bigger than a crypt
-		CellBox* closestBox = nullptr;
+		CellBox* closestBox = NULL;
 		int closestCell = 0;
 
 		for(int col = 0; col < (int)crypt->m_grid.m_columns.size(); col++)
@@ -195,7 +200,7 @@ namespace Simulation
 				for(int cell = 0; cell < box.m_positions.size(); cell++)
 				{
 					Vector3D& vec = box.m_positions[cell];
-					float delta = std::fabs((vec.y + crypt->m_cryptHeight) - mutationHeight);
+					float delta = fabs((vec.y + crypt->m_cryptHeight) - mutationHeight);
 
 					if(delta < minDelta && vec.z > 300.0)
 					{
@@ -218,5 +223,6 @@ namespace Simulation
 	void CleanUpSimulation()
 	{
 		delete crypt;
+		delete normalRNG;
 	}
 }
