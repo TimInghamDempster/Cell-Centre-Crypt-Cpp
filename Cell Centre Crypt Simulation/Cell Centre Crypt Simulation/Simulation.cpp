@@ -26,7 +26,7 @@ namespace Simulation
 
 		SimSetup settings[] = 
 		{
-			{108000,0.001, "data/30hrCC_001af_run1.csv", g0Mutation},
+			{108000,0.001, "data/30hrCC_001af_run1.csv", noMutation},
 			{108000,0.001, "data/30hrCC_001af_run2.csv", noMutation},
 			{108000,0.001, "data/30hrCC_001af_run3.csv", noMutation},
 			{108000,0.001, "data/30hrCC_001af_run4.csv", noMutation},
