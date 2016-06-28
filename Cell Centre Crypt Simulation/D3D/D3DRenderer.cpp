@@ -543,9 +543,9 @@ namespace Renderer
 		
 		int numInBatch = 0;
 		
-		for(int col = 0; col < (int)Simulation::crypt->m_grid.m_columns.size(); col++)
+		for(int col = 0; col < (int)Simulation::crypts[0]->m_grid.m_columns.size(); col++)
 		{
-			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
+			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
 			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
@@ -608,9 +608,9 @@ namespace Renderer
 		
 		int numInBatch = 0;
 		
-		for(int col = 0; col < (int)Simulation::crypt->m_grid.m_columns.size(); col++)
+		for(int col = 0; col < (int)Simulation::crypts[0]->m_grid.m_columns.size(); col++)
 		{
-			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
+			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
 			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
@@ -652,9 +652,9 @@ namespace Renderer
 		
 		numInBatch = 0;
 		
-		for(int col = 0; col < (int)Simulation::crypt->m_grid.m_columns.size(); col++)
+		for(int col = 0; col < (int)Simulation::crypts[0]->m_grid.m_columns.size(); col++)
 		{
-			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
+			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
 			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
@@ -708,9 +708,9 @@ namespace Renderer
 		
 		int numInBatch = 0;
 		
-		for(int col = 0; col < (int)Simulation::crypt->m_grid.m_columns.size(); col++)
+		for(int col = 0; col < (int)Simulation::crypts[0]->m_grid.m_columns.size(); col++)
 		{
-			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
+			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
 			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
@@ -753,10 +753,10 @@ namespace Renderer
 		float purpleCol[] = {0.7f, 0.0f, 1.0f, 1.0f};
 		float blueCol[] = {0.0f, 0.87f, 1.0f, 1.0f};
 
-		DrawCellsInBounds(Simulation::crypt->m_basicG0StemBoundary, Simulation::crypt->m_cryptHeight * -1.0f, purpleCol, true); // quiescent stem cells
-		DrawCellsInBounds(Simulation::crypt->m_basicG0StemBoundary, Simulation::crypt->m_cryptHeight * -1.0f, purpleCol, false); // cycling stem cells
-		DrawCellsInBounds(1000.0f, Simulation::crypt->m_basicG0StemBoundary, blueCol, false); // cycling proliferating cells
-		DrawCellsInBounds(Simulation::crypt->m_basicG0ProliferationBoundary, Simulation::crypt->m_basicG0StemBoundary, blueCol, true); // quiescent proliferating cells
-		DrawCellsInBounds(1000.0, Simulation::crypt->m_basicG0ProliferationBoundary, redCol, true); // differentiated cells
+		DrawCellsInBounds(Simulation::crypts[0]->m_basicG0StemBoundary, Simulation::crypts[0]->m_cryptHeight * -1.0f, purpleCol, true); // quiescent stem cells
+		DrawCellsInBounds(Simulation::crypts[0]->m_basicG0StemBoundary, Simulation::crypts[0]->m_cryptHeight * -1.0f, purpleCol, false); // cycling stem cells
+		DrawCellsInBounds(1000.0f, Simulation::crypts[0]->m_basicG0StemBoundary, blueCol, false); // cycling proliferating cells
+		DrawCellsInBounds(Simulation::crypts[0]->m_basicG0ProliferationBoundary, Simulation::crypts[0]->m_basicG0StemBoundary, blueCol, true); // quiescent proliferating cells
+		DrawCellsInBounds(1000.0, Simulation::crypts[0]->m_basicG0ProliferationBoundary, redCol, true); // differentiated cells
 	}
 }

@@ -48,13 +48,13 @@ int main(int argc, char* argv[])
 				int mutatedCryptCount = 0;
 				int normalCryptCount = 0;
 
-				Simulation::crypt->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount, mutatedFlatMucosaCount, normalFlatMucosaCount, mutatedCryptCount, normalCryptCount);
+				Simulation::crypts[0]->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount, mutatedFlatMucosaCount, normalFlatMucosaCount, mutatedCryptCount, normalCryptCount);
 
 				outputFile << cellularity;
 				outputFile << ',';
-				outputFile << Simulation::crypt->m_numAnoikisEvents;
+				outputFile << Simulation::crypts[0]->m_numAnoikisEvents;
 				outputFile << ',';
-				outputFile << Simulation::crypt->m_numBirthEvents;
+				outputFile << Simulation::crypts[0]->m_numBirthEvents;
 				outputFile << ',';
 				outputFile << stemCount;
 				outputFile << ',';
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 				outputFile << ",";
 				outputFile << normalCryptCount;
 				outputFile << ",";
-				Simulation::crypt->ClearCounters();
+				Simulation::crypts[0]->ClearCounters();
 			}
 
 			//Sleep(10);
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 
 		for(int i = 0; i < 100; i++)
 		{
-			outputFile << Simulation::crypt->m_anoikisHeights[i];
+			outputFile << Simulation::crypts[0]->m_anoikisHeights[i];
 			outputFile << ",\n";
 		}
 

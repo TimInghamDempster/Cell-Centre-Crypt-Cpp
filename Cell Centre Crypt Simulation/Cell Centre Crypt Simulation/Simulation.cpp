@@ -9,7 +9,7 @@ namespace Simulation
 		MutationData mutationData;
 	};
 
-	Crypt* crypt;
+	std::vector<Crypt*> crypts;
 	std::string filename;
 	SimSetup currentSettings;
 	double mutationHeight = -100.0;
@@ -175,7 +175,7 @@ namespace Simulation
 
 				double secondsPerTimestep = 30.0;
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
-				crypt = new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG);
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG));
 
 				srand(seed);
 				return true;
@@ -191,16 +191,16 @@ namespace Simulation
 		CellBox* closestBox = NULL;
 		int closestCell = 0;
 
-		for(int col = 0; col < (int)crypt->m_grid.m_columns.size(); col++)
+		for(int col = 0; col < (int)crypts[0]->m_grid.m_columns.size(); col++)
 		{
-			std::vector<CellBox>& column = Simulation::crypt->m_grid.m_columns[col];
+			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
 			for(int row = 0; row < (int)column.size(); row++)
 			{
 				CellBox& box = column[row];
 				for(int cell = 0; cell < box.m_positions.size(); cell++)
 				{
 					Vector3D& vec = box.m_positions[cell];
-					float delta = fabs((vec.y + crypt->m_cryptHeight) - mutationHeight);
+					float delta = fabs((vec.y + crypts[0]->m_cryptHeight) - mutationHeight);
 
 					if(delta < minDelta && vec.z > 300.0)
 					{
@@ -217,12 +217,15 @@ namespace Simulation
 
 	void StepSimulation()
 	{
-		crypt->Step();
+		crypts[0]->Step();
 	}
 
 	void CleanUpSimulation()
 	{
-		delete crypt;
 		delete normalRNG;
+		for(int i = 0; i < crypts.size(); i++)
+		{
+			delete crypts[i];
+		}
 	}
 }
