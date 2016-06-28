@@ -8,15 +8,17 @@ struct CylindricalGrid
 	const double m_boxHeight;
 	const double m_cellStiffness;
 	const double m_MStageRequiredTimesteps;
+	const Vector3D m_pos;
 	
-	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, double height, double mStageRequiredTimesteps)
+	CylindricalGrid(int numBoxesY, int numBoxesTheta, int expectedNumCellsPerColumn, int expectedNumberOfCellsInBox, double height, double mStageRequiredTimesteps, Vector3D position)
 		:
 		m_numColumns(numBoxesTheta),
 		m_numRows(numBoxesY),
 		m_height(height),
 		m_boxHeight(height / numBoxesY),
 		m_cellStiffness(0.3f),
-		m_MStageRequiredTimesteps(mStageRequiredTimesteps)
+		m_MStageRequiredTimesteps(mStageRequiredTimesteps),
+		m_pos(position)
 	{
 		m_columns = std::vector<std::vector<CellBox> > (numBoxesTheta, std::vector<CellBox> (numBoxesY, CellBox(expectedNumberOfCellsInBox)));
 
@@ -75,7 +77,9 @@ struct CylindricalGrid
 	}
 
 	CellBox* FindBox(Vector3D position)
-	{		
+	{
+		position -= m_pos;
+
 		double theta = atan2(position.z, position.x);
 		double normalisedTheta = theta / (2.0f * (double)PI) + 0.5f; // Map from -PI < x < PI to 0 < x < 1
 		double normalisedColumnWidth = 1.0f / m_numColumns;

@@ -175,7 +175,9 @@ namespace Simulation
 
 				double secondsPerTimestep = 30.0;
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-2000.0f,0.0f,0.0f)));
+				
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(2000.0f,0.0f,0.0f)));
 
 				srand(seed);
 				return true;
@@ -217,7 +219,10 @@ namespace Simulation
 
 	void StepSimulation()
 	{
-		crypts[0]->Step();
+		for(int i = 0; i< Simulation::crypts.size(); i++)
+		{
+			crypts[i]->Step();
+		}
 	}
 
 	void CleanUpSimulation()

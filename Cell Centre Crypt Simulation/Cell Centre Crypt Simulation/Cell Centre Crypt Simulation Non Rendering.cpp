@@ -40,8 +40,11 @@ int main(int argc, char* argv[])
 				int mutatedCryptCount = 0;
 				int normalCryptCount = 0;
 
-				Simulation::crypts[0]->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount, mutatedFlatMucosaCount, normalFlatMucosaCount, mutatedCryptCount, normalCryptCount);
-
+				//for(int i = 0; i < Simulation::crypts.size(); i++)
+				{
+					Simulation::crypts[0]->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount, mutatedFlatMucosaCount, normalFlatMucosaCount, mutatedCryptCount, normalCryptCount);
+				}
+				
 				outputFile << cellularity;
 				outputFile << ',';
 				outputFile << Simulation::crypts[0]->m_numAnoikisEvents;

@@ -542,39 +542,41 @@ namespace Renderer
 		
 		
 		int numInBatch = 0;
-		
-		for(int col = 0; col < (int)Simulation::crypts[0]->m_grid.m_columns.size(); col++)
+		for(int i = 0; i< Simulation::crypts.size(); i++)
 		{
-			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
-			for(int row = 0; row < (int)column.size(); row++)
+			for(int col = 0; col < (int)Simulation::crypts[i]->m_grid.m_columns.size(); col++)
 			{
-				CellBox& box = column[row];
-
-
-				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
+				std::vector<CellBox>& column = Simulation::crypts[i]->m_grid.m_columns[col];
+				for(int row = 0; row < (int)column.size(); row++)
 				{
-					Vector3D& vec = box.m_positions[cell];
-					bool quiescent = box.m_cycleStages[cell] == CellCycleStages::G0;
+					CellBox& box = column[row];
 
-					if(vec.y < upper && vec.y > lower && quiescent == drawQuiescentCells)
+
+					for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
 					{
-						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+						Vector3D& vec = box.m_positions[cell];
+						bool quiescent = box.m_cycleStages[cell] == CellCycleStages::G0;
 
-						world = DirectX::XMMatrixMultiply(scale, world);
-						world = DirectX::XMMatrixMultiply(world, proj);
-
-						DirectX::XMFLOAT4X4 mat;
-						DirectX::XMStoreFloat4x4(&mat, world);
-
-						memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
-						numInBatch++;
-
-						if(numInBatch == batchSize)
+						if(vec.y < upper && vec.y > lower && quiescent == drawQuiescentCells)
 						{
-							DrawBatch(numInBatch);
-							numInBatch = 0;
-						} 
+							DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+							DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+							world = DirectX::XMMatrixMultiply(scale, world);
+							world = DirectX::XMMatrixMultiply(world, proj);
+
+							DirectX::XMFLOAT4X4 mat;
+							DirectX::XMStoreFloat4x4(&mat, world);
+
+							memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+							numInBatch++;
+
+							if(numInBatch == batchSize)
+							{
+								DrawBatch(numInBatch);
+								numInBatch = 0;
+							} 
+						}
 					}
 				}
 			}
@@ -594,7 +596,7 @@ namespace Renderer
 		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
 
 		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
-		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, zDist - 1000.0f, zDist + 1000.0f);
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, zDist - 10000.0f, zDist + 10000.0f);
 
 		proj = DirectX::XMMatrixMultiply(view, proj);
 
@@ -608,35 +610,38 @@ namespace Renderer
 		
 		int numInBatch = 0;
 		
-		for(int col = 0; col < (int)Simulation::crypts[0]->m_grid.m_columns.size(); col++)
+		for(int i = 0; i< Simulation::crypts.size(); i++)
 		{
-			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
-			for(int row = 0; row < (int)column.size(); row++)
+			for(int col = 0; col < (int)Simulation::crypts[i]->m_grid.m_columns.size(); col++)
 			{
-				CellBox& box = column[row];
-				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				std::vector<CellBox>& column = Simulation::crypts[i]->m_grid.m_columns[col];
+				for(int row = 0; row < (int)column.size(); row++)
 				{
-					Vector3D& vec = box.m_positions[cell];
-
-					if(box.m_mutations[cell].mutateAttachment == false && box.m_mutations[cell].mutateCellForces == false && box.m_mutations[cell].mutateQuiecence == false)
+					CellBox& box = column[row];
+					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
-						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+						Vector3D& vec = box.m_positions[cell];
 
-						world = DirectX::XMMatrixMultiply(scale, world);
-						world = DirectX::XMMatrixMultiply(world, proj);
-
-						DirectX::XMFLOAT4X4 mat;
-						DirectX::XMStoreFloat4x4(&mat, world);
-
-						memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
-						numInBatch++;
-
-						if(numInBatch == batchSize)
+						if(box.m_mutations[cell].mutateAttachment == false && box.m_mutations[cell].mutateCellForces == false && box.m_mutations[cell].mutateQuiecence == false)
 						{
-							DrawBatch(numInBatch);
-							numInBatch = 0;
-						} 
+							DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+							DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+							world = DirectX::XMMatrixMultiply(scale, world);
+							world = DirectX::XMMatrixMultiply(world, proj);
+
+							DirectX::XMFLOAT4X4 mat;
+							DirectX::XMStoreFloat4x4(&mat, world);
+
+							memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+							numInBatch++;
+
+							if(numInBatch == batchSize)
+							{
+								DrawBatch(numInBatch);
+								numInBatch = 0;
+							} 
+						}
 					}
 				}
 			}
@@ -651,36 +656,39 @@ namespace Renderer
 		deviceContext->Unmap(psCBuffer, 0);
 		
 		numInBatch = 0;
-		
-		for(int col = 0; col < (int)Simulation::crypts[0]->m_grid.m_columns.size(); col++)
+
+		for(int i = 0; i< Simulation::crypts.size(); i++)
 		{
-			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
-			for(int row = 0; row < (int)column.size(); row++)
+			for(int col = 0; col < (int)Simulation::crypts[i]->m_grid.m_columns.size(); col++)
 			{
-				CellBox& box = column[row];
-				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				std::vector<CellBox>& column = Simulation::crypts[i]->m_grid.m_columns[col];
+				for(int row = 0; row < (int)column.size(); row++)
 				{
-					Vector3D& vec = box.m_positions[cell];
-
-					if(box.m_mutations[cell].mutateAttachment == true || box.m_mutations[cell].mutateCellForces == true || box.m_mutations[cell].mutateQuiecence == true)
+					CellBox& box = column[row];
+					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
-						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+						Vector3D& vec = box.m_positions[cell];
 
-						world = DirectX::XMMatrixMultiply(scale, world);
-						world = DirectX::XMMatrixMultiply(world, proj);
-
-						DirectX::XMFLOAT4X4 mat;
-						DirectX::XMStoreFloat4x4(&mat, world);
-
-						memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
-						numInBatch++;
-
-						if(numInBatch == batchSize)
+						if(box.m_mutations[cell].mutateAttachment == true || box.m_mutations[cell].mutateCellForces == true || box.m_mutations[cell].mutateQuiecence == true)
 						{
-							DrawBatch(numInBatch);
-							numInBatch = 0;
-						} 
+							DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+							DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+							world = DirectX::XMMatrixMultiply(scale, world);
+							world = DirectX::XMMatrixMultiply(world, proj);
+
+							DirectX::XMFLOAT4X4 mat;
+							DirectX::XMStoreFloat4x4(&mat, world);
+
+							memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+							numInBatch++;
+
+							if(numInBatch == batchSize)
+							{
+								DrawBatch(numInBatch);
+								numInBatch = 0;
+							} 
+						}
 					}
 				}
 			}
@@ -707,39 +715,42 @@ namespace Renderer
 		
 		
 		int numInBatch = 0;
-		
-		for(int col = 0; col < (int)Simulation::crypts[0]->m_grid.m_columns.size(); col++)
-		{
-			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
-			for(int row = 0; row < (int)column.size(); row++)
+
+		for(int i = 0; i< Simulation::crypts.size(); i++)
 			{
-				CellBox& box = column[row];
-				for(int cell = 0; cell < box.m_positions.size(); cell++)
-				//for(int cell = 0; cell < Simulation::crypt->deadcells.size(); cell++)
+			for(int col = 0; col < (int)Simulation::crypts[i]->m_grid.m_columns.size(); col++)
+			{
+				std::vector<CellBox>& column = Simulation::crypts[i]->m_grid.m_columns[col];
+				for(int row = 0; row < (int)column.size(); row++)
 				{
-					//Vector3D& vec = Simulation::crypt->deadcells[cell];
-					Vector3D& vec = box.m_positions[cell];
-
-					//if(vec.z < 0.0f)
+					CellBox& box = column[row];
+					for(int cell = 0; cell < box.m_positions.size(); cell++)
+					//for(int cell = 0; cell < Simulation::crypt->deadcells.size(); cell++)
 					{
-						DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-						//DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(10.0f, 10.0f, 10.0f);
-						DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+						//Vector3D& vec = Simulation::crypt->deadcells[cell];
+						Vector3D& vec = box.m_positions[cell];
 
-						world = DirectX::XMMatrixMultiply(scale, world);
-						world = DirectX::XMMatrixMultiply(world, proj);
-
-						DirectX::XMFLOAT4X4 mat;
-						DirectX::XMStoreFloat4x4(&mat, world);
-
-						memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
-						numInBatch++;
-
-						if(numInBatch == batchSize)
+						//if(vec.z < 0.0f)
 						{
-							DrawBatch(numInBatch);
-							numInBatch = 0;
-						} 
+							DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+							//DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(10.0f, 10.0f, 10.0f);
+							DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+							world = DirectX::XMMatrixMultiply(scale, world);
+							world = DirectX::XMMatrixMultiply(world, proj);
+
+							DirectX::XMFLOAT4X4 mat;
+							DirectX::XMStoreFloat4x4(&mat, world);
+
+							memcpy(matrixScratchBuffer + 16 * numInBatch, &world, 16 * sizeof(float));
+							numInBatch++;
+
+							if(numInBatch == batchSize)
+							{
+								DrawBatch(numInBatch);
+								numInBatch = 0;
+							} 
+						}
 					}
 				}
 			}
@@ -753,10 +764,13 @@ namespace Renderer
 		float purpleCol[] = {0.7f, 0.0f, 1.0f, 1.0f};
 		float blueCol[] = {0.0f, 0.87f, 1.0f, 1.0f};
 
-		DrawCellsInBounds(Simulation::crypts[0]->m_basicG0StemBoundary, Simulation::crypts[0]->m_cryptHeight * -1.0f, purpleCol, true); // quiescent stem cells
-		DrawCellsInBounds(Simulation::crypts[0]->m_basicG0StemBoundary, Simulation::crypts[0]->m_cryptHeight * -1.0f, purpleCol, false); // cycling stem cells
-		DrawCellsInBounds(1000.0f, Simulation::crypts[0]->m_basicG0StemBoundary, blueCol, false); // cycling proliferating cells
-		DrawCellsInBounds(Simulation::crypts[0]->m_basicG0ProliferationBoundary, Simulation::crypts[0]->m_basicG0StemBoundary, blueCol, true); // quiescent proliferating cells
-		DrawCellsInBounds(1000.0, Simulation::crypts[0]->m_basicG0ProliferationBoundary, redCol, true); // differentiated cells
+		for(int i = 0; i< Simulation::crypts.size(); i++)
+		{
+			DrawCellsInBounds(Simulation::crypts[i]->m_basicG0StemBoundary, Simulation::crypts[i]->m_cryptHeight * -1.0f, purpleCol, true); // quiescent stem cells
+			DrawCellsInBounds(Simulation::crypts[i]->m_basicG0StemBoundary, Simulation::crypts[i]->m_cryptHeight * -1.0f, purpleCol, false); // cycling stem cells
+			DrawCellsInBounds(1000.0f, Simulation::crypts[i]->m_basicG0StemBoundary, blueCol, false); // cycling proliferating cells
+			DrawCellsInBounds(Simulation::crypts[i]->m_basicG0ProliferationBoundary, Simulation::crypts[i]->m_basicG0StemBoundary, blueCol, true); // quiescent proliferating cells
+			DrawCellsInBounds(1000.0, Simulation::crypts[i]->m_basicG0ProliferationBoundary, redCol, true); // differentiated cells
+		}
 	}
 }

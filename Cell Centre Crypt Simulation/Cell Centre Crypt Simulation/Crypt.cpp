@@ -32,6 +32,8 @@ struct  Crypt
 
 	Vector2D m_colonBoundary;
 
+	const Vector3D m_pos;
+
 	//std::vector<Vector3D> deadcells;
 
 	int m_numBirthEvents;
@@ -44,7 +46,7 @@ struct  Crypt
 	CylindricalGrid m_grid;
 	NormalDistributionRNG* m_normalRNG;
 
-	Crypt(int numRows, int numColumns, double averageGrowthTimeSeconds, double attachmentForce, NormalDistributionRNG* normalRNG) : 
+	Crypt(int numRows, int numColumns, double averageGrowthTimeSeconds, double attachmentForce, NormalDistributionRNG* normalRNG, Vector3D position) : 
 		m_numRows(numRows),
 		m_numColumns(numColumns),
 		m_secondsPerTimestep(30.0f),
@@ -66,12 +68,13 @@ struct  Crypt
 		m_offMembraneRestorationFactor(attachmentForce),
 		m_stromalRestorationFactor(0.3f),
 		m_membraneSeparationToTriggerAnoikis(100.0f),
-		m_colonBoundary(1000.0f, 1000.0f),
+		m_colonBoundary(10000.0f, 10000.0f),
 		m_normalRNG(normalRNG),
 		m_numBirthEvents(0),
 		m_numAnoikisEvents(0),
 		m_cellularity(0),
-		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, m_cryptHeight, 1238.4f / m_secondsPerTimestep)
+		m_grid(numRows / 2, numColumns / 2, numRows * 2, 4, m_cryptHeight, 1238.4f / m_secondsPerTimestep, position),
+		m_pos(position)
 	{
 		CellReference ref;
 		Vector3D pos(0.0f, m_cryptHeight * -0.999f, 0.0f);
@@ -98,7 +101,7 @@ struct  Crypt
 					double x = cos(theta) * m_cryptRadius;
 					double z = sin(theta) * m_cryptRadius;
 
-					Vector3D pos;// = new Vector3d(cryptX * m_initialCryptSeparation - centeringOffset, -1.0f * CryptHeight, cryptY * m_initialCryptSeparation - centeringOffset);
+					Vector3D pos = m_pos;// = new Vector3d(cryptX * m_initialCryptSeparation - centeringOffset, -1.0f * CryptHeight, cryptY * m_initialCryptSeparation - centeringOffset);
 					pos.x += x;
 					pos.y -= m_cryptHeight;
 					pos.y += height;
@@ -245,8 +248,9 @@ struct  Crypt
 		}
 	}
 
-	void GetClosestPointOnMembrane(const Vector3D inputPosition, Vector3D& outputPosition, Vector3D& outputNormal)
+	void GetClosestPointOnMembrane(Vector3D inputPosition, Vector3D& outputPosition, Vector3D& outputNormal)
 	{
+		inputPosition -= m_pos;
 		Vector2D pos2d(inputPosition.x, inputPosition.z);
 
 		if (pos2d.Length() > m_cryptRadius + m_flutingRadius)
@@ -296,6 +300,7 @@ struct  Crypt
 			outputPosition = normalisedPositionRelativeToNicheCentre * m_cryptRadius + nicheCentre;
 			outputNormal = normalisedPositionRelativeToNicheCentre * -1.0f;
 		}
+		outputPosition += m_pos;
 	}
 
 	void EnforceCryptWalls(CellBox& box, int cellId)
@@ -342,7 +347,7 @@ struct  Crypt
 		}
 
 		box.m_positions[cellId] -= delta;
-		box.m_onMembranePositions[cellId] = membranePos;
+		box.m_onMembranePositions[cellId] = membranePos + m_pos;
 	}
 
 	bool DoAnoikis(CellBox& box, int cellId)
