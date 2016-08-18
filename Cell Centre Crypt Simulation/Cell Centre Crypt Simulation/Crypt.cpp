@@ -347,7 +347,7 @@ struct  Crypt
 		}
 
 		box.m_positions[cellId] -= delta;
-		box.m_onMembranePositions[cellId] = membranePos + m_pos;
+		box.m_onMembranePositions[cellId] = membranePos;
 	}
 
 	bool DoAnoikis(CellBox& box, int cellId)

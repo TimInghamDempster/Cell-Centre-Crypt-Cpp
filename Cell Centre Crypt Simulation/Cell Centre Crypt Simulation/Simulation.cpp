@@ -175,9 +175,21 @@ namespace Simulation
 
 				double secondsPerTimestep = 30.0;
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-2000.0f,0.0f,0.0f)));
-				
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(2000.0f,0.0f,0.0f)));
+
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-1000.0f,0.0f,1000.0f)));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(1000.0f,0.0f,1000.0f)));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-1000.0f,0.0f,-1000.0f)));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(1000.0f,0.0f,-1000.0f)));
+
+				for(int i = 0; i < crypts.size(); i++)
+				{
+					for(int j = i + 1; j < crypts.size(); j++)
+					{
+						crypts[i]->m_grid.SetupCollisionWithOtherGrid(crypts[j]->m_grid);
+					}
+				}
+
+				Simulation::crypts.begin();
 
 				srand(seed);
 				return true;

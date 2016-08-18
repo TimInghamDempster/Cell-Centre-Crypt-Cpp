@@ -76,6 +76,17 @@ struct CylindricalGrid
 		}
 	}
 
+	void SetupCollisionWithOtherGrid(CylindricalGrid& otherGrid)
+	{
+		for(int col = 0; col < m_numColumns; col++)
+		{
+			for(int otherCol = 0; otherCol < otherGrid.m_numColumns; otherCol++)
+			{
+				m_columns[col][m_numRows - 1].m_potentialCollisionBoxes.push_back(&(otherGrid.m_columns[otherCol][m_numRows - 1]));
+			}
+		}
+	}
+
 	CellBox* FindBox(Vector3D position)
 	{
 		position -= m_pos;
@@ -137,6 +148,10 @@ struct CylindricalGrid
 							Vector3D delta = outerPos - innerPos;
 							double separation = delta.Length();
 
+							if(outerPos.x < -1500.0f || outerPos.x > 1500.0f)
+							{
+								int a = 0;
+							}
 
 							double targetSeparation = box.m_radii[cellId] + collisionBox->m_radii[innerCellId];
 
