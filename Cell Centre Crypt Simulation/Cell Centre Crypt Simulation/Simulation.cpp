@@ -229,12 +229,52 @@ namespace Simulation
 		closestBox->m_mutations[closestCell] = currentSettings.mutationData;
 	}
 
+	void AssignCellsToCrypts()
+	{
+		for(int i = 0; i < Simulation::crypts.size(); i++)
+		{
+			Crypt* currentCrypt = Simulation::crypts[i];
+			CylindricalGrid& grid = currentCrypt->m_grid;
+
+			for(int col = 0; col < (int)grid.m_columns.size(); col++)
+			{
+				std::vector<CellBox>& column = grid.m_columns[col];
+				for(int row = 0; row < (int)column.size(); row++)
+				{
+					CellBox& box = column[row];
+					for(int cellId = 0; cellId < (int)box.m_positions.size(); cellId++)
+					{
+						Vector3D cellPos = box.m_positions[cellId];
+						Vector3D currentDelta = cellPos - currentCrypt->m_pos;
+						currentDelta.y = 0.0;
+						float currentDist = currentDelta.Length();
+
+						for(int j = 0; j < Simulation::crypts.size(); j++)
+						{
+							Vector3D testDelta = cellPos - Simulation::crypts[j]->m_pos;
+							testDelta.y = 0.0;
+							float testDist = testDelta.Length();
+
+							if(testDist < currentDist)
+							{
+								CellBox* newBox = Simulation::crypts[j]->m_grid.FindBox(cellPos);
+								newBox->CopyCell(box, cellId);
+								box.RemoveCell(cellId);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	void StepSimulation()
 	{
 		for(int i = 0; i< Simulation::crypts.size(); i++)
 		{
 			crypts[i]->Step();
 		}
+		AssignCellsToCrypts();
 	}
 
 	void CleanUpSimulation()
