@@ -78,11 +78,14 @@ struct CylindricalGrid
 
 	void SetupCollisionWithOtherGrid(CylindricalGrid& otherGrid)
 	{
-		for(int col = 0; col < m_numColumns; col++)
+		if((m_pos - otherGrid.m_pos).Length() < 3500.0f)
 		{
-			for(int otherCol = 0; otherCol < otherGrid.m_numColumns; otherCol++)
+			for(int col = 0; col < m_numColumns; col++)
 			{
-				m_columns[col][m_numRows - 1].m_potentialCollisionBoxes.push_back(&(otherGrid.m_columns[otherCol][m_numRows - 1]));
+				for(int otherCol = 0; otherCol < otherGrid.m_numColumns; otherCol++)
+				{
+					m_columns[col][m_numRows - 1].m_potentialCollisionBoxes.push_back(&(otherGrid.m_columns[otherCol][m_numRows - 1]));
+				}
 			}
 		}
 	}

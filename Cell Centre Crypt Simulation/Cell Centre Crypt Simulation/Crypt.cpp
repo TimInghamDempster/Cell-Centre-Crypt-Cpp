@@ -68,7 +68,7 @@ struct  Crypt
 		m_offMembraneRestorationFactor(attachmentForce),
 		m_stromalRestorationFactor(0.3f),
 		m_membraneSeparationToTriggerAnoikis(100.0f),
-		m_colonBoundary(2000.0f, 2000.0f),
+		m_colonBoundary(7000.0f, 5000.0f),
 		m_normalRNG(normalRNG),
 		m_numBirthEvents(0),
 		m_numAnoikisEvents(0),

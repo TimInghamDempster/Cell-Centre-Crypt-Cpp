@@ -588,15 +588,17 @@ namespace Renderer
 	{
 		frame++;
 
-		float zDist = 10000.1f;
-		float height = -3000.0f;
+		float scaleFactor = 1000.0f; 
+		float zDist = 10010.1f / scaleFactor;
+		float height = 10000.0f / scaleFactor;
+		float cellScale = 100.0f / scaleFactor;
 
 		DirectX::FXMVECTOR camPos = {0.0f, height, zDist, 0.0f };
-		DirectX::FXMVECTOR camLookAt = {0.0f, height, 0.0f, 0.0f };
+		DirectX::FXMVECTOR camLookAt = {0.0f, -500.0f / scaleFactor, 0.0f, 0.0f };
 		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
 
 		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
-		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, zDist - 10000.0f, zDist + 10000.0f);
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, zDist - 10000.0f / scaleFactor, zDist + 10000.0f / scaleFactor);
 
 		proj = DirectX::XMMatrixMultiply(view, proj);
 
@@ -624,8 +626,8 @@ namespace Renderer
 
 						if(box.m_mutations[cell].mutateAttachment == false && box.m_mutations[cell].mutateCellForces == false && box.m_mutations[cell].mutateQuiecence == false)
 						{
-							DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-							DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+							DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x / scaleFactor, vec.y / scaleFactor, vec.z / scaleFactor);
+							DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(cellScale, cellScale, cellScale);
 
 							world = DirectX::XMMatrixMultiply(scale, world);
 							world = DirectX::XMMatrixMultiply(world, proj);
@@ -671,8 +673,8 @@ namespace Renderer
 
 						if(box.m_mutations[cell].mutateAttachment == true || box.m_mutations[cell].mutateCellForces == true || box.m_mutations[cell].mutateQuiecence == true)
 						{
-							DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-							DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+							DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(vec.x / scaleFactor, vec.y / scaleFactor, vec.z / scaleFactor);
+							DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(cellScale, cellScale, cellScale);
 
 							world = DirectX::XMMatrixMultiply(scale, world);
 							world = DirectX::XMMatrixMultiply(world, proj);
