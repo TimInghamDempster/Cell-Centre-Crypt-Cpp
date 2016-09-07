@@ -26,7 +26,7 @@ namespace Simulation
 
 		SimSetup settings[] = 
 		{
-			{108000,0.001, "data/30hrCC_001af_run1.csv", mutateAPC},
+			{144000,0.0001, "data/30hrCC_001af_run1.csv", mutateAPC},
 			{108000,0.001, "data/30hrCC_001af_run2.csv", noMutation},
 			{108000,0.001, "data/30hrCC_001af_run3.csv", noMutation},
 			{108000,0.001, "data/30hrCC_001af_run4.csv", noMutation},
@@ -229,28 +229,31 @@ namespace Simulation
 		float minDelta = 100000.0; // Sufficiently big number, ie bigger than a crypt
 		CellBox* closestBox = NULL;
 		int closestCell = 0;
+		int cryptsToMutate[6] = { 1,3,5,6,15,16};
 
-		for(int col = 0; col < (int)crypts[0]->m_grid.m_columns.size(); col++)
+		for(int i = 0; i <6; i++)
 		{
-			std::vector<CellBox>& column = Simulation::crypts[0]->m_grid.m_columns[col];
-			for(int row = 0; row < (int)column.size(); row++)
+			for(int col = 0; col < (int)crypts[cryptsToMutate[i]]->m_grid.m_columns.size(); col++)
 			{
-				CellBox& box = column[row];
-				for(int cell = 0; cell < box.m_positions.size(); cell++)
+				std::vector<CellBox>& column = Simulation::crypts[cryptsToMutate[i]]->m_grid.m_columns[col];
+				for(int row = 0; row < (int)column.size(); row++)
 				{
-					Vector3D& vec = box.m_positions[cell];
-					float delta = fabs((vec.y + crypts[0]->m_cryptHeight) - mutationHeight);
-
-					if(delta < minDelta && vec.z > 300.0)
+					CellBox& box = column[row];
+					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
-						minDelta = delta;
-						closestBox = &box;
-						closestCell = cell;
+						Vector3D& vec = box.m_positions[cell];
+						float delta = fabs((vec.y + crypts[cryptsToMutate[i]]->m_cryptHeight) - mutationHeight);
+
+						if(delta < minDelta && vec.z > 300.0)
+						{
+							minDelta = delta;
+							closestBox = &box;
+							closestCell = cell;
+						}
 					}
 				}
 			}
 		}
-
 		closestBox->m_mutations[closestCell] = currentSettings.mutationData;
 	}
 

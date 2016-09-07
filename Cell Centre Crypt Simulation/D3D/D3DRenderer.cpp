@@ -651,6 +651,7 @@ namespace Renderer
 		DrawBatch(numInBatch);
 
 		colour[0] = 0.0f;
+		colour[1] = 0.5f;
 		deviceContext->Map(psCBuffer,0, D3D11_MAP_WRITE_DISCARD, 0, &mappedColour);
 
 		memcpy(mappedColour.pData, colour, 16);
