@@ -15,7 +15,10 @@ int main(int argc, char* argv[])
 		std::ofstream outputFile;
 		outputFile.open(Simulation::filename.c_str());
 
-		outputFile << "cellularity, anoikis, divisions, stem count, stem count in cycle, proliferation count, proliferation count in cycle, mutated cell count in flat mucosa, normal cell count in flat mucosa, mutated cell count in crypt, normal cell count in crypt";
+		//outputFile << "cellularity, anoikis, divisions, stem count, stem count in cycle, proliferation count, proliferation count in cycle, mutated cell count in flat mucosa, normal cell count in flat mucosa, mutated cell count in crypt, normal cell count in crypt";
+		//outputFile << ",\n";
+
+		outputFile << "spread, invasion count";
 		outputFile << ",\n";
 
 		while(framecount < totalFrames)
@@ -30,7 +33,7 @@ int main(int argc, char* argv[])
 
 			if(framecount % 200 == 0)
 			{
-				int cellularity = 0;
+				/*int cellularity = 0;
 				int stemCount = 0;
 				int stemInCycleCount = 0;
 				int proliferatingCount = 0;
@@ -67,19 +70,28 @@ int main(int argc, char* argv[])
 				outputFile << ",";
 				outputFile << normalCryptCount;
 				outputFile << ",\n";
-				Simulation::crypts[0]->ClearCounters();
+				Simulation::crypts[0]->ClearCounters();*/
+				
+				double mutantDistance = 0.0;
+				int invasionCount = 0;
+
+				Simulation::MeasureMutationSpread(mutantDistance, Simulation::crypts[0]->m_pos, invasionCount);
+				outputFile << mutantDistance;
+				outputFile << ',';
+				outputFile << invasionCount;
+				outputFile << "\n";
 			}
 
 			//Sleep(10);
 		}
 
-		outputFile << "\n Anoikis Locations \n";
+		/*outputFile << "\n Anoikis Locations \n";
 
 		for(int i = 0; i < 100; i++)
 		{
 			outputFile << Simulation::crypts[0]->m_anoikisHeights[i];
 			outputFile << ",\n";
-		}
+		}*/
 
 		outputFile.close();
 

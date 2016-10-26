@@ -224,6 +224,43 @@ namespace Simulation
 		return false;
 	}
 
+	void MeasureMutationSpread(double& distance, Vector3D mutationOrigin, int& cryptInvasion)
+	{
+		distance = 0;
+		cryptInvasion = 0;
+
+		for(int cryptId = 0; cryptId < crypts.size(); cryptId++)
+		{
+			Crypt* crypt = crypts[cryptId];
+			for(int col = 0; col < (int)crypt->m_grid.m_columns.size(); col++)
+			{
+				std::vector<CellBox>& column = crypt->m_grid.m_columns[col];
+				for(int row = 0; row < (int)column.size(); row++)
+				{
+					CellBox& box = column[row];
+					for(int cell = 0; cell < box.m_positions.size(); cell++)
+					{
+						Vector2D delta = Vector2D(box.m_positions[cell].x, box.m_positions[cell].z);
+						delta.x -= mutationOrigin.x;
+						delta.y -= mutationOrigin.z;
+
+						double cellDistance = delta.Length();
+
+						if(cellDistance > distance && 
+							(box.m_mutations[cell].mutateAttachment == true || box.m_mutations[cell].mutateCellForces == true || box.m_mutations[cell].mutateQuiecence == true))
+						{
+							distance = cellDistance;
+							if(distance > 1000.0 && box.m_positions[cell].y < crypt->m_cryptHeight / 4)
+							{
+								cryptInvasion++;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	void DoMutation()
 	{
 		float minDelta = 100000.0; // Sufficiently big number, ie bigger than a crypt
