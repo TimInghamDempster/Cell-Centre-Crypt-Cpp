@@ -162,6 +162,8 @@ namespace Simulation
 			stream << env;
 			stream >> taskId;
 
+			taskId--;
+
 			if(taskId < numSettings)
 			{
 				// time() resolution is really poor so need to make sure that repeats don't have the same seed.
@@ -250,7 +252,7 @@ namespace Simulation
 							(box.m_mutations[cell].mutateAttachment == true || box.m_mutations[cell].mutateCellForces == true || box.m_mutations[cell].mutateQuiecence == true))
 						{
 							distance = cellDistance;
-							if(distance > 1000.0 && box.m_positions[cell].y < crypt->m_cryptHeight / 4)
+							if(distance > 1000.0 && box.m_positions[cell].y < crypt->m_cryptHeight / -4)
 							{
 								cryptInvasion++;
 							}
