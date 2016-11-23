@@ -26,16 +26,16 @@ namespace Simulation
 
 		SimSetup settings[] = 
 		{
-			{108000,0.001, "data/30hrCC_001af_run1.csv", mutateAPC},
-			{108000,0.001, "data/30hrCC_001af_run2.csv", noMutation},
-			{108000,0.001, "data/30hrCC_001af_run3.csv", noMutation},
-			{108000,0.001, "data/30hrCC_001af_run4.csv", noMutation},
-			{108000,0.001, "data/30hrCC_001af_run5.csv", noMutation},
-			{108000,0.001, "data/30hrCC_001af_run6.csv", noMutation},
-			{108000,0.001, "data/30hrCC_001af_run7.csv", noMutation},
-			{108000,0.001, "data/30hrCC_001af_run8.csv", noMutation},
-			{108000,0.001, "data/30hrCC_001af_run9.csv", noMutation},
-			{108000,0.001, "data/30hrCC_001af_run10.csv", noMutation},
+			{108000,0.001, "data/FieldSpread_run1.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run2.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run3.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run4.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run5.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run6.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run7.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run8.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run9.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run10.csv", mutateAPC},
 			{72000,0.001, "data/20hrCC_001af_run1.csv", noMutation},
 			{72000,0.001, "data/20hrCC_001af_run2.csv", noMutation},
 			{72000,0.001, "data/20hrCC_001af_run3.csv", noMutation},
@@ -178,35 +178,35 @@ namespace Simulation
 				double secondsPerTimestep = 30.0;
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
 
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-500.0f,0.0f,0.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-2500.0f,0.0f,0.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-4500.0f,0.0f,0.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(1500.0f,0.0f,0.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(3500.0f,0.0f,0.0f)));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-500.0f,0.0f,0.0f), 0));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-2500.0f,0.0f,0.0f), 1));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-4500.0f,0.0f,0.0f), 2));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(1500.0f,0.0f,0.0f), 3));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(3500.0f,0.0f,0.0f), 4));
 
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(500.0f,0.0f,1500.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-1500.0f,0.0f,1500.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-3500.0f,0.0f,1500.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(2500.0f,0.0f,1500.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(4500.0f,0.0f,1500.0f)));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(500.0f,0.0f,1500.0f), 5));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-1500.0f,0.0f,1500.0f), 6));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-3500.0f,0.0f,1500.0f), 7));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(2500.0f,0.0f,1500.0f), 8));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(4500.0f,0.0f,1500.0f), 9));
 
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-500.0f,0.0f,3000.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-2500.0f,0.0f,3000.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-4500.0f,0.0f,3000.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(1500.0f,0.0f,3000.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(3500.0f,0.0f,3000.0f)));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-500.0f,0.0f,3000.0f), 10));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-2500.0f,0.0f,3000.0f), 11));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-4500.0f,0.0f,3000.0f), 12));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(1500.0f,0.0f,3000.0f), 13));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(3500.0f,0.0f,3000.0f), 14));
 
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(500.0f,0.0f,-1500.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-1500.0f,0.0f,-1500.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-3500.0f,0.0f,-1500.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(2500.0f,0.0f,-1500.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(4500.0f,0.0f,-1500.0f)));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(500.0f,0.0f,-1500.0f), 15));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-1500.0f,0.0f,-1500.0f), 16));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-3500.0f,0.0f,-1500.0f), 17));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(2500.0f,0.0f,-1500.0f), 18));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(4500.0f,0.0f,-1500.0f), 19));
 
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-500.0f,0.0f,-3000.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-2500.0f,0.0f,-3000.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-4500.0f,0.0f,-3000.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(1500.0f,0.0f,-3000.0f)));
-				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(3500.0f,0.0f,-3000.0f)));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-500.0f,0.0f,-3000.0f), 20));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-2500.0f,0.0f,-3000.0f), 21));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(-4500.0f,0.0f,-3000.0f), 22));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(1500.0f,0.0f,-3000.0f), 23));
+				crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, normalRNG, Vector3D(3500.0f,0.0f,-3000.0f), 24));
 
 				for(int i = 0; i < crypts.size(); i++)
 				{
@@ -263,25 +263,24 @@ namespace Simulation
 		}
 	}
 
-	void DoMutation()
+	void DoMutation(int cryptToMutate)
 	{
 		float minDelta = 100000.0; // Sufficiently big number, ie bigger than a crypt
 		CellBox* closestBox = NULL;
 		int closestCell = 0;
-		int cryptsToMutate[1] = { 0};
 
 		for(int i = 0; i <1; i++)
 		{
-			for(int col = 0; col < (int)crypts[cryptsToMutate[i]]->m_grid.m_columns.size(); col++)
+			for(int col = 0; col < (int)crypts[cryptToMutate]->m_grid.m_columns.size(); col++)
 			{
-				std::vector<CellBox>& column = Simulation::crypts[cryptsToMutate[i]]->m_grid.m_columns[col];
+				std::vector<CellBox>& column = Simulation::crypts[cryptToMutate]->m_grid.m_columns[col];
 				for(int row = 0; row < (int)column.size(); row++)
 				{
 					CellBox& box = column[row];
 					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
 						Vector3D& vec = box.m_positions[cell];
-						float delta = fabs((vec.y + crypts[cryptsToMutate[i]]->m_cryptHeight) - mutationHeight);
+						float delta = fabs((vec.y + crypts[cryptToMutate]->m_cryptHeight) - mutationHeight);
 
 						if(delta < minDelta && vec.z > 300.0)
 						{
@@ -334,8 +333,10 @@ namespace Simulation
 							CellBox* newBox = Simulation::crypts[closestCrypt]->m_grid.FindBox(cellPos);
 							if(newBox != &box)
 							{
-								newBox->CopyCell(box, cellId);
+								int id = newBox->CopyCell(box, cellId);
+								int oldCrypt = box.m_originCrypts[cellId];
 								box.RemoveCell(cellId);
+								newBox->m_originCrypts[id] = oldCrypt;
 								cellId--;
 							}
 						}

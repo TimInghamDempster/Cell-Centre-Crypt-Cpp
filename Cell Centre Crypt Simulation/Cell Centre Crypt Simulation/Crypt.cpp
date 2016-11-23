@@ -46,7 +46,7 @@ struct  Crypt
 	CylindricalGrid m_grid;
 	NormalDistributionRNG* m_normalRNG;
 
-	Crypt(int numRows, int numColumns, double averageGrowthTimeSeconds, double attachmentForce, NormalDistributionRNG* normalRNG, Vector3D position) : 
+	Crypt(int numRows, int numColumns, double averageGrowthTimeSeconds, double attachmentForce, NormalDistributionRNG* normalRNG, Vector3D position, int cryptId) : 
 		m_numRows(numRows),
 		m_numColumns(numColumns),
 		m_secondsPerTimestep(30.0f),
@@ -80,7 +80,7 @@ struct  Crypt
 		Vector3D pos(0.0f, m_cryptHeight * -0.999f, 0.0f);
 		CellBox* box = m_grid.FindBox(pos);
 		//box->AddCell(pos, pos, 0.0f, m_cellSize, 0, (int)m_normalRNG(m_random_generator), ref, CellCycleStages::G0);
-		PopulateCrypt();
+		PopulateCrypt(cryptId);
 
 		for(int i = 0; i < 100; i++)
 		{
@@ -88,7 +88,7 @@ struct  Crypt
 		}
 	}
 
-	void PopulateCrypt()
+	void PopulateCrypt(int cryptId)
 		{
 			for(int hIndex = 1; hIndex < m_numRows / m_compressionFactor - 2; hIndex++)
 			{
@@ -120,7 +120,8 @@ struct  Crypt
 						(int)m_normalRNG->Next(),
 						ref, 
 						CellCycleStages::G0,
-						noMutation);
+						noMutation,
+						cryptId);
 				}
 			}
 		}
@@ -182,7 +183,8 @@ struct  Crypt
 			(int)m_normalRNG->Next(),
 			cellRef,
 			CellCycleStages::Child,
-			box.m_mutations[cellId]);
+			box.m_mutations[cellId],
+			box.m_originCrypts[cellId]);
 
 		box.m_growthStageNumTimesteps[cellId] = (int)m_normalRNG->Next();
 

@@ -35,6 +35,7 @@ struct CellBox
 	std::vector<CellBox*> m_potentialCollisionBoxes;
 	std::vector<int> m_deathList;
 	std::vector<MutationData> m_mutations;
+	std::vector<int> m_originCrypts;
 
 	CellBox(int expectedNumberOfCells)
 	{
@@ -49,6 +50,7 @@ struct CellBox
 		m_cycleStages.reserve(reserveSize);
 		m_deathList.reserve(reserveSize);
 		m_mutations.reserve(reserveSize);
+		m_originCrypts.reserve(reserveSize);
 	}
 
 	int AddCell(Vector3D position,
@@ -59,7 +61,8 @@ struct CellBox
 				int growthStageTimesteps,
 				CellReference otherSubCellIndex,
 				CellCycleStages::Stages cycleStage,
-				MutationData mutation)
+				MutationData mutation,
+				int crypt)
 	{
 		m_positions.push_back(position);
 		m_onMembranePositions.push_back(onMembranePosition);
@@ -70,6 +73,7 @@ struct CellBox
 		m_otherSubCellIndex.push_back(otherSubCellIndex);
 		m_cycleStages.push_back(cycleStage);
 		m_mutations.push_back(mutation);
+		m_originCrypts.push_back(crypt);
 
 		if(otherSubCellIndex.m_active == true)
 		{
@@ -83,9 +87,9 @@ struct CellBox
 		return m_positions.size() - 1;
 	}
 
-	void CopyCell(CellBox& box, int cellId)
+	int CopyCell(CellBox& box, int cellId)
 	{
-		AddCell(box.m_positions[cellId],
+		return AddCell(box.m_positions[cellId],
 			box.m_onMembranePositions[cellId],
 			box.m_offMembraneDistances[cellId],
 			box.m_radii[cellId],
@@ -93,7 +97,8 @@ struct CellBox
 			box.m_growthStageNumTimesteps[cellId],
 			box.m_otherSubCellIndex[cellId],
 			box.m_cycleStages[cellId],
-			box.m_mutations[cellId] );
+			box.m_mutations[cellId],
+			box.m_originCrypts[cellId]);
 	}
 
 	void RemoveCell(int cellId)
@@ -118,6 +123,8 @@ struct CellBox
 		m_cycleStages.pop_back();
 		m_mutations[cellId] = m_mutations[last];
 		m_mutations.pop_back();
+		m_originCrypts[cellId] = m_originCrypts[last];
+		m_originCrypts.pop_back();
 
 		if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 		{
@@ -169,6 +176,8 @@ struct CellBox
 			m_cycleStages.pop_back();
 			m_mutations[cellId] = m_mutations[last];
 			m_mutations.pop_back();
+			m_originCrypts[cellId] = m_originCrypts[last];
+			m_originCrypts.pop_back();
 
 			if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 			{
