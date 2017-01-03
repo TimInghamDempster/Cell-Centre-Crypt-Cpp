@@ -705,7 +705,7 @@ namespace Renderer
 		frame++;
 
 		float scaleFactor = 1000.0f; 
-		float zDist = 10010.1f / scaleFactor;
+		float zDist = 20010.1f / scaleFactor;
 		float height = 10000.0f / scaleFactor;
 		float cellScale = 100.0f / scaleFactor;
 
@@ -714,7 +714,7 @@ namespace Renderer
 		DirectX::FXMVECTOR camUp = {0.0f, 1.0f, 0.0f, 0.0f };
 
 		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(camPos, camLookAt, camUp);
-		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, zDist - 10000.0f / scaleFactor, zDist + 10000.0f / scaleFactor);
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.75f, 1280.0f / 720.0f, zDist - 15000.0f / scaleFactor, zDist + 15000.0f / scaleFactor);
 
 		proj = DirectX::XMMatrixMultiply(view, proj);
 
@@ -739,7 +739,7 @@ namespace Renderer
 					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
 						int originCrypt = box.m_originCrypts[cell];
-						if((originCrypt != 0 && originCrypt != 6) || box.m_mutations[cell].mutateQuiecence == false)
+						if((originCrypt != 14 && originCrypt != 21) || box.m_mutations[cell].mutateQuiecence == false)
 						{
 							Vector3D& vec = box.m_positions[cell];
 						
@@ -784,7 +784,7 @@ namespace Renderer
 					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
 						int originCrypt = box.m_originCrypts[cell];
-						if(originCrypt == 0 && box.m_mutations[cell].mutateQuiecence == true)
+						if(originCrypt == 14 && box.m_mutations[cell].mutateQuiecence == true)
 						{
 							Vector3D& vec = box.m_positions[cell];
 						
@@ -828,7 +828,7 @@ namespace Renderer
 					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
 						int originCrypt = box.m_originCrypts[cell];
-						if(originCrypt == 6 && box.m_mutations[cell].mutateQuiecence == true)
+						if(originCrypt == 21 && box.m_mutations[cell].mutateQuiecence == true)
 						{
 							Vector3D& vec = box.m_positions[cell];
 						

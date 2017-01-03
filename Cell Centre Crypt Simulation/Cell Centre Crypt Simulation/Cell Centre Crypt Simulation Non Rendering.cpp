@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 
 			if(framecount == mutationFrame)
 			{
-				Simulation::DoMutation();
+				Simulation::DoMutation(0);
 			}
 
 			if(framecount % 200 == 0)

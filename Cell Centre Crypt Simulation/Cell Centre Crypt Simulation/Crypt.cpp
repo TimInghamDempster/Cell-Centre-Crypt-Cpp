@@ -68,7 +68,7 @@ struct  Crypt
 		m_offMembraneRestorationFactor(attachmentForce),
 		m_stromalRestorationFactor(0.3f),
 		m_membraneSeparationToTriggerAnoikis(100.0f),
-		m_colonBoundary(5500.0f, 4000.0f),
+		m_colonBoundary(15500.0f, 11500.0f),
 		m_normalRNG(normalRNG),
 		m_numBirthEvents(0),
 		m_numAnoikisEvents(0),
@@ -145,7 +145,7 @@ struct  Crypt
 					EnterG1(box, cellId);
 				}
 			}
-			else if (box.m_positions[cellId].y < m_basicG0ProliferationBoundary || box.m_mutations[cellId].mutateQuiecence == true)
+			else if (box.m_positions[cellId].y < m_basicG0ProliferationBoundary)// || box.m_mutations[cellId].mutateQuiecence == true)
 			{
 				if (box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsProliferation)
 				{
