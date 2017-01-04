@@ -46,7 +46,7 @@ struct  Crypt
 	CylindricalGrid m_grid;
 	NormalDistributionRNG* m_normalRNG;
 
-	Crypt(int numRows, int numColumns, double averageGrowthTimeSeconds, double attachmentForce, NormalDistributionRNG* normalRNG, Vector3D position, int cryptId) : 
+	Crypt(int numRows, int numColumns, double averageGrowthTimeSeconds, double attachmentForce, Vector2D boundary, NormalDistributionRNG* normalRNG, Vector3D position, int cryptId) : 
 		m_numRows(numRows),
 		m_numColumns(numColumns),
 		m_secondsPerTimestep(30.0f),
@@ -68,7 +68,7 @@ struct  Crypt
 		m_offMembraneRestorationFactor(attachmentForce),
 		m_stromalRestorationFactor(0.3f),
 		m_membraneSeparationToTriggerAnoikis(100.0f),
-		m_colonBoundary(15500.0f, 11500.0f),
+		m_colonBoundary(boundary),
 		m_normalRNG(normalRNG),
 		m_numBirthEvents(0),
 		m_numAnoikisEvents(0),
