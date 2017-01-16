@@ -49,6 +49,100 @@ namespace Simulation
 		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(3500.0f,0.0f,-3000.0f), 4));
 	}
 
+	void Setup9x9(double cellCycleTime, double attachmentForce)
+	{
+		Vector2D boundary(15500.0, 11500.0);
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-500.0f,0.0f,0.0f), 0));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-2500.0f,0.0f,0.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-4500.0f,0.0f,0.0f), 2));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-6500.0f,0.0f,0.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-8500.0f,0.0f,0.0f), 2));			
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(1500.0f,0.0f,0.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(3500.0f,0.0f,0.0f), 4));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(5500.0f,0.0f,0.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(7500.0f,0.0f,0.0f), 4));
+
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(500.0f,0.0f,1500.0f), 5));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-1500.0f,0.0f,1500.0f), 6));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-3500.0f,0.0f,1500.0f), 7));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-5500.0f,0.0f,1500.0f), 6));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-7500.0f,0.0f,1500.0f), 7));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(2500.0f,0.0f,1500.0f), 8));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(4500.0f,0.0f,1500.0f), 9));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(6500.0f,0.0f,1500.0f), 8));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(8500.0f,0.0f,1500.0f), 9));
+
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-500.0f,0.0f,3000.0f), 0));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-2500.0f,0.0f,3000.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-4500.0f,0.0f,3000.0f), 2));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-6500.0f,0.0f,3000.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-8500.0f,0.0f,3000.0f), 2));			
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(1500.0f,0.0f,3000.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(3500.0f,0.0f,3000.0f), 4));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(5500.0f,0.0f,3000.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(7500.0f,0.0f,3000.0f), 4));
+
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(500.0f,0.0f,4500.0f), 5));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-1500.0f,0.0f,4500.0f), 6));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-3500.0f,0.0f,4500.0f), 7));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-5500.0f,0.0f,4500.0f), 6));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-7500.0f,0.0f,4500.0f), 7));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(2500.0f,0.0f,4500.0f), 8));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(4500.0f,0.0f,4500.0f), 9));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(6500.0f,0.0f,4500.0f), 8));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(8500.0f,0.0f,4500.0f), 9));
+
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-500.0f,0.0f,6000.0f), 0));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-2500.0f,0.0f,6000.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-4500.0f,0.0f,6000.0f), 2));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-6500.0f,0.0f,6000.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-8500.0f,0.0f,6000.0f), 2));			
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(1500.0f,0.0f,6000.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(3500.0f,0.0f,6000.0f), 4));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(5500.0f,0.0f,6000.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(7500.0f,0.0f,6000.0f), 4));
+				
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(500.0f,0.0f,-1500.0f), 5));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-1500.0f,0.0f,-1500.0f), 6));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-3500.0f,0.0f,-1500.0f), 7));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-5500.0f,0.0f,-1500.0f), 6));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-7500.0f,0.0f,-1500.0f), 7));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(2500.0f,0.0f,-1500.0f), 8));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(4500.0f,0.0f,-1500.0f), 9));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(6500.0f,0.0f,-1500.0f), 8));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(8500.0f,0.0f,-1500.0f), 9));
+
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-500.0f,0.0f,-3000.0f), 0));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-2500.0f,0.0f,-3000.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-4500.0f,0.0f,-3000.0f), 2));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-6500.0f,0.0f,-3000.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-8500.0f,0.0f,-3000.0f), 2));		
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(1500.0f,0.0f,-3000.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(3500.0f,0.0f,-3000.0f), 4));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(5500.0f,0.0f,-3000.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(7500.0f,0.0f,-3000.0f), 4));
+
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(500.0f,0.0f,-4500.0f), 5));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-1500.0f,0.0f,-4500.0f), 6));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-3500.0f,0.0f,-4500.0f), 7));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-5500.0f,0.0f,-4500.0f), 6));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-7500.0f,0.0f,-4500.0f), 7));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(2500.0f,0.0f,-4500.0f), 8));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(4500.0f,0.0f,-4500.0f), 9));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(6500.0f,0.0f,-4500.0f), 8));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(8500.0f,0.0f,-4500.0f), 9));
+
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-500.0f,0.0f,-6000.0f), 0));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-2500.0f,0.0f,-6000.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-4500.0f,0.0f,-6000.0f), 2));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-6500.0f,0.0f,-6000.0f), 1));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(-8500.0f,0.0f,-6000.0f), 2));		
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(1500.0f,0.0f,-6000.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(3500.0f,0.0f,-6000.0f), 4));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(5500.0f,0.0f,-6000.0f), 3));
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(7500.0f,0.0f,-6000.0f), 4));
+	}
+
 	void Setup15x15(double cellCycleTime, double attachmentForce)
 	{
 		Vector2D boundary(15500.0, 11500.0);
@@ -457,7 +551,8 @@ namespace Simulation
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
 
 				//Setup15x15(cellCycleTime, attachmentForce);
-				Setup5x5(cellCycleTime, attachmentForce);
+				//Setup5x5(cellCycleTime, attachmentForce);
+				Setup9x9(cellCycleTime, attachmentForce);
 
 				for(int i = 0; i < crypts.size(); i++)
 				{
