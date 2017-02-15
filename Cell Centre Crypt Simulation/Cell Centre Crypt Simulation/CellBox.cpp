@@ -36,6 +36,9 @@ struct CellBox
 	std::vector<int> m_deathList;
 	std::vector<MutationData> m_mutations;
 	std::vector<int> m_originCrypts;
+	std::vector<int> m_stemExitTimestep;
+	std::vector<int> m_lastDivisionWasStem;
+
 
 	CellBox(int expectedNumberOfCells)
 	{
@@ -51,6 +54,8 @@ struct CellBox
 		m_deathList.reserve(reserveSize);
 		m_mutations.reserve(reserveSize);
 		m_originCrypts.reserve(reserveSize);
+		m_stemExitTimestep.reserve(reserveSize);
+		m_lastDivisionWasStem.reserve(reserveSize);
 	}
 
 	int AddCell(Vector3D position,
@@ -62,7 +67,8 @@ struct CellBox
 				CellReference otherSubCellIndex,
 				CellCycleStages::Stages cycleStage,
 				MutationData mutation,
-				int crypt)
+				int crypt,
+				int stemExitTimetstep)
 	{
 		m_positions.push_back(position);
 		m_onMembranePositions.push_back(onMembranePosition);
@@ -74,6 +80,8 @@ struct CellBox
 		m_cycleStages.push_back(cycleStage);
 		m_mutations.push_back(mutation);
 		m_originCrypts.push_back(crypt);
+		m_stemExitTimestep.push_back(stemExitTimetstep);
+		m_lastDivisionWasStem.push_back(0);
 
 		if(otherSubCellIndex.m_active == true)
 		{
@@ -98,7 +106,8 @@ struct CellBox
 			box.m_otherSubCellIndex[cellId],
 			box.m_cycleStages[cellId],
 			box.m_mutations[cellId],
-			box.m_originCrypts[cellId]);
+			box.m_originCrypts[cellId],
+			box.m_stemExitTimestep[cellId]);
 	}
 
 	void RemoveCell(int cellId)
@@ -125,6 +134,10 @@ struct CellBox
 		m_mutations.pop_back();
 		m_originCrypts[cellId] = m_originCrypts[last];
 		m_originCrypts.pop_back();
+		m_stemExitTimestep[cellId] = m_stemExitTimestep[last];
+		m_stemExitTimestep.pop_back();
+		m_lastDivisionWasStem[cellId] = m_lastDivisionWasStem[last];
+		m_lastDivisionWasStem.pop_back();
 
 		if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 		{
@@ -178,6 +191,10 @@ struct CellBox
 			m_mutations.pop_back();
 			m_originCrypts[cellId] = m_originCrypts[last];
 			m_originCrypts.pop_back();
+			m_stemExitTimestep[cellId] = m_stemExitTimestep[last];
+			m_stemExitTimestep.pop_back();
+			m_lastDivisionWasStem[cellId] = m_lastDivisionWasStem[last];
+			m_lastDivisionWasStem.pop_back();
 
 			if(cellId < (int)m_otherSubCellIndex.size() && m_otherSubCellIndex[cellId].m_active)
 			{

@@ -14,6 +14,12 @@ namespace Simulation
 	SimSetup currentSettings;
 	double mutationHeight = -100.0;
 	NormalDistributionRNG* normalRNG;
+	
+	void Setup1x1(double cellCycleTime, double attachmentForce)
+	{
+		Vector2D boundary(1500.0, 1500.0);
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(0.0f,0.0f,0.0f), 0));
+	}
 
 	void Setup5x5(double cellCycleTime, double attachmentForce)
 	{
@@ -395,10 +401,11 @@ namespace Simulation
 		MutationData adhesionMutation = {false, true, false };
 		MutationData cellForceMutation = {false, false, true };
 		MutationData mutateAPC = { true, true, true };
+		MutationData mutateAPCNonAdhesive = {true, false, true };
 
 		SimSetup settings[] = 
 		{
-			{108000,0.001, "data/FieldSpread_run1.csv", mutateAPC},
+			{108000,0.001, "data/FieldSpread_run1.csv", mutateAPCNonAdhesive},
 			{108000,0.001, "data/FieldSpread_run2.csv", mutateAPC},
 			{108000,0.001, "data/FieldSpread_run3.csv", mutateAPC},
 			{108000,0.001, "data/FieldSpread_run4.csv", mutateAPC},
@@ -550,9 +557,7 @@ namespace Simulation
 				double secondsPerTimestep = 30.0;
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
 
-				//Setup15x15(cellCycleTime, attachmentForce);
-				//Setup5x5(cellCycleTime, attachmentForce);
-				Setup9x9(cellCycleTime, attachmentForce);
+				Setup5x5(cellCycleTime, attachmentForce);
 
 				for(int i = 0; i < crypts.size(); i++)
 				{
@@ -692,11 +697,11 @@ namespace Simulation
 		}
 	}
 
-	void StepSimulation()
+	void StepSimulation(int timestep)
 	{
 		for(int i = 0; i< Simulation::crypts.size(); i++)
 		{
-			crypts[i]->Step();
+			crypts[i]->Step(timestep);
 		}
 		AssignCellsToCrypts();
 	}
