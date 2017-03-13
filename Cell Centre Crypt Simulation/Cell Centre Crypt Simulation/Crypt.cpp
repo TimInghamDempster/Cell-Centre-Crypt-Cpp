@@ -46,6 +46,8 @@ struct  Crypt
 	CylindricalGrid m_grid;
 	NormalDistributionRNG* m_normalRNG;
 
+	std::vector<int> m_migrationTimes;
+
 	Crypt(int numRows, int numColumns, double averageGrowthTimeSeconds, double attachmentForce, Vector2D boundary, NormalDistributionRNG* normalRNG, Vector3D position, int cryptId) : 
 		m_numRows(numRows),
 		m_numColumns(numColumns),
@@ -67,7 +69,9 @@ struct  Crypt
 		m_colonBoundaryRepulsionFactor(0.3f),
 		m_offMembraneRestorationFactor(attachmentForce),
 		m_stromalRestorationFactor(0.3f),
-		m_membraneSeparationToTriggerAnoikis(m_cellSize * 1.5),
+
+		m_membraneSeparationToTriggerAnoikis(m_cellSize * 1.0),
+
 		m_colonBoundary(boundary),
 		m_normalRNG(normalRNG),
 		m_numBirthEvents(0),
@@ -121,7 +125,8 @@ struct  Crypt
 						ref, 
 						CellCycleStages::G0,
 						noMutation,
-						cryptId);
+						cryptId,
+						0);
 				}
 			}
 		}
@@ -132,7 +137,7 @@ struct  Crypt
 		box.m_currentStageNumTimesteps[cellId] = 0;
 	}
 
-	void DoBasicG0Phase(CellBox& box, int cellId)
+	void DoBasicG0Phase(CellBox& box, int cellId, int timestep)
 	{
 		if(box.m_cycleStages[cellId] == CellCycleStages::G0)
 		{
@@ -143,6 +148,7 @@ struct  Crypt
 				if (box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsStem || (box.m_mutations[cellId].mutateQuiecence == true && box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsStem / 10.0f))
 				{
 					EnterG1(box, cellId);
+					box.m_stemExitTimestep[cellId] = timestep;
 				}
 			}
 			else if (box.m_positions[cellId].y < m_basicG0ProliferationBoundary)// || box.m_mutations[cellId].mutateQuiecence == true)
@@ -150,6 +156,8 @@ struct  Crypt
 				if (box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsProliferation)
 				{
 					EnterG1(box, cellId);
+					box.m_stemExitTimestep[cellId] = timestep;
+					
 				}
 			}
 		}
@@ -184,7 +192,8 @@ struct  Crypt
 			cellRef,
 			CellCycleStages::Child,
 			box.m_mutations[cellId],
-			box.m_originCrypts[cellId]);
+			box.m_originCrypts[cellId],
+			box.m_stemExitTimestep[cellId]);
 
 		box.m_growthStageNumTimesteps[cellId] = (int)m_normalRNG->Next();
 
@@ -352,7 +361,7 @@ struct  Crypt
 		box.m_onMembranePositions[cellId] = membranePos;
 	}
 
-	bool DoAnoikis(CellBox& box, int cellId)
+	bool DoAnoikis(CellBox& box, int cellId, int timestep)
 	{
 		if (box.m_offMembraneDistances[cellId] > m_membraneSeparationToTriggerAnoikis)
 		{
@@ -376,8 +385,14 @@ struct  Crypt
 			yPercent *= -1;
 			m_anoikisHeights[yPercent]++;
 
+			if(m_numAnoikisEvents % 100 == 0)
+			{
+				m_migrationTimes.push_back(timestep - box.m_stemExitTimestep[cellId]);
+			}
+
 			box.KillCell(cellId);
 			m_numAnoikisEvents++;
+
 			return true;
 		}
 		return false;
@@ -418,9 +433,9 @@ struct  Crypt
 	}
 
 
-	void UpdateCell(CellBox& box, int cellId)
+	void UpdateCell(CellBox& box, int cellId, int timestep)
 	{
-		DoBasicG0Phase(box, cellId);
+		DoBasicG0Phase(box, cellId, timestep);
 		DoGrowthPhase(box, cellId);
 		DoMPhase(box, cellId);
 		EnforceCryptWalls(box, cellId);
@@ -429,7 +444,7 @@ struct  Crypt
 		m_cellularity++;
 	}
 
-	void UpdateCells()
+	void UpdateCells(int timestep)
 	{
 		m_cellularity = 0;
 		for(int col = 0; col < (int)m_grid.m_columns.size(); col++)
@@ -440,7 +455,7 @@ struct  Crypt
 				CellBox& box = column[row];
 				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
 				{
-					UpdateCell(box, cell);
+					UpdateCell(box, cell, timestep);
 				}
 			}
 		}
@@ -452,7 +467,7 @@ struct  Crypt
 				CellBox& box = column[row];
 				for(int cell = 0; cell < (int)box.m_positions.size(); cell++)
 				{
-					DoAnoikis(box, cell);
+					DoAnoikis(box, cell, timestep);
 				}
 			}
 		}
@@ -472,10 +487,10 @@ struct  Crypt
 		m_numAnoikisEvents = 0;
 	}
 
-	void Step()
+	void Step(int timestep)
 	{
 		m_grid.Step();
-		UpdateCells();
+		UpdateCells(timestep);
 	}
 
 	void GetCounts(int& cellulairty, int& stemCount, int& stemCycleCount, int& proliferationCount, int& proliferationCycleCount, int& mutatedFlatMucosaCount, int& normalFlatMucosaCount, int& mutatedCryptCount, int& normalCryptCount)

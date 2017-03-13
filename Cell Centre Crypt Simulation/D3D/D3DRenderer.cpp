@@ -739,7 +739,7 @@ namespace Renderer
 					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
 						int originCrypt = box.m_originCrypts[cell];
-						if((originCrypt != 14 && originCrypt != 21) || box.m_mutations[cell].mutateQuiecence == false)
+						if((originCrypt != 0 && originCrypt != 21) || box.m_mutations[cell].mutateQuiecence == false)
 						{
 							Vector3D& vec = box.m_positions[cell];
 						
@@ -784,7 +784,7 @@ namespace Renderer
 					for(int cell = 0; cell < box.m_positions.size(); cell++)
 					{
 						int originCrypt = box.m_originCrypts[cell];
-						if(originCrypt == 14 && box.m_mutations[cell].mutateQuiecence == true)
+						if(originCrypt == 0 && box.m_mutations[cell].mutateQuiecence == true)
 						{
 							Vector3D& vec = box.m_positions[cell];
 						

@@ -31,13 +31,13 @@ int main(int argc, char* argv[])
 		while(framecount < totalFrames)
 		{
 			TWinMain();
-			Simulation::StepSimulation();
+			Simulation::StepSimulation(framecount);
 			Renderer::Draw();
 			framecount++;
 
 			if(framecount == mutationFrame)
 			{
-				//Simulation::DoMutation(14);
+				Simulation::DoMutation(0);
 			}
 			if(framecount == mutationFrame2)
 			{

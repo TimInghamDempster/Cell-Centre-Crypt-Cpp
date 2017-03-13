@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 
 		while(framecount < totalFrames)
 		{
-			Simulation::StepSimulation();
+			Simulation::StepSimulation(framecount);
 			framecount++;
 
 			if(framecount == mutationFrame)
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 				int normalFlatMucosaCount = 0;
 				int mutatedCryptCount = 0;
 				int normalCryptCount = 0;
-
+/*
 				//for(int i = 0; i < Simulation::crypts.size(); i++)
 				/*{
 					Simulation::crypts[0]->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount, mutatedFlatMucosaCount, normalFlatMucosaCount, mutatedCryptCount, normalCryptCount);
@@ -91,6 +91,14 @@ int main(int argc, char* argv[])
 		{
 			outputFile << Simulation::crypts[0]->m_anoikisHeights[i];
 			outputFile << ",\n";
+		}
+
+		outputFile << "Migration Times (30s)";
+
+		for(int i = 0; i < Simulation::crypts[0]->m_migrationTimes.size(); i++)
+		{
+			outputFile << Simulation::crypts[0]->m_migrationTimes[i];
+			outputFile << "\n";
 		}*/
 
 		outputFile.close();
