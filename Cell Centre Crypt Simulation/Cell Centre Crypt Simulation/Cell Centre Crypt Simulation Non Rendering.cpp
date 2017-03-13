@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
 			if(framecount % 200 == 0)
 			{
-				/*int cellularity = 0;
+				int cellularity = 0;
 				int stemCount = 0;
 				int stemInCycleCount = 0;
 				int proliferatingCount = 0;
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 				int normalCryptCount = 0;
 
 				//for(int i = 0; i < Simulation::crypts.size(); i++)
-				{
+				/*{
 					Simulation::crypts[0]->GetCounts(cellularity, stemCount, stemInCycleCount, proliferatingCount, proliferatingInCycleCount, mutatedFlatMucosaCount, normalFlatMucosaCount, mutatedCryptCount, normalCryptCount);
 				}
 				
@@ -70,8 +70,8 @@ int main(int argc, char* argv[])
 				outputFile << ",";
 				outputFile << normalCryptCount;
 				outputFile << ",\n";
-				Simulation::crypts[0]->ClearCounters();*/
-				
+				Simulation::crypts[0]->ClearCounters();
+				*/
 				double mutantDistance = 0.0;
 				int invasionCount = 0;
 

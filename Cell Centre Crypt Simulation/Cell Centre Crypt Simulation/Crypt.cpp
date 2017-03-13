@@ -67,7 +67,7 @@ struct  Crypt
 		m_colonBoundaryRepulsionFactor(0.3f),
 		m_offMembraneRestorationFactor(attachmentForce),
 		m_stromalRestorationFactor(0.3f),
-		m_membraneSeparationToTriggerAnoikis(100.0f),
+		m_membraneSeparationToTriggerAnoikis(m_cellSize * 1.5),
 		m_colonBoundary(boundary),
 		m_normalRNG(normalRNG),
 		m_numBirthEvents(0),
@@ -391,25 +391,29 @@ struct  Crypt
 		{
 			double delta = pos.x - m_colonBoundary.x;
 			delta *= m_colonBoundaryRepulsionFactor;
-			pos.x -= delta;
+			//pos.x -= delta;
+			box.KillCell(cellId);
 		}
 		if (pos.x < (-1.0f * m_colonBoundary.x))
 		{
 			double delta = pos.x - (-1.0f * m_colonBoundary.x);
 			delta *= m_colonBoundaryRepulsionFactor;
-			pos.x -= delta;
+			//pos.x -= delta;
+			box.KillCell(cellId);
 		}
 		if (pos.z > m_colonBoundary.y)
 		{
 			double delta = pos.z - m_colonBoundary.y;
 			delta *= m_colonBoundaryRepulsionFactor;
-			pos.z -= delta;
+			//pos.z -= delta;
+			box.KillCell(cellId);
 		}
 		if (pos.z < (-1.0f * m_colonBoundary.y))
 		{
 			double delta = pos.z - (-1.0f * m_colonBoundary.y);
 			delta *= m_colonBoundaryRepulsionFactor;
-			pos.z -= delta;
+			//pos.z -= delta;
+			box.KillCell(cellId);
 		}
 	}
 

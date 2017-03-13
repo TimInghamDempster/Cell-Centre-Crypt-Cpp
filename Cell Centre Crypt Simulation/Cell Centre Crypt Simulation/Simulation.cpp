@@ -15,6 +15,12 @@ namespace Simulation
 	double mutationHeight = -100.0;
 	NormalDistributionRNG* normalRNG;
 
+	void Setup1x1(double cellCycleTime, double attachmentForce)
+	{
+		Vector2D boundary(1500.0, 1500.0);
+		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(0.0f,0.0f,0.0f), 0));
+	}
+
 	void Setup5x5(double cellCycleTime, double attachmentForce)
 	{
 		Vector2D boundary(5500.0, 4000.0);
@@ -550,9 +556,7 @@ namespace Simulation
 				double secondsPerTimestep = 30.0;
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
 
-				//Setup15x15(cellCycleTime, attachmentForce);
-				//Setup5x5(cellCycleTime, attachmentForce);
-				Setup9x9(cellCycleTime, attachmentForce);
+				Setup5x5(cellCycleTime, attachmentForce);
 
 				for(int i = 0; i < crypts.size(); i++)
 				{
