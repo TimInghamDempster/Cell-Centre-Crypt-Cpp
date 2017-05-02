@@ -139,6 +139,12 @@ struct  Crypt
 			}
 		}
 
+
+	/***********************************************************************************************
+
+	Various cell cycle update functions, should be fairly self-explanatory.
+
+	***********************************************************************************************/
 	void EnterG1(CellBox& box, int cellId)
 	{
 		box.m_cycleStages[cellId] = CellCycleStages::G1;
@@ -256,6 +262,11 @@ struct  Crypt
 		}
 	}
 
+	/***********************************************************************************************
+
+	If a cell has moved from one cell on the grid to another, move it
+
+	***********************************************************************************************/
 	void AssignCellToGrid(CellBox& box, int cellId)
 	{
 		CellBox* newBox = m_grid.FindBox(box.m_positions[cellId]);
@@ -267,6 +278,13 @@ struct  Crypt
 		}
 	}
 
+	/****************************************************************************************************
+
+	Find the nearest point (and it's normal) on the membrane to a given position.  Finds what segment of
+	the membrane (base, walls, or mouth) by height, then project to membrane depending on geomotry of
+	segment.
+
+	****************************************************************************************************/
 	void GetClosestPointOnMembrane(Vector3D inputPosition, Vector3D& outputPosition, Vector3D& outputNormal)
 	{
 		inputPosition -= m_pos;
@@ -322,6 +340,11 @@ struct  Crypt
 		outputPosition += m_pos;
 	}
 
+	/******************************************************************************************************************************
+
+	Membrane attachment code, find closest point on membrane and use the damped spring function to move towards it.
+
+	******************************************************************************************************************************/
 	void EnforceCryptWalls(CellBox& box, int cellId)
 	{
 		Vector3D pos = box.m_positions[cellId];
@@ -365,6 +388,12 @@ struct  Crypt
 		box.m_onMembranePositions[cellId] = membranePos;
 	}
 
+	/************************************************************************************************
+
+	Anoikis code, if a cell gets too far from the membrane it dies.  Some complicated stuff to
+	handle cells that die while dividing.
+
+	************************************************************************************************/
 	bool DoAnoikis(CellBox& box, int cellId, int timestep)
 	{
 		if (box.m_offMembraneDistances[cellId] > m_membraneSeparationToTriggerAnoikis)
@@ -402,6 +431,13 @@ struct  Crypt
 		return false;
 	}
 
+	/******************************************************************************************
+
+	Handle cells that move to the colon boundary, currently kills them but also possible to
+	reflect them back into the simulation.  Experiments show that killing cells at the boundary
+	gives the most realistic results compared to a very large simulation.
+
+	******************************************************************************************/
 	void EnforceColonBoundary(CellBox& box, int cellId)
 	{
 		Vector3D& pos = box.m_positions[cellId];
@@ -436,7 +472,11 @@ struct  Crypt
 		}
 	}
 
+	/**************************************************************************
 
+	Call the various cell update functions above to perform a complete update
+
+	**************************************************************************/
 	void UpdateCell(CellBox& box, int cellId, int timestep)
 	{
 		DoBasicG0Phase(box, cellId, timestep);
@@ -448,6 +488,13 @@ struct  Crypt
 		m_cellularity++;
 	}
 
+
+	/***************************************************************************
+
+	Loop over all cells and update, needs to be done in this order to make sure
+	stuff doesn't move before being referenced.
+
+	***************************************************************************/
 	void UpdateCells(int timestep)
 	{
 		m_cellularity = 0;
