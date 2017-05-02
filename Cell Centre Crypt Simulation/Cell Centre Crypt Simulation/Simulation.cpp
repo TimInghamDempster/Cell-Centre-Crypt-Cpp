@@ -1,4 +1,10 @@
 
+/****************************************************************************************
+
+This file handles the highest level simulation functions, it creates all the items in the
+simulation and updates them every frame.
+
+****************************************************************************************/
 namespace Simulation
 {
 	struct SimSetup
@@ -15,12 +21,13 @@ namespace Simulation
 	double mutationHeight = -100.0;
 	NormalDistributionRNG* normalRNG;
 	
-	void Setup1x1(double cellCycleTime, double attachmentForce)
-	{
-		Vector2D boundary(1500.0, 1500.0);
-		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(0.0f,0.0f,0.0f), 0));
-	}
+	/*****************************************************************************
 
+	The next set of functions create and populate a grid of crypts.  There is one
+	function for each size of array, only call one of these, call it in the Init
+	function, call the one that is the size of array you want.
+
+	*****************************************************************************/
 	void Setup1x1(double cellCycleTime, double attachmentForce)
 	{
 		Vector2D boundary(1500.0, 1500.0);
@@ -399,6 +406,12 @@ namespace Simulation
 		crypts.push_back(new Crypt(80, 23, cellCycleTime, attachmentForce, boundary, normalRNG, Vector3D(14500.0f,0.0f,-10500.0f), 8));
 	}
 
+	/**********************************************************************************
+
+	Initialises the simulation, sets up the crypts and cells and various parameters for
+	modelling mutation effects.
+	
+	**********************************************************************************/
 	bool InitSimulation()
 	{
 
@@ -409,129 +422,7 @@ namespace Simulation
 		MutationData mutateAPC = { true, true, true };
 		MutationData mutateAPCNonAdhesive = {true, false, true };
 
-		SimSetup settings[] = 
-		{
-			{108000,0.001, "data/FieldSpread_run1.csv", mutateAPCNonAdhesive},
-			{108000,0.001, "data/FieldSpread_run2.csv", mutateAPC},
-			{108000,0.001, "data/FieldSpread_run3.csv", mutateAPC},
-			{108000,0.001, "data/FieldSpread_run4.csv", mutateAPC},
-			{108000,0.001, "data/FieldSpread_run5.csv", mutateAPC},
-			{108000,0.001, "data/FieldSpread_run6.csv", mutateAPC},
-			{108000,0.001, "data/FieldSpread_run7.csv", mutateAPC},
-			{108000,0.001, "data/FieldSpread_run8.csv", mutateAPC},
-			{108000,0.001, "data/FieldSpread_run9.csv", mutateAPC},
-			{108000,0.001, "data/FieldSpread_run10.csv", mutateAPC},
-			{72000,0.001, "data/20hrCC_001af_run1.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run2.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run3.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run4.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run5.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run6.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run7.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run8.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run9.csv", noMutation},
-			{72000,0.001, "data/20hrCC_001af_run10.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run1.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run2.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run3.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run4.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run5.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run6.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run7.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run8.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run9.csv", noMutation},
-			{90000,0.001, "data/25hrCC_001af_run10.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run1.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run2.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run3.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run4.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run5.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run6.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run7.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run8.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run9.csv", noMutation},
-			{126000,0.001, "data/35hrCC_001af_run10.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run1.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run2.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run3.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run4.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run5.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run6.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run7.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run8.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run9.csv", noMutation},
-			{144000,0.001, "data/40hrCC_001af_run10.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run1.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run2.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run3.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run4.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run5.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run6.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run7.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run8.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run9.csv", noMutation},
-			{108000,0.01, "data/30hrCC_01af_run10.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run1.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run2.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run3.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run4.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run5.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run6.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run7.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run8.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run9.csv", noMutation},
-			{108000,0.0001, "data/30hrCC_0001af_run10.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run1.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run2.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run3.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run4.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run5.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run6.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run7.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run8.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run9.csv", noMutation},
-			{108000,0.005, "data/30hrCC_005af_run10.csv", noMutation},
-			{108000,0.001, "data/mutate_quiesence_run1.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run2.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run3.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run4.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run5.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run6.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run7.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run8.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run9.csv", g0Mutation},
-			{108000,0.001, "data/mutate_quiesence_run10.csv", g0Mutation},
-			{108000,0.001, "data/mutate_adhesion_run1.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run2.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run3.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run4.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run5.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run6.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run7.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run8.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run9.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_adhesion_run10.csv", adhesionMutation},
-			{108000,0.001, "data/mutate_cell_force_run1.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run2.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run3.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run4.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run5.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run6.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run7.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run8.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run9.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_cell_force_run10.csv", cellForceMutation},
-			{108000,0.001, "data/mutate_APC_run1.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC_run2.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC_run3.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC_run4.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC_run5.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC_run6.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC_run7.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC_run8.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC_run9.csv", mutateAPC},
-			{108000,0.001, "data/mutate_APC__run10.csv", mutateAPC},
-		};
+		SimSetup* settings = new SimSetup[125];
 
 		unsigned numSettings = 120;
 
@@ -549,16 +440,53 @@ namespace Simulation
 
 			taskId--;
 
+			double quiescenceMultipliers[] = { 1.0, 0.75, 0.5, 0.25, 0.1};
+			double adhesionMultipliers[] = {1.0, 2.5, 5.0, 7.5, 10.0};
+			double forceMultipliers[] = {1.0, 1.25, 1.5, 1.75, 2.0};
+
 			if(taskId < numSettings)
 			{
 				// time() resolution is really poor so need to make sure that repeats don't have the same seed.
 				seed += taskId;
 
-				currentSettings = settings[taskId];
+				for(int i = 0; i < 5; i++)
+				{
+					for(int j = 0; j < 5; j++)
+					{
+						for(int k = 0; k < 5; k++)
+						{
+							MutationData mutation = {true, true, true, quiescenceMultipliers[i], adhesionMultipliers[j], forceMultipliers[k]};
+							
+							if(i == 0)
+							{
+								mutation.mutateQuiecence = false;
+							}
+							if(j == 0)
+							{
+								mutation.mutateAttachment = false;
+							}
+							if(k == 0)
+							{
+								mutation.mutateCellForces = false;
+							}
+
+							std::stringstream name;
+							name << "data/Q" <<  mutation.quiesceneceMultiplyer	<< "AF" << mutation.attachmentMultiplyer << "CF" << mutation.cellForceMultiplier;
+							SimSetup setting =  { 108000,0.001, name.str(), mutation};
+							settings[i + j * 5 + k * 25] =  setting;
+
+						}
+					}
+				}
+				int numRepeats = 5;
+
+				currentSettings = settings[taskId / numRepeats];
+				std::stringstream tempName;
+				tempName << currentSettings.filename << "Run" << taskId % numRepeats << ".csv";
+				currentSettings.filename = tempName.str();
 				
 				double cellCycleTime = settings[taskId].averageGrowthTimeInSeconds;
 				double attachmentForce = settings[taskId].membraneAttachmentForce;
-				filename = settings[taskId].filename;
 
 				double secondsPerTimestep = 30.0;
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
@@ -652,6 +580,13 @@ namespace Simulation
 		closestBox->m_mutations[closestCell] = currentSettings.mutationData;
 	}
 
+	/*************************************************************************
+
+	In a multi-crypt simulation cells can move from one crypt to another, this
+	function detects if a cell has migrated and copies it into the new crypt
+	then deletes it from the old crypt.
+
+	*************************************************************************/
 	void AssignCellsToCrypts()
 	{
 		for(int i = 0; i < Simulation::crypts.size(); i++)
@@ -703,6 +638,12 @@ namespace Simulation
 		}
 	}
 
+	/******************************************************************
+
+	The main update function for the simulation.  Update all crypts
+	then handle any cells that have migrated from one crypt to another.
+
+	******************************************************************/
 	void StepSimulation(int timestep)
 	{
 		for(int i = 0; i< Simulation::crypts.size(); i++)

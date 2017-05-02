@@ -2,6 +2,16 @@
 
 #include "ProgramIncludes.cpp"
 
+// Build against old memcpy for Iceberg compatibility
+// __asm__(".symver memcpy,realpath@GLIBC_2.2.5");
+
+/*******************************************************************************************
+
+The entry point for the program when running with visualisation disabled.  Should work
+pretty much anywhere with minmal dependencies.  To build the whole program just build this
+file (for the non-visualising version of the program).
+
+*******************************************************************************************/
 int main(int argc, char* argv[])
 {
 	int framecount = 0;
@@ -23,6 +33,7 @@ int main(int argc, char* argv[])
 
 		while(framecount < totalFrames)
 		{
+			// This is the main simulation update function
 			Simulation::StepSimulation(framecount);
 			framecount++;
 

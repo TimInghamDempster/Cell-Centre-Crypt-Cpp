@@ -6,6 +6,10 @@ struct MutationData
 	bool mutateQuiecence;
 	bool mutateAttachment;
 	bool mutateCellForces;
+
+	double quiesceneceMultiplyer;
+	double attachmentMultiplyer;
+	double cellForceMultiplier;
 };
 
 struct CellReference

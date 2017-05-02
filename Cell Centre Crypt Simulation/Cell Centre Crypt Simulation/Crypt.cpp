@@ -1,4 +1,12 @@
 
+/*************************************************************************************
+
+The Crypt struct does the majority of the work of the simulation.  It owns a grid
+which contains the data for the cells and the update rules for anything to do with
+the biological rules, in particular contains all the code for cell cycle update,
+membrane attachment, anoikis and simulation boundaries.
+
+*************************************************************************************/
 struct  Crypt
 {
 
@@ -113,7 +121,7 @@ struct  Crypt
 
 					CellBox* box = m_grid.FindBox(pos);
 					CellReference ref;
-					MutationData noMutation = { false, false, false, };
+					MutationData noMutation = { false, false, false, 1.0, 1.0, 1.0 };
 
 					box->AddCell(pos,
 						pos,
@@ -145,7 +153,7 @@ struct  Crypt
 
 			if (box.m_positions[cellId].y < m_basicG0StemBoundary)
 			{
-				if (box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsStem || (box.m_mutations[cellId].mutateQuiecence == true && box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsStem / 10.0f))
+				if (box.m_currentStageNumTimesteps[cellId] > m_requiredG0TimestepsStem * box.m_mutations[cellId].quiesceneceMultiplyer)
 				{
 					EnterG1(box, cellId);
 					box.m_stemExitTimestep[cellId] = timestep;
@@ -348,11 +356,7 @@ struct  Crypt
 		}
 		else
 		{
-			double mutationFactor = 1.0;
-			if(box.m_mutations[cellId].mutateAttachment == true)
-			{
-				mutationFactor = 10.0;
-			}
+			double mutationFactor = box.m_mutations[cellId].attachmentMultiplyer;
 
 			delta *= std::min(m_offMembraneRestorationFactor * mutationFactor, 1.0);
 		}

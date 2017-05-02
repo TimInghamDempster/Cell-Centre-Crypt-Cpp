@@ -5,6 +5,13 @@
 
 #include "../D3D/D3DIncludes.cpp"
 
+/*******************************************************************************************
+
+The entry point for the program when running with visualisation active.  Only works on
+windows and needs DirectX11.  To build the whole program just build this file (for the
+visualising version of the program).
+
+*******************************************************************************************/
 int main(int argc, char* argv[])
 {
 	int framecount = 0;
@@ -31,7 +38,10 @@ int main(int argc, char* argv[])
 		while(framecount < totalFrames)
 		{
 			TWinMain();
+
+			// This is the main simulation update function
 			Simulation::StepSimulation(framecount);
+
 			Renderer::Draw();
 			framecount++;
 

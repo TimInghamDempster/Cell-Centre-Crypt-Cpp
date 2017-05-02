@@ -224,15 +224,8 @@ struct CylindricalGrid
 								Vector3D outerForce = force;
 								Vector3D innerForce = force;
 
-								if(box.m_mutations[cellId].mutateCellForces)
-								{
-									outerForce /= 2.0;
-								}
-
-								if(collisionBox->m_mutations[innerCellId].mutateCellForces)
-								{
-									innerForce /= 2.0;
-								}
+								outerForce *= box.m_mutations[cellId].cellForceMultiplier;
+								innerForce *= collisionBox->m_mutations[innerCellId].cellForceMultiplier;
 
 								box.m_positions[cellId] += outerForce;
 								collisionBox->m_positions[innerCellId] -= innerForce;
