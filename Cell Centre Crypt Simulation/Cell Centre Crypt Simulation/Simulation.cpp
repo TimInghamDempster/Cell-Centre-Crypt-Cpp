@@ -424,7 +424,7 @@ namespace Simulation
 
 		SimSetup* settings = new SimSetup[125];
 
-		unsigned numSettings = 120;
+		unsigned numSettings = 625;
 
 		char* env = getenv("SGE_TASK_ID");
 
@@ -484,6 +484,7 @@ namespace Simulation
 				std::stringstream tempName;
 				tempName << currentSettings.filename << "Run" << taskId % numRepeats << ".csv";
 				currentSettings.filename = tempName.str();
+				filename = currentSettings.filename;
 				
 				double cellCycleTime = settings[taskId].averageGrowthTimeInSeconds;
 				double attachmentForce = settings[taskId].membraneAttachmentForce;

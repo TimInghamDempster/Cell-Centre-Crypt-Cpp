@@ -3,7 +3,7 @@
 #include "ProgramIncludes.cpp"
 
 // Build against old memcpy for Iceberg compatibility
-// __asm__(".symver memcpy,memcpy@GLIBC_2.2.5");
+//__asm__(".symver memcpy,memcpy@GLIBC_2.2.5");
 
 /*******************************************************************************************
 
