@@ -442,7 +442,7 @@ namespace Simulation
 
 			double quiescenceMultipliers[] = { 1.0, 0.75, 0.5, 0.25, 0.1};
 			double adhesionMultipliers[] = {1.0, 2.5, 5.0, 7.5, 10.0};
-			double forceMultipliers[] = {1.0, 1.25, 1.5, 1.75, 2.0};
+			double forceMultipliers[] = {1.0, 0.75, 0.5, 0.25, 0.1};
 
 			if(taskId < numSettings)
 			{
@@ -479,15 +479,16 @@ namespace Simulation
 					}
 				}
 				int numRepeats = 5;
+				int settingId = taskId / numRepeats;
 
-				currentSettings = settings[taskId / numRepeats];
+				currentSettings = settings[settingId];
 				std::stringstream tempName;
 				tempName << currentSettings.filename << "Run" << taskId % numRepeats << ".csv";
 				currentSettings.filename = tempName.str();
 				filename = currentSettings.filename;
 				
-				double cellCycleTime = settings[taskId].averageGrowthTimeInSeconds;
-				double attachmentForce = settings[taskId].membraneAttachmentForce;
+				double cellCycleTime = settings[settingId].averageGrowthTimeInSeconds;
+				double attachmentForce = settings[settingId].membraneAttachmentForce;
 
 				double secondsPerTimestep = 30.0;
 				normalRNG = new NormalDistributionRNG(cellCycleTime / secondsPerTimestep, 2.625 * 3600.0 / secondsPerTimestep);
